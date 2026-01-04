@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { 
-  Users, 
-  Calendar, 
+import {
+  Users,
+  Calendar,
   Briefcase,
-  DollarSign, 
-  Bell, 
-  TrendingUp, 
-  Clipboard, 
-  Settings, 
+  DollarSign,
+  Bell,
+  TrendingUp,
+  Clipboard,
+  Settings,
   LayoutDashboard,
   LogOut,
   Sparkles
@@ -101,14 +101,14 @@ export const REVENUE_DATA_SETS: Record<string, any[]> = {
 };
 
 export const MOCK_PATIENTS: Patient[] = [
-  { 
-    id: '1', 
-    name: 'Ana Maria Silva', 
-    age: 28, 
-    objective: 'Hipertrofia', 
-    lastConsultation: '12/03/2024', 
-    email: 'ana.silva@email.com', 
-    phone: '(11) 98888-7777', 
+  {
+    id: '1',
+    name: 'Ana Maria Silva',
+    age: 28,
+    objective: 'Hipertrofia',
+    lastConsultation: '12/03/2024',
+    email: 'ana.silva@email.com',
+    phone: '(11) 98888-7777',
     avatar: 'https://i.pravatar.cc/150?u=1',
     history: [
       {
