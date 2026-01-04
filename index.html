@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" class="antialiased scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NutriClin - Gestão Nutricional Profissional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'nutri-main': '#FFFFFF',
+              'nutri-secondary': '#F5F9FC',
+              'nutri-card': '#FAFBFC',
+              'nutri-blue': '#84d1c1',
+              'nutri-blue-hover': '#6bc2b1',
+              'nutri-text': '#2F3A45',
+              'nutri-text-sec': '#6B7280',
+              'nutri-text-dis': '#9CA3AF',
+              'nutri-success': '#4ADE80',
+              'nutri-warning': '#FACC15',
+              'nutri-error': '#F87171',
+              'nutri-border': '#E5E7EB',
+            },
+            boxShadow: {
+              'nutri-soft': '0px 8px 30px rgba(0,0,0,0.04)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F9FC;
+            color: #2F3A45;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #E5E7EB;
+          border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #9CA3AF;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .transition-all {
+          transition-property: all;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transition-duration: 200ms;
+        }
+
+        /* Ocultar Spinners de inputs numéricos */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        @media print {
+          body {
+            background-color: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          aside, header, footer, .print\:hidden, nav, button:not(.print-visible) {
+            display: none !important;
+          }
+          main {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+          }
+          @page {
+            size: A4;
+            margin: 10mm;
+          }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.45.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
