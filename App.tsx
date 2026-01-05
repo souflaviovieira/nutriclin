@@ -49,7 +49,15 @@ const AppContent: React.FC = () => {
   const [selectedFoodItem, setSelectedFoodItem] = useState<any>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
   const [selectedSubstitution, setSelectedSubstitution] = useState<any>(null);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    // Ideally check localStorage here
+    if (typeof window !== 'undefined') {
+      return window.localStorage.getItem('sidebarCollapsed') === 'true';
+    }
+    return false;
+  });
   const [localPatients, setLocalPatients] = useState<Patient[]>(MOCK_PATIENTS);
 
   // States for Global Food Modal
@@ -105,6 +113,12 @@ const AppContent: React.FC = () => {
         activeTab={activeTab}
         isOpen={isSidebarOpen}
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        isCollapsed={isSidebarCollapsed}
+        toggleCollapse={() => {
+          const newState = !isSidebarCollapsed;
+          setIsSidebarCollapsed(newState);
+          window.localStorage.setItem('sidebarCollapsed', String(newState));
+        }}
         setActiveTab={(tab) => {
           setActiveTab(tab);
           const views: Record<string, View> = {
@@ -120,7 +134,7 @@ const AppContent: React.FC = () => {
         }}
       />
 
-      <main className="flex-1 lg:ml-72 flex flex-col min-w-0 transition-all duration-300 h-screen overflow-hidden">
+      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
         {/* Unified Header */}
         <Header session={session} onToggleSidebar={() => setIsSidebarOpen(true)} />
 
