@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { NAV_ITEMS } from '../constants';
-import { LogOut, Apple, ChevronLeft, Sparkles } from 'lucide-react';
+import { LogOut, Apple, ChevronLeft, Sparkles, User as UserIcon } from 'lucide-react';
+import { useUser } from '../contexts/UserContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -11,6 +12,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, toggleSidebar }) => {
+  const { profile } = useUser();
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -39,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, togg
             {NAV_ITEMS.map((item, index) => {
               const isActive = activeTab === item.id;
               const isAi = item.id === 'ai-assistant';
-              
+
               return (
                 <button
                   key={item.id}
@@ -47,11 +50,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, togg
                     setActiveTab(item.id);
                     if (window.innerWidth < 1024) toggleSidebar();
                   }}
-                  className={`w-full flex items-center gap-3.5 px-5 py-4 rounded-2xl transition-all group relative ${
-                    isActive
+                  className={`w-full flex items-center gap-3.5 px-5 py-4 rounded-2xl transition-all group relative ${isActive
                       ? 'bg-nutri-main text-nutri-blue shadow-nutri-soft font-bold scale-[1.02]'
                       : 'text-nutri-text-sec hover:bg-nutri-main/50 hover:text-nutri-text border border-transparent'
-                  }`}
+                    }`}
                 >
                   <div className={`${isActive ? 'text-nutri-blue' : 'text-nutri-text-dis group-hover:text-nutri-blue transition-colors'}`}>
                     {item.icon}
@@ -71,12 +73,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, togg
           <div className="p-6">
             <div className="flex items-center gap-3.5 px-4 py-3 mb-4 bg-nutri-main/60 backdrop-blur-sm rounded-2xl shadow-sm border border-white/40">
               <div className="relative">
-                <img src="https://picsum.photos/id/64/40/40" className="w-11 h-11 rounded-xl object-cover ring-2 ring-nutri-blue/20 shadow-sm" alt="Profile" />
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} className="w-11 h-11 rounded-xl object-cover ring-2 ring-nutri-blue/20 shadow-sm" alt="Profile" />
+                ) : (
+                  <div className="w-11 h-11 rounded-xl bg-nutri-blue/10 flex items-center justify-center text-nutri-blue ring-2 ring-nutri-blue/20">
+                    <UserIcon size={20} />
+                  </div>
+                )}
                 <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-nutri-success border-2 border-white rounded-full"></span>
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-sm font-black text-nutri-text truncate tracking-tight">Dra. Letícia Rosa</span>
-                <span className="text-[9px] font-black text-nutri-blue uppercase tracking-widest">Premium Nutri</span>
+                <span className="text-sm font-black text-nutri-text truncate tracking-tight">{profile?.display_name || 'Usuário'}</span>
+                <span className="text-[9px] font-black text-nutri-blue uppercase tracking-widest">{profile?.specialty || 'Profissional'}</span>
               </div>
             </div>
             <button className="w-full flex items-center gap-3.5 px-5 py-3.5 text-nutri-text-sec hover:text-nutri-error hover:bg-red-50 rounded-2xl transition-all group border border-transparent">

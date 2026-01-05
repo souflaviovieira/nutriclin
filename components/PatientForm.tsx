@@ -49,13 +49,18 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
       const compressedFile = await storageService.compressImage(file);
 
       // 2. Upload
-      const fileName = `patient-avatars/${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
+
+      // Sanitize input for filename
+      const sanitizedName = formData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase().substring(0, 10);
+      const fileName = `patient-avatars/${Date.now()}_${sanitizedName}.webp`;
+
       const publicUrl = await storageService.uploadFile(compressedFile, {
         bucket: 'patient-assets',
         path: fileName,
         oldPath: formData.avatar // Try to delete old if exists
       });
 
+      console.log('Upload success:', publicUrl);
       setFormData(prev => ({ ...prev, avatar: publicUrl }));
     } catch (err) {
       console.error('Error uploading patient avatar:', err);

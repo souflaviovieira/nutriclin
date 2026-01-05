@@ -33,9 +33,12 @@ import { supabase } from './services/supabaseClient';
 import Header from './components/layout/Header';
 import { Patient, ConsultationRecord } from './types';
 
+import { UserProvider, useUser } from './contexts/UserContext';
+
 type View = 'dashboard' | 'patients' | 'patient-detail' | 'new-patient' | 'edit-patient' | 'new-appointment' | 'patient-record' | 'patient-evolution' | 'meal-plan' | 'report' | 'finance' | 'appointments' | 'settings' | 'ai-assistant' | 'ongoing-consultation' | 'plans-library' | 'meal-plan-detail' | 'recommendation-model-view' | 'food-detail' | 'recipe-detail' | 'create-recipe' | 'substitution-detail';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { profile } = useUser();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -129,7 +132,7 @@ const App: React.FC = () => {
                 <div className="animate-in fade-in duration-700 space-y-8">
                   <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <h1 className="text-2xl md:text-3xl font-black text-nutri-text tracking-tighter">Olá, Dra. Letícia! 👋</h1>
+                      <h1 className="text-2xl md:text-3xl font-black text-nutri-text tracking-tighter">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! 👋</h1>
                       <p className="text-nutri-text-sec font-medium text-sm">Aqui está o panorama da sua clínica hoje.</p>
                     </div>
                     <div className="flex gap-3">
@@ -239,5 +242,11 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+const App: React.FC = () => (
+  <UserProvider>
+    <AppContent />
+  </UserProvider>
+);
 
 export default App;

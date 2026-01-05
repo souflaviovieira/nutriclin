@@ -1,6 +1,7 @@
 import React from 'react';
-import { Menu, Search, Bell } from 'lucide-react';
+import { Menu, Search, Bell, User } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
+import { useUser } from '../../contexts/UserContext';
 
 interface HeaderProps {
     session: any;
@@ -8,6 +9,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ session, onToggleSidebar }) => {
+    const { profile } = useUser();
+
     return (
         <header className="flex-shrink-0 bg-nutri-secondary px-6 md:px-10 py-6 flex items-center justify-between">
             <div className="flex items-center gap-6">
@@ -33,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ session, onToggleSidebar }) => {
                 </button>
                 <div className="flex items-center gap-3.5 pl-2 md:pl-5 border-l border-nutri-text-dis/20">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-nutri-text tracking-tight">Letícia Rosa</p>
+                        <p className="text-xs font-black text-nutri-text tracking-tight">{profile?.display_name || 'Usuário'}</p>
                         <button
                             onClick={() => supabase.auth.signOut()}
                             className="text-[10px] text-nutri-error font-black uppercase tracking-widest hover:opacity-70 transition-opacity"
@@ -41,8 +44,12 @@ const Header: React.FC<HeaderProps> = ({ session, onToggleSidebar }) => {
                             Sair
                         </button>
                     </div>
-                    <div className="w-10 h-10 rounded-2xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black shadow-nutri-soft rotate-3">
-                        {session?.user?.email?.charAt(0).toUpperCase() || 'U'}
+                    <div className="w-10 h-10 rounded-2xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black shadow-nutri-soft rotate-3 overflow-hidden">
+                        {profile?.avatar_url ? (
+                            <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                            <span>{profile?.display_name?.charAt(0).toUpperCase() || 'U'}</span>
+                        )}
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { storageService } from '../services/storageService';
+import { useUser } from '../contexts/UserContext';
 import {
   User,
   Settings,
@@ -33,6 +34,7 @@ import {
 type SettingsTab = 'profissional' | 'atendimento' | 'gestao' | 'sistema' | 'seguranca';
 
 const SettingsPage: React.FC = () => {
+  const { profile: userProfile, refreshProfile } = useUser(); // Using alias to avoid conflict
   const [activeSection, setActiveSection] = useState<SettingsTab>('profissional');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,8 +66,22 @@ const SettingsPage: React.FC = () => {
   const signatureInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (userProfile) {
+      // If we already have the profile from context, use it to populate form
+      setProfile((prev) => ({
+        ...prev,
+        ...userProfile,
+        // Assuming contacts might be partial or extra, we merge carefully
+        // In a real scenario, we might want to store contacts in a separate table or JSON column properly typed
+        // For now, we will just trust the fetchProfile logic inside the component or context.
+        // However, the original code fetched from 'profiles' table. Context does the same. 
+        // So we can sync context -> local state.
+      }));
+      setLoading(false);
+    } else {
+      fetchProfile(); // Fallback if context is not ready (though it should be)
+    }
+  }, [userProfile]);
 
   const fetchProfile = async () => {
     try {
@@ -145,6 +161,9 @@ const SettingsPage: React.FC = () => {
         ...prev,
         [`${type}_url`]: publicUrl
       }));
+
+      // Refresh global context immediately so Sidebar/Header update with new photo
+      await refreshProfile();
     } catch (error) {
       console.error(`Error uploading ${type}:`, error);
       alert(`Erro ao enviar ${type}. Tente novamente.`);
@@ -168,6 +187,8 @@ const SettingsPage: React.FC = () => {
         });
 
       if (error) throw error;
+
+      await refreshProfile(); // Refresh context
       alert('Configurações salvas com sucesso!');
     } catch (error) {
       console.error('Error saving profile:', error);
