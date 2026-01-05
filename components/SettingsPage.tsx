@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
+import { storageService } from '../services/storageService';
 import {
   User,
   Settings,
@@ -123,19 +124,22 @@ const SettingsPage: React.FC = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${type}_${Math.random()}.${fileExt}`;
-      const filePath = fileName;
+      // 1. Compress the image
+      const compressedFile = await storageService.compressImage(file);
 
-      const { error: uploadError } = await supabase.storage
-        .from('professional-assets')
-        .upload(filePath, file, { upsert: true });
+      // 2. Prepare upload options
+      const fileExt = 'webp'; // storageService returns webp
+      const fileName = `${user.id}/${type}_${Date.now()}.${fileExt}`;
+      const bucket = 'professional-assets';
 
-      if (uploadError) throw uploadError;
+      const oldUrl = profile[`${type}_url` as keyof typeof profile] as string;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('professional-assets')
-        .getPublicUrl(filePath);
+      // 3. Upload using storageService
+      const publicUrl = await storageService.uploadFile(compressedFile, {
+        bucket,
+        path: fileName,
+        oldPath: oldUrl
+      });
 
       setProfile(prev => ({
         ...prev,
@@ -265,6 +269,9 @@ const SettingsPage: React.FC = () => {
                         <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">
                           {profile.specialty || 'Sua Especialidade'} {profile.crn ? `• ${profile.crn}` : ''}
                         </p>
+                        <p className="text-[10px] text-slate-400 font-medium mt-1">
+                          Foto de Perfil: Dê preferência a fotos quadradas e bem iluminadas. O sistema atualizará o tamanho automaticamente.
+                        </p>
                       </div>
                     </div>
 
@@ -345,11 +352,15 @@ const SettingsPage: React.FC = () => {
                           </>
                         )}
                         {uploading === 'logo' && (
-                          <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[1px]">
+                          <div className="absolute inset-0 bg-white/60 flex flex-col items-center justify-center backdrop-blur-[1px] gap-2">
                             <Loader2 size={24} className="text-nutri-blue animate-spin" />
+                            <span className="text-[10px] font-black text-nutri-blue uppercase tracking-widest">Processando...</span>
                           </div>
                         )}
                       </div>
+                      <p className="text-[10px] text-slate-400 font-medium mt-1 px-1">
+                        Logomarca: Use preferencialmente fundo transparente (PNG ou WebP). Tamanho ideal sugerido: 800x400px.
+                      </p>
                     </div>
                     <div className="space-y-4">
                       <label className={labelClasses}>Assinatura Digital</label>
@@ -366,11 +377,15 @@ const SettingsPage: React.FC = () => {
                           </>
                         )}
                         {uploading === 'signature' && (
-                          <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[1px]">
+                          <div className="absolute inset-0 bg-white/60 flex flex-col items-center justify-center backdrop-blur-[1px] gap-2">
                             <Loader2 size={24} className="text-nutri-blue animate-spin" />
+                            <span className="text-[10px] font-black text-nutri-blue uppercase tracking-widest">Processando...</span>
                           </div>
                         )}
                       </div>
+                      <p className="text-[10px] text-slate-400 font-medium mt-1 px-1">
+                        Assinatura Digital: Assine em um papel branco liso com caneta escura para garantir a legibilidade nos PDFs gerados.
+                      </p>
                     </div>
                   </div>
                 </section>

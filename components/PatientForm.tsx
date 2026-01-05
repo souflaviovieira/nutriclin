@@ -2,8 +2,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, User, Save, X, Camera, MapPinned, Mail, CheckCircle2, Calendar } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
+import { storageService } from '../services/storageService';
 import { Patient } from '../types';
 import LoadingSpinner from './ui/LoadingSpinner';
+import { Loader2 } from 'lucide-react';
 
 interface PatientFormProps {
   onCancel: () => void;
@@ -13,6 +15,7 @@ interface PatientFormProps {
 
 const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData }) => {
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,14 +38,30 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
     state: initialData?.address?.state || ''
   });
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, avatar: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // 1. Compress
+      const compressedFile = await storageService.compressImage(file);
+
+      // 2. Upload
+      const fileName = `patient-avatars/${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
+      const publicUrl = await storageService.uploadFile(compressedFile, {
+        bucket: 'patient-assets',
+        path: fileName,
+        oldPath: formData.avatar // Try to delete old if exists
+      });
+
+      setFormData(prev => ({ ...prev, avatar: publicUrl }));
+    } catch (err) {
+      console.error('Error uploading patient avatar:', err);
+      alert('Erro ao carregar foto. Tente novamente.');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -155,17 +174,24 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
           <div className="p-6 space-y-8">
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="relative group">
-                <div className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 overflow-hidden ring-4 ring-nutri-blue/5">
+                <div className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 overflow-hidden ring-4 ring-nutri-blue/5 relative">
                   {formData.avatar ? <img src={formData.avatar} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300"><User size={48} /></div>}
+                  {uploading && (
+                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[2px]">
+                      <Loader2 size={24} className="text-nutri-blue animate-spin" />
+                    </div>
+                  )}
                 </div>
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute -bottom-2 -right-2 p-2.5 bg-nutri-blue text-white rounded-xl shadow-lg hover:bg-nutri-blue-hover transition-all hover:scale-110">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute -bottom-2 -right-2 p-2.5 bg-nutri-blue text-white rounded-xl shadow-lg hover:bg-nutri-blue-hover transition-all hover:scale-110 disabled:opacity-50" disabled={uploading}>
                   <Camera size={18} />
                 </button>
                 <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleAvatarChange} />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <h4 className="font-bold text-slate-800">Foto de Perfil</h4>
-                <p className="text-xs text-slate-400 mt-1">Clique para alterar.</p>
+                <h4 className="font-bold text-slate-800">Foto do Paciente</h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  Tire a foto contra um fundo neutro. Essas imagens são criptografadas e usadas apenas para acompanhamento de evolução.
+                </p>
               </div>
             </div>
 

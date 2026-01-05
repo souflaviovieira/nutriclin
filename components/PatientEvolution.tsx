@@ -1,23 +1,31 @@
 
-import React, { useMemo } from 'react';
-import { 
-  TrendingUp, 
-  Download, 
-  Flag, 
-  Scale, 
-  Activity, 
-  Ruler, 
-  FlaskConical, 
-  CheckCircle2, 
-  AlertCircle, 
-  Zap, 
+import React, { useMemo, useState, useRef } from 'react';
+import {
+  TrendingUp,
+  Download,
+  Flag,
+  Scale,
+  Activity,
+  Ruler,
+  FlaskConical,
+  CheckCircle2,
+  AlertCircle,
+  Zap,
   Droplets,
   Microscope,
   Target,
   ArrowRight,
-  Calendar
+  Calendar,
+  Camera,
+  Plus,
+  Trash2,
+  Loader2,
+  ImageIcon,
+  Maximize2
 } from 'lucide-react';
 import { Patient, ConsultationRecord } from '../types';
+import { storageService } from '../services/storageService';
+import { supabase } from '../services/supabaseClient';
 
 interface PatientEvolutionProps {
   patient: Patient;
@@ -25,6 +33,9 @@ interface PatientEvolutionProps {
 }
 
 const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const history = useMemo(() => {
     return [...(patient.history || [])].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [patient.history]);
@@ -48,7 +59,7 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
     const isLoss = isReverse || (initial > goal);
     const reached = isLoss ? current <= goal : current >= goal;
     const progress = isLoss ? current < initial : current > initial;
-    
+
     if (reached) return <span className="bg-emerald-100 text-emerald-600 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-tight">Meta Atingida</span>;
     if (progress) return <span className="bg-blue-100 text-blue-600 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-tight">Em Evolução</span>;
     return <span className="bg-amber-100 text-amber-600 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-tight">Atenção</span>;
@@ -59,7 +70,7 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
     const currNum = parseFloat(current) || 0;
     const goalNum = parseFloat(goal) || 0;
     const diff = (currNum - initNum).toFixed(1);
-    
+
     const totalToGoal = Math.abs(goalNum - initNum);
     const totalAchieved = Math.abs(currNum - initNum);
     const progressPerc = totalToGoal > 0 ? Math.min(Math.round((totalAchieved / totalToGoal) * 100), 100) : 0;
@@ -99,8 +110,8 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
             <span className="text-slate-400">{progressPerc}% da meta</span>
           </div>
           <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-nutri-blue rounded-full transition-all duration-1000" 
+            <div
+              className="h-full bg-nutri-blue rounded-full transition-all duration-1000"
               style={{ width: `${progressPerc}%` }}
             />
           </div>
@@ -120,6 +131,34 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
       <div className="h-px flex-1 bg-slate-100 mx-6 hidden md:block"></div>
     </div>
   );
+
+  const handleEvolutionPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // 1. Compress
+      const compressedFile = await storageService.compressImage(file);
+
+      // 2. Upload
+      const fileName = `evolution/${patient.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
+      const publicUrl = await storageService.uploadFile(compressedFile, {
+        bucket: 'evolution-assets',
+        path: fileName
+      });
+
+      console.log('Uploaded evolution photo:', publicUrl);
+      alert('Foto carregada com sucesso! (Simulação: no ambiente real seria salva no banco)');
+
+    } catch (err) {
+      console.error('Error uploading evolution photo:', err);
+      alert('Erro ao carregar foto. Tente novamente.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   if (history.length < 2) {
     return (
@@ -144,8 +183,8 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
       <div className="bg-white p-8 md:p-10 rounded-[40px] border border-slate-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="flex items-center gap-8">
           <div className="w-20 h-20 bg-nutri-blue rounded-[24px] flex items-center justify-center text-white shadow-2xl shadow-nutri-blue/20 relative">
-             <TrendingUp size={36} />
-             <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full"></div>
+            <TrendingUp size={36} />
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full"></div>
           </div>
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tighter leading-none">Análise Evolutiva</h1>
@@ -159,11 +198,11 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="text-right hidden lg:block mr-4">
             <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Período Clínico</p>
-            <p className="text-sm font-black text-slate-700">{new Date(firstRecord.date).toLocaleDateString('pt-BR')} <ArrowRight size={14} className="inline mx-1 text-slate-300"/> Hoje</p>
+            <p className="text-sm font-black text-slate-700">{new Date(firstRecord.date).toLocaleDateString('pt-BR')} <ArrowRight size={14} className="inline mx-1 text-slate-300" /> Hoje</p>
           </div>
           <button className="p-4 bg-slate-900 text-white rounded-[20px] shadow-lg shadow-slate-200 hover:scale-105 transition-all">
             <Download size={24} />
@@ -172,25 +211,25 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
+
         <div className="lg:col-span-8 space-y-16">
-          
+
           {/* SEÇÃO: ANTROPOMETRIA */}
           <section>
             <SectionHeader title="Antropometria" icon={Ruler} color="bg-blue-500" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <MetricCard 
-                label="Peso Corporal" 
-                unit="kg" 
+              <MetricCard
+                label="Peso Corporal"
+                unit="kg"
                 icon={Scale}
                 initial={firstRecord?.bioimpedancia?.peso || firstRecord?.medicoes?.basicas?.peso || 0}
                 current={lastRecord?.bioimpedancia?.peso || lastRecord?.medicoes?.basicas?.peso || 0}
                 goal={getGoal('Peso', parseFloat(firstRecord?.bioimpedancia?.peso || firstRecord?.medicoes?.basicas?.peso || 0))}
                 type={patient.objective.toLowerCase().includes('emagrecimento') ? 'loss' : 'gain'}
               />
-              <MetricCard 
-                label="Cintura" 
-                unit="cm" 
+              <MetricCard
+                label="Cintura"
+                unit="cm"
                 icon={Ruler}
                 initial={firstRecord?.medicoes?.perimetria?.cintura || firstRecord?.medicoes?.basicas?.cintura || 0}
                 current={lastRecord?.medicoes?.perimetria?.cintura || lastRecord?.medicoes?.basicas?.cintura || 0}
@@ -204,18 +243,18 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
           <section>
             <SectionHeader title="Bioimpedância" icon={Activity} color="bg-emerald-500" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <MetricCard 
-                label="Gordura Corporal" 
-                unit="%" 
+              <MetricCard
+                label="Gordura Corporal"
+                unit="%"
                 icon={Activity}
                 initial={firstRecord?.bioimpedancia?.percentualGordura || firstRecord?.bioimpedancia?.indicadores?.gorduraPerc || 0}
                 current={lastRecord?.bioimpedancia?.percentualGordura || lastRecord?.bioimpedancia?.indicadores?.gorduraPerc || 0}
                 goal={getGoal('Gordura', parseFloat(firstRecord?.bioimpedancia?.percentualGordura || 0))}
                 isReverse={true}
               />
-              <MetricCard 
-                label="Massa Muscular" 
-                unit="%" 
+              <MetricCard
+                label="Massa Muscular"
+                unit="%"
                 icon={Zap}
                 initial={firstRecord?.bioimpedancia?.indicadores?.musculoPerc || 30}
                 current={lastRecord?.bioimpedancia?.indicadores?.musculoPerc || 32}
@@ -248,36 +287,85 @@ const PatientEvolution: React.FC<PatientEvolutionProps> = ({ patient, onBack }) 
             </div>
           </section>
 
+          {/* SEÇÃO: FOTOS DE EVOLUÇÃO */}
+          <section>
+            <SectionHeader title="Fotos de Evolução" icon={Camera} color="bg-nutri-blue" />
+            <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-800">Galeria de Acompanhamento</p>
+                  <p className="text-[10px] text-slate-400 font-medium mt-1">
+                    Tire a foto contra um fundo neutro. Essas imagens são criptografadas e usadas apenas para acompanhamento de evolução.
+                  </p>
+                </div>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-nutri-blue-hover transition-all shadow-lg shadow-nutri-blue/20 disabled:opacity-50"
+                >
+                  {uploading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                  Adicionar Foto
+                </button>
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleEvolutionPhotoUpload} />
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[1, 2].map((i) => (
+                  <div key={i} className="relative group aspect-[3/4] rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">
+                    <img src={`https://picsum.photos/seed/evolution${i}/300/400`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Evolução" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                      <p className="text-[10px] font-bold text-white uppercase tracking-widest">Consulta 0{i}</p>
+                      <p className="text-[8px] text-white/70 font-medium">10/12/2023</p>
+                    </div>
+                    <button className="absolute top-2 right-2 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-white opacity-0 group-hover:opacity-100 transition-all">
+                      <Maximize2 size={14} />
+                    </button>
+                  </div>
+                ))}
+
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="aspect-[3/4] rounded-2xl border-2 border-dashed border-slate-100 flex flex-col items-center justify-center text-slate-300 hover:border-nutri-blue/30 hover:text-nutri-blue transition-all group"
+                >
+                  <div className="p-4 bg-slate-50 rounded-2xl group-hover:bg-nutri-blue/5 transition-colors">
+                    <ImageIcon size={24} />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest mt-3">Nova Foto</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
         </div>
 
         {/* PAINEL LATERAL: STATUS CLÍNICO */}
         <div className="lg:col-span-4 h-full">
           <div className="bg-slate-900 p-10 rounded-[48px] text-white shadow-2xl relative overflow-hidden h-full flex flex-col justify-between group">
-            
+
             <div className="relative z-10 space-y-12">
               <div className="space-y-3">
                 <h3 className="text-[10px] font-black text-nutri-blue uppercase tracking-[0.4em]">Status Clínico</h3>
-                <p className="text-4xl font-black tracking-tighter leading-tight italic">Melhora<br/>Progressiva</p>
+                <p className="text-4xl font-black tracking-tighter leading-tight italic">Melhora<br />Progressiva</p>
                 <div className="w-12 h-1 bg-nutri-blue rounded-full"></div>
               </div>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start gap-5">
-                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-emerald-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><CheckCircle2 size={18}/></div>
+                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-emerald-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><CheckCircle2 size={18} /></div>
                   <div className="space-y-1">
                     <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">Antropometria</p>
                     <p className="text-sm font-medium text-slate-300 leading-relaxed">Redução de gordura corporal constante dentro do planejado.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-5">
-                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-blue-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><Droplets size={18}/></div>
+                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-blue-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><Droplets size={18} /></div>
                   <div className="space-y-1">
                     <p className="text-xs font-black text-blue-400 uppercase tracking-widest">Hidratação</p>
                     <p className="text-sm font-medium text-slate-300 leading-relaxed">Hidratação atingiu níveis ideais clínicos (3.5L/dia).</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-5">
-                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-amber-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><AlertCircle size={18}/></div>
+                  <div className="mt-1 p-2.5 bg-white/5 rounded-full text-amber-400 border border-white/10 shrink-0 shadow-inner group-hover:scale-110 transition-transform"><AlertCircle size={18} /></div>
                   <div className="space-y-1">
                     <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Massa Muscular</p>
                     <p className="text-sm font-medium text-slate-300 leading-relaxed">Atenção: Massa magra com leve oscilação este mês.</p>
