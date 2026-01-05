@@ -15,7 +15,7 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
   const isPositive = metric.trend > 0;
 
   return (
-    <div className="bg-nutri-card p-6 rounded-2xl border border-nutri-border shadow-nutri-soft hover:border-nutri-blue hover:shadow-lg transition-all group overflow-hidden relative">
+    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0px_4px_20px_rgba(0,0,0,0.05)] hover:border-nutri-blue/20 hover:shadow-[0px_8px_30px_rgba(0,0,0,0.08)] transition-all group overflow-hidden relative">
       <div className="flex items-start justify-between relative z-10">
         <div className={`p-4 rounded-2xl transition-all duration-300 ${metric.color.split(' ')[0]} ${metric.color.split(' ')[1]} border shadow-lg group-hover:scale-110 group-hover:rotate-3`}>
           <IconComponent size={24} strokeWidth={2.5} />
@@ -29,7 +29,7 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
         <h3 className="text-[10px] font-black text-nutri-text-sec uppercase tracking-[0.2em]">{metric.label}</h3>
         <p className="text-2xl font-black text-nutri-text mt-1 tracking-tight group-hover:text-nutri-blue transition-colors">{metric.value}</p>
       </div>
-      
+
       {/* Subtle background glow effect based on color */}
       <div className={`absolute -right-8 -bottom-8 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity ${metric.color.split(' ')[0]}`}></div>
     </div>

@@ -5,7 +5,7 @@ import { MOCK_APPOINTMENTS } from '../constants';
 
 const AppointmentsList: React.FC = () => {
   return (
-    <div className="bg-nutri-card p-6 rounded-2xl border border-nutri-border shadow-nutri-soft">
+    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-bold text-nutri-text">Próximos Atendimentos</h3>
         <button className="text-sm font-medium text-nutri-blue hover:text-nutri-blue-hover">Ver agenda completa</button>
@@ -21,11 +21,10 @@ const AppointmentsList: React.FC = () => {
               <p className="text-xs text-nutri-text-sec">{appointment.type}</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
-                appointment.status === 'Confirmado' 
-                ? 'bg-nutri-success/10 text-nutri-success border border-nutri-success/20' 
-                : 'bg-nutri-warning/10 text-nutri-warning border border-nutri-warning/20'
-              }`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${appointment.status === 'Confirmado'
+                  ? 'bg-nutri-success/10 text-nutri-success border border-nutri-success/20'
+                  : 'bg-nutri-warning/10 text-nutri-warning border border-nutri-warning/20'
+                }`}>
                 {appointment.status}
               </span>
               <button className="text-nutri-text-dis opacity-0 group-hover:opacity-100 transition-opacity">

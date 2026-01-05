@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
 
         {/* Floating Main Container */}
         <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8 overflow-hidden">
-          <div className="w-full h-full bg-nutri-main rounded-[24px] shadow-nutri-soft overflow-y-auto no-scrollbar border border-white">
+          <div className="w-full h-full bg-transparent overflow-y-auto no-scrollbar">
             <div className="p-6 md:p-10 max-w-[1600px] mx-auto w-full">
               {currentView === 'dashboard' ? (
                 <div className="animate-in fade-in duration-700 space-y-8">

@@ -40,7 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar Container */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-100/80 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)]
+          fixed inset-y-0 left-0 z-50 bg-nutri-secondary border-r border-slate-200/50 shadow-none
           flex flex-col transition-all duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isCollapsed ? 'lg:w-20' : 'lg:w-72'}
@@ -198,7 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
         </div>
-      </aside>
+      </aside >
     </>
   );
 };

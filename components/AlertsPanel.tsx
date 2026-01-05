@@ -5,7 +5,7 @@ import { MOCK_ALERTS } from '../constants';
 
 const AlertsPanel: React.FC = () => {
   return (
-    <div className="bg-nutri-card p-6 rounded-2xl border border-nutri-border shadow-nutri-soft h-full">
+    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0px_4px_20px_rgba(0,0,0,0.05)] h-full">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-bold text-nutri-text">Alertas e Pendências</h3>
@@ -15,12 +15,11 @@ const AlertsPanel: React.FC = () => {
       <div className="space-y-3">
         {MOCK_ALERTS.map((alert) => (
           <div key={alert.id} className="p-4 rounded-xl border border-nutri-border bg-nutri-secondary/50 flex gap-3">
-            <div className={`mt-0.5 ${
-              alert.severity === 'high' ? 'text-nutri-error' :
-              alert.severity === 'medium' ? 'text-nutri-warning' : 'text-nutri-blue'
-            }`}>
-              {alert.severity === 'high' ? <AlertCircle size={18} /> : 
-               alert.severity === 'medium' ? <AlertTriangle size={18} /> : <Info size={18} />}
+            <div className={`mt-0.5 ${alert.severity === 'high' ? 'text-nutri-error' :
+                alert.severity === 'medium' ? 'text-nutri-warning' : 'text-nutri-blue'
+              }`}>
+              {alert.severity === 'high' ? <AlertCircle size={18} /> :
+                alert.severity === 'medium' ? <AlertTriangle size={18} /> : <Info size={18} />}
             </div>
             <div>
               <p className="text-sm text-nutri-text font-medium leading-tight">{alert.message}</p>
