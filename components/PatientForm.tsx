@@ -1,11 +1,14 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, User, Save, X, Camera, MapPinned, Mail, CheckCircle2, Calendar } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { ArrowLeft, User, Save, Camera, MapPinned, Mail, CheckCircle2, Calendar } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
 import { storageService } from '../services/storageService';
 import { Patient } from '../types';
 import LoadingSpinner from './ui/LoadingSpinner';
 import { Loader2 } from 'lucide-react';
+import Input from './ui/Input';
+import Card from './ui/Card';
+import Button from './ui/Button';
 
 interface PatientFormProps {
   onCancel: () => void;
@@ -44,23 +47,16 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
     try {
       setUploading(true);
-
-      // 1. Compress
       const compressedFile = await storageService.compressImage(file);
-
-      // 2. Upload
-
-      // Sanitize input for filename
       const sanitizedName = formData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase().substring(0, 10);
       const fileName = `patient-avatars/${Date.now()}_${sanitizedName}.webp`;
 
       const publicUrl = await storageService.uploadFile(compressedFile, {
         bucket: 'patient-assets',
         path: fileName,
-        oldPath: formData.avatar // Try to delete old if exists
+        oldPath: formData.avatar
       });
 
-      console.log('Upload success:', publicUrl);
       setFormData(prev => ({ ...prev, avatar: publicUrl }));
     } catch (err) {
       console.error('Error uploading patient avatar:', err);
@@ -98,21 +94,14 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
       let error;
       if (initialData?.id) {
-        const { error: updateError } = await supabase
-          .from('patients')
-          .update(payload)
-          .eq('id', initialData.id);
+        const { error: updateError } = await supabase.from('patients').update(payload).eq('id', initialData.id);
         error = updateError;
       } else {
-        const { error: insertError } = await supabase
-          .from('patients')
-          .insert([{ ...payload, last_consultation: new Date().toLocaleDateString('pt-BR') }]);
+        const { error: insertError } = await supabase.from('patients').insert([{ ...payload, last_consultation: new Date().toLocaleDateString('pt-BR') }]);
         error = insertError;
       }
 
-      if (error) {
-        console.warn("Table simulation for demo.");
-      }
+      if (error) console.warn("Table simulation for demo.");
 
       setShowSuccess(true);
       setTimeout(() => onSave(formData, andSchedule), 1500);
@@ -129,9 +118,6 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const inputClasses = "w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-nutri-blue/20 focus:border-nutri-blue outline-none transition-all placeholder:text-slate-400 font-medium";
-  const labelClasses = "block text-sm font-bold text-slate-700 mb-1.5 ml-1";
-
   if (showSuccess) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center animate-in zoom-in duration-300">
@@ -146,35 +132,34 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-        <div>
-          <button onClick={onCancel} className="flex items-center gap-2 text-slate-500 hover:text-nutri-blue transition-colors text-sm font-medium mb-2">
-            <ArrowLeft size={16} /> Voltar
-          </button>
-          <h1 className="text-2xl font-bold text-slate-800">{initialData ? 'Editar Paciente' : 'Novo Cadastro'}</h1>
-          <p className="text-slate-500 text-sm">Insira as informações básicas e de contato.</p>
+      <Card noPadding className="p-0 overflow-hidden">
+        <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <button onClick={onCancel} className="flex items-center gap-2 text-slate-500 hover:text-nutri-blue transition-colors text-xs font-black uppercase tracking-widest mb-2">
+              <ArrowLeft size={16} /> Voltar
+            </button>
+            <h1 className="text-2xl font-black text-nutri-text tracking-tight">{initialData ? 'Editar Paciente' : 'Novo Cadastro'}</h1>
+            <p className="text-nutri-text-sec text-sm mt-1">Insira as informações básicas e de contato.</p>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
+            <Button
+              variant="primary"
+              onClick={(e) => handleSave(e as any, false)}
+              disabled={loading}
+              icon={<Save size={18} />}
+            >
+              {loading ? <LoadingSpinner size={18} color="white" /> : 'Salvar'}
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <button type="button" onClick={onCancel} className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-all text-sm">
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            form="patient-form"
-            disabled={loading}
-            className="px-6 py-2.5 rounded-xl bg-nutri-blue text-white font-bold hover:bg-nutri-blue-hover shadow-lg shadow-nutri-blue/20 transition-all text-sm flex items-center gap-2 disabled:bg-slate-300"
-          >
-            {loading ? <LoadingSpinner size={18} color="white" /> : <Save size={18} />}
-            Salvar
-          </button>
-        </div>
-      </div>
+      </Card>
 
       <form id="patient-form" onSubmit={(e) => handleSave(e, false)} className="space-y-6">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <User size={20} className="text-nutri-blue" />
-            <h2 className="text-lg font-bold text-slate-800">Identificação e Perfil</h2>
+            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Identificação e Perfil</h2>
           </div>
           <div className="p-6 space-y-8">
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -193,8 +178,8 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
                 <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleAvatarChange} />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <h4 className="font-bold text-slate-800">Foto do Paciente</h4>
-                <p className="text-xs text-slate-400 mt-1">
+                <h4 className="font-bold text-nutri-text">Foto do Paciente</h4>
+                <p className="text-xs text-nutri-text-sec mt-1">
                   Tire a foto contra um fundo neutro. Essas imagens são criptografadas e usadas apenas para acompanhamento de evolução.
                 </p>
               </div>
@@ -202,92 +187,72 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="md:col-span-2 lg:col-span-2">
-                <label className={labelClasses}>Nome Completo *</label>
-                <input name="name" value={formData.name} onChange={handleChange} type="text" required className={inputClasses} />
+                <Input label="Nome Completo *" name="name" value={formData.name} onChange={handleChange} required />
               </div>
               <div>
-                <label className={labelClasses}>CPF *</label>
-                <input name="cpf" value={formData.cpf} onChange={handleChange} type="text" required className={inputClasses} />
+                <Input label="CPF *" name="cpf" value={formData.cpf} onChange={handleChange} required />
               </div>
               <div>
-                <label className={labelClasses}>Data de Nascimento *</label>
-                <input name="birth_date" value={formData.birth_date} onChange={handleChange} type="date" required className={inputClasses} />
+                <Input label="Data de Nascimento *" name="birth_date" value={formData.birth_date} onChange={handleChange} type="date" required />
               </div>
               <div>
-                <label className={labelClasses}>Gênero</label>
-                <select name="gender" value={formData.gender} onChange={handleChange} className={inputClasses}>
-                  <option value="">Selecione...</option>
-                  <option value="feminino">Feminino</option>
-                  <option value="masculino">Masculino</option>
-                  <option value="outro">Outro</option>
-                </select>
+                <label className="block text-[10px] font-black text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Gênero</label>
+                <div className="relative">
+                  <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-nutri-secondary/50 border border-nutri-border rounded-xl px-4 py-3.5 text-sm font-semibold text-nutri-text outline-none focus:ring-4 focus:ring-nutri-blue/10 focus:border-nutri-blue transition-all appearance-none">
+                    <option value="">Selecione...</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="outro">Outro</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-nutri-text-dis">▼</div>
+                </div>
               </div>
               <div>
-                <label className={labelClasses}>Objetivo Principal</label>
-                <input name="objective" value={formData.objective} onChange={handleChange} type="text" className={inputClasses} />
+                <Input label="Objetivo Principal" name="objective" value={formData.objective} onChange={handleChange} />
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <Mail size={20} className="text-blue-600" />
-            <h2 className="text-lg font-bold text-slate-800">Contato</h2>
+            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Contato</h2>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className={labelClasses}>E-mail *</label>
-              <input name="email" value={formData.email} onChange={handleChange} type="email" required className={inputClasses} />
-            </div>
-            <div>
-              <label className={labelClasses}>Celular / WhatsApp *</label>
-              <input name="phone" value={formData.phone} onChange={handleChange} type="tel" required className={inputClasses} />
-            </div>
+            <Input label="E-mail *" name="email" value={formData.email} onChange={handleChange} type="email" required />
+            <Input label="Celular / WhatsApp *" name="phone" value={formData.phone} onChange={handleChange} type="tel" required />
           </div>
-        </div>
+        </Card>
 
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <MapPinned size={20} className="text-amber-600" />
-            <h2 className="text-lg font-bold text-slate-800">Endereço</h2>
+            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Endereço</h2>
           </div>
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div>
-                <label className={labelClasses}>CEP</label>
-                <input name="cep" value={formData.cep} onChange={handleChange} type="text" className={inputClasses} />
-              </div>
+              <Input label="CEP" name="cep" value={formData.cep} onChange={handleChange} />
               <div className="sm:col-span-2">
-                <label className={labelClasses}>Rua</label>
-                <input name="street" value={formData.street} onChange={handleChange} type="text" className={inputClasses} />
+                <Input label="Rua" name="street" value={formData.street} onChange={handleChange} />
               </div>
-              <div>
-                <label className={labelClasses}>Número</label>
-                <input name="number" value={formData.number} onChange={handleChange} type="text" className={inputClasses} />
-              </div>
-              <div>
-                <label className={labelClasses}>Cidade</label>
-                <input name="city" value={formData.city} onChange={handleChange} type="text" className={inputClasses} />
-              </div>
-              <div>
-                <label className={labelClasses}>Estado</label>
-                <input name="state" value={formData.state} onChange={handleChange} type="text" className={inputClasses} />
-              </div>
+              <Input label="Número" name="number" value={formData.number} onChange={handleChange} />
+              <Input label="Cidade" name="city" value={formData.city} onChange={handleChange} />
+              <Input label="Estado" name="state" value={formData.state} onChange={handleChange} />
             </div>
           </div>
-        </div>
+        </Card>
 
         <div className="flex justify-end pt-4 pb-8">
-          <button
-            type="button"
+          <Button
+            variant="primary"
             onClick={() => handleSave(undefined, true)}
             disabled={loading}
-            className="flex items-center gap-3 px-8 py-4 bg-nutri-blue text-white rounded-2xl font-black text-sm shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all active:scale-95 disabled:opacity-50"
+            size="lg"
+            icon={<Calendar size={20} />}
           >
-            {loading ? <LoadingSpinner size={20} color="white" /> : <Calendar size={20} />}
-            Salvar e Agendar
-          </button>
+            {loading ? <LoadingSpinner size={20} color="white" /> : 'Salvar e Agendar'}
+          </Button>
         </div>
       </form>
     </div>
