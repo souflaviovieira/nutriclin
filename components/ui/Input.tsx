@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({
             {label && (
                 <label
                     htmlFor={id}
-                    className="block text-[10px] font-black text-nutri-text-sec uppercase tracking-widest mb-2 ml-1"
+                    className="block text-[10px] font-bold text-nutri-text-sec uppercase tracking-widest mb-2 ml-1"
                 >
                     {label}
                 </label>
@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
                     className={`
             w-full bg-nutri-secondary/50 border border-nutri-border rounded-xl 
             ${icon ? 'pl-11' : 'pl-4'} pr-4 py-3.5
-            text-sm font-semibold text-nutri-text placeholder:text-nutri-text-dis/70
+            text-sm font-medium text-nutri-text placeholder:text-nutri-text-dis/70
             outline-none focus:ring-4 focus:ring-nutri-blue/10 focus:border-nutri-blue
             transition-all duration-200
             disabled:opacity-50 disabled:cursor-not-allowed

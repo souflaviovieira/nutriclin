@@ -36,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
     disabled,
     ...props
 }) => {
-    const baseClasses = 'flex items-center justify-center gap-2 rounded-xl font-black uppercase tracking-widest transition-all';
+    const baseClasses = 'flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-widest transition-all';
 
     return (
         <button

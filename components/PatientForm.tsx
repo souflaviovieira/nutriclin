@@ -135,10 +135,10 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
       <Card noPadding className="p-0 overflow-hidden">
         <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <button onClick={onCancel} className="flex items-center gap-2 text-slate-500 hover:text-nutri-blue transition-colors text-xs font-black uppercase tracking-widest mb-2">
+            <button onClick={onCancel} className="flex items-center gap-2 text-slate-500 hover:text-nutri-blue transition-colors text-xs font-bold uppercase tracking-widest mb-2">
               <ArrowLeft size={16} /> Voltar
             </button>
-            <h1 className="text-2xl font-black text-nutri-text tracking-tight">{initialData ? 'Editar Paciente' : 'Novo Cadastro'}</h1>
+            <h1 className="text-2xl font-bold text-nutri-text tracking-tight">{initialData ? 'Editar Paciente' : 'Novo Cadastro'}</h1>
             <p className="text-nutri-text-sec text-sm mt-1">Insira as informações básicas e de contato.</p>
           </div>
           <div className="flex gap-3">
@@ -159,7 +159,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <User size={20} className="text-nutri-blue" />
-            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Identificação e Perfil</h2>
+            <h2 className="text-lg font-bold text-nutri-text uppercase tracking-wider">Identificação e Perfil</h2>
           </div>
           <div className="p-6 space-y-8">
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -196,7 +196,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
                 <Input label="Data de Nascimento *" name="birth_date" value={formData.birth_date} onChange={handleChange} type="date" required />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Gênero</label>
+                <label className="block text-[10px] font-bold text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Gênero</label>
                 <div className="relative">
                   <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-nutri-secondary/50 border border-nutri-border rounded-xl px-4 py-3.5 text-sm font-semibold text-nutri-text outline-none focus:ring-4 focus:ring-nutri-blue/10 focus:border-nutri-blue transition-all appearance-none">
                     <option value="">Selecione...</option>
@@ -217,7 +217,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <Mail size={20} className="text-blue-600" />
-            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Contato</h2>
+            <h2 className="text-lg font-bold text-nutri-text uppercase tracking-wider">Contato</h2>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="E-mail *" name="email" value={formData.email} onChange={handleChange} type="email" required />
@@ -228,7 +228,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center gap-3 bg-slate-50/30">
             <MapPinned size={20} className="text-amber-600" />
-            <h2 className="text-lg font-black text-nutri-text uppercase tracking-wider">Endereço</h2>
+            <h2 className="text-lg font-bold text-nutri-text uppercase tracking-wider">Endereço</h2>
           </div>
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

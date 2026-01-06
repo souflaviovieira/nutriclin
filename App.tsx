@@ -100,7 +100,7 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen bg-nutri-secondary flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <Loader2 className="w-12 h-12 text-nutri-blue animate-spin" strokeWidth={3} />
-        <p className="text-xs font-black text-nutri-text-dis uppercase tracking-[0.3em] animate-pulse">NutriClin Pro</p>
+        <p className="text-xs font-bold text-nutri-text-dis uppercase tracking-[0.3em] animate-pulse">NutriClin Pro</p>
       </div>
     </div>
   );
@@ -108,7 +108,7 @@ const AppContent: React.FC = () => {
   if (!session) return <LoginPage onLogin={() => { }} />;
 
   return (
-    <div className="min-h-screen bg-nutri-secondary flex overflow-x-hidden selection:bg-nutri-blue/20 selection:text-nutri-text">
+    <div className="min-h-screen bg-nutri-secondary selection:bg-nutri-blue/20 selection:text-nutri-text">
       <Sidebar
         activeTab={activeTab}
         isOpen={isSidebarOpen}
@@ -146,14 +146,14 @@ const AppContent: React.FC = () => {
                 <div className="animate-in fade-in duration-700 space-y-8">
                   <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <h1 className="text-2xl md:text-3xl font-black text-nutri-text tracking-tighter">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! 👋</h1>
+                      <h1 className="text-2xl md:text-3xl font-bold text-nutri-text tracking-tighter">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! 👋</h1>
                       <p className="text-nutri-text-sec font-medium text-sm">Aqui está o panorama da sua clínica hoje.</p>
                     </div>
                     <div className="flex gap-3">
-                      <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-nutri-soft hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
+                      <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-nutri-soft hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
                         <Plus size={18} strokeWidth={3} /> NOVO PACIENTE
                       </button>
-                      <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95 shadow-sm">
+                      <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95 shadow-sm">
                         <Calendar size={18} className="text-nutri-blue" strokeWidth={2.5} /> Agendar
                       </button>
                     </div>
@@ -234,7 +234,7 @@ const AppContent: React.FC = () => {
 
         {/* Global Signature Footer */}
         <footer className="flex-shrink-0 py-4 px-10 text-center bg-nutri-secondary">
-          <p className="text-[10px] text-nutri-text-dis font-black uppercase tracking-[0.3em] opacity-60">&copy; 2024 NutriClin Pro Systems</p>
+          <p className="text-[10px] text-nutri-text-dis font-bold uppercase tracking-[0.3em] opacity-60">&copy; 2024 NutriClin Pro Systems</p>
         </footer>
       </main>
 

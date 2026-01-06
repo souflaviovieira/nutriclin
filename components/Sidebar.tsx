@@ -62,8 +62,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                   flex flex-col transition-all duration-300 origin-left
                   ${isCollapsed ? 'opacity-0 w-0 scale-95' : 'opacity-100 w-auto scale-100'}
                 `}>
-                <span className="text-xl font-black text-slate-800 tracking-tighter uppercase leading-none">NutriClin</span>
-                <span className="text-[9px] font-black text-nutri-blue uppercase tracking-[0.2em]">Pro System</span>
+                <span className="text-xl font-bold text-slate-800 tracking-tighter uppercase leading-none">NutriClin</span>
+                <span className="text-[9px] font-bold text-nutri-blue uppercase tracking-[0.2em]">Pro System</span>
               </div>
             </div>
 
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {/* Navigation */}
           <nav className="flex-1 py-8 space-y-2 overflow-y-auto overflow-x-hidden no-scrollbar px-3">
             {!isCollapsed && (
-              <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] px-4 mb-3 animate-in fade-in duration-500 delay-100">
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 mb-3 animate-in fade-in duration-500 delay-100">
                 Menu Principal
               </p>
             )}

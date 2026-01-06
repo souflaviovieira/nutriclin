@@ -159,14 +159,14 @@ const SettingsPage: React.FC = () => {
     { id: 'seguranca', label: 'Segurança', icon: <Shield size={18} /> },
   ];
 
-  const sectionTitleClasses = "text-sm font-black text-nutri-text uppercase tracking-widest flex items-center gap-2 mb-6";
+  const sectionTitleClasses = "text-sm font-bold text-nutri-text uppercase tracking-widest flex items-center gap-2 mb-6";
 
   return (
     <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 animate-in fade-in duration-500 pb-24 px-1">
       <aside className="w-full lg:w-72 shrink-0">
         <Card noPadding className="sticky top-24 overflow-hidden">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-[10px] font-black text-nutri-text-sec uppercase tracking-[0.2em]">Configurações</h2>
+            <h2 className="text-[10px] font-bold text-nutri-text-sec uppercase tracking-[0.2em]">Configurações</h2>
           </div>
           <nav className="p-3 space-y-1.5">
             {sections.map((section) => (
@@ -230,7 +230,7 @@ const SettingsPage: React.FC = () => {
                         </button>
                       </div>
                       <div className="flex-1 space-y-1 text-center sm:text-left">
-                        <h4 className="text-2xl font-black text-nutri-text tracking-tight">
+                        <h4 className="text-2xl font-bold text-nutri-text tracking-tight">
                           {profile.display_name || 'Seu Nome'}
                         </h4>
                         <p className="text-nutri-text-dis font-bold text-sm uppercase tracking-widest">
@@ -284,7 +284,7 @@ const SettingsPage: React.FC = () => {
                   <h3 className={sectionTitleClasses}><PenTool size={18} className="text-nutri-blue" /> Documentos & Identidade</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                      <label className="block text-[10px] font-black text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Logotipo da Clínica</label>
+                      <label className="block text-[10px] font-bold text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Logotipo da Clínica</label>
                       <div
                         onClick={() => logoInputRef.current?.click()}
                         className="border-2 border-dashed border-slate-100 rounded-3xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-slate-50 transition-colors cursor-pointer group bg-slate-50/30 min-h-[160px] relative overflow-hidden"
@@ -294,13 +294,13 @@ const SettingsPage: React.FC = () => {
                         ) : (
                           <>
                             <Upload size={32} className="text-slate-300 group-hover:text-nutri-blue transition-colors" />
-                            <span className="text-[10px] font-black text-nutri-text-dis uppercase tracking-widest text-center">Clique para enviar logo <br /> (PNG/JPG)</span>
+                            <span className="text-[10px] font-bold text-nutri-text-dis uppercase tracking-widest text-center">Clique para enviar logo <br /> (PNG/JPG)</span>
                           </>
                         )}
                         {uploading === 'logo' && (
                           <div className="absolute inset-0 bg-white/60 flex flex-col items-center justify-center backdrop-blur-[1px] gap-2">
                             <Loader2 size={24} className="text-nutri-blue animate-spin" />
-                            <span className="text-[10px] font-black text-nutri-blue uppercase tracking-widest">Processando...</span>
+                            <span className="text-[10px] font-bold text-nutri-blue uppercase tracking-widest">Processando...</span>
                           </div>
                         )}
                       </div>
@@ -309,7 +309,7 @@ const SettingsPage: React.FC = () => {
                       </p>
                     </div>
                     <div className="space-y-4">
-                      <label className="block text-[10px] font-black text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Assinatura Digital</label>
+                      <label className="block text-[10px] font-bold text-nutri-text-sec uppercase tracking-widest mb-2 ml-1">Assinatura Digital</label>
                       <div
                         onClick={() => signatureInputRef.current?.click()}
                         className="border-2 border-dashed border-slate-100 rounded-3xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-slate-50 transition-colors cursor-pointer group bg-slate-50/30 min-h-[160px] relative overflow-hidden"
@@ -319,13 +319,13 @@ const SettingsPage: React.FC = () => {
                         ) : (
                           <>
                             <PenTool size={32} className="text-slate-300 group-hover:text-nutri-blue transition-colors" />
-                            <span className="text-[10px] font-black text-nutri-text-dis uppercase tracking-widest text-center">Clique para enviar <br /> assinatura digital</span>
+                            <span className="text-[10px] font-bold text-nutri-text-dis uppercase tracking-widest text-center">Clique para enviar <br /> assinatura digital</span>
                           </>
                         )}
                         {uploading === 'signature' && (
                           <div className="absolute inset-0 bg-white/60 flex flex-col items-center justify-center backdrop-blur-[1px] gap-2">
                             <Loader2 size={24} className="text-nutri-blue animate-spin" />
-                            <span className="text-[10px] font-black text-nutri-blue uppercase tracking-widest">Processando...</span>
+                            <span className="text-[10px] font-bold text-nutri-blue uppercase tracking-widest">Processando...</span>
                           </div>
                         )}
                       </div>
@@ -375,7 +375,7 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-slate-900 p-8 rounded-[40px] text-white shadow-2xl relative overflow-hidden group">
               <div className="relative z-10">
-                <h3 className="text-xl font-black tracking-tight mb-1">Deseja salvar todas as alterações?</h3>
+                <h3 className="text-xl font-bold tracking-tight mb-1">Deseja salvar todas as alterações?</h3>
                 <p className="text-xs text-slate-400 font-medium">Suas preferências serão aplicadas instantaneamente em toda a plataforma.</p>
               </div>
               <div className="relative z-10">
