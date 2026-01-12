@@ -46,6 +46,16 @@ export const NAV_ITEMS = [
     ]
   },
   {
+    title: 'CONFIGURAÇÕES',
+    items: [
+      { id: 'settings-profissional', label: 'Profissional', icon: <UserCircle size={20} /> },
+      { id: 'settings-atendimento', label: 'Atendimento', icon: <Clock size={20} /> },
+      { id: 'settings-gestao', label: 'Gestão', icon: <Target size={20} /> },
+      { id: 'settings-sistema', label: 'Sistema', icon: <Settings size={20} /> },
+      { id: 'settings-seguranca', label: 'Segurança', icon: <Shield size={20} /> },
+    ]
+  },
+  {
     items: [
        { id: 'ai-assistant', label: 'Nutri AI', icon: <Sparkles size={20} /> }
     ]

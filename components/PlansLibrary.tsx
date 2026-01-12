@@ -239,30 +239,6 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
 
   return (
     <div className="w-full max-w-[1600px] mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-10 px-1">
-      {/* Sticky Main Navigation Tabs */}
-      <div className="flex overflow-x-auto no-scrollbar gap-1.5 p-1.5 bg-white/70 backdrop-blur-xl rounded-2xl border border-slate-100 shadow-sm sticky top-0 z-30 mx-1">
-        {MainTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id as MainTab);
-              if (tab.id === 'alimentos') setActiveSubTab('alimentos-base');
-              if (tab.id === 'receitas') setActiveSubTab('comunidade');
-              if (tab.id === 'substituicoes') setActiveSubTab('listas');
-              if (tab.id === 'modelos') setActiveSubTab('meal-plans');
-            }}
-            className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-[11px] md:text-xs font-black transition-all whitespace-nowrap uppercase tracking-widest ${
-              activeTab === tab.id
-                ? 'bg-white text-nutri-blue shadow-lg shadow-nutri-blue/5 border border-slate-100'
-                : 'text-slate-500 hover:text-slate-800 hover:bg-white border border-transparent'
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       {/* Main Module Content Container */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm p-4 md:p-8 space-y-6 md:space-y-8 relative">
         

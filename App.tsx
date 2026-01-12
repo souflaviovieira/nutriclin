@@ -67,6 +67,7 @@ const AppContent: React.FC = () => {
   // States to persist library navigation
   const [plansActiveTab, setPlansActiveTab] = useState<any>('alimentos');
   const [plansActiveSubTab, setPlansActiveSubTab] = useState<any>('alimentos-base');
+  const [settingsActiveSection, setSettingsActiveSection] = useState<any>('profissional');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -161,6 +162,11 @@ const AppContent: React.FC = () => {
             billing: 'finance',
             appointments: 'appointments',
             settings: 'settings',
+            'settings-profissional': 'settings',
+            'settings-atendimento': 'settings',
+            'settings-gestao': 'settings',
+            'settings-sistema': 'settings',
+            'settings-seguranca': 'settings',
             'ai-assistant': 'ai-assistant'
           };
           setCurrentView(views[tab] || 'dashboard');
@@ -172,6 +178,14 @@ const AppContent: React.FC = () => {
             if (tab === 'receitas') setPlansActiveSubTab('comunidade');
             if (tab === 'substituicoes') setPlansActiveSubTab('listas');
             if (tab === 'modelos') setPlansActiveSubTab('meal-plans');
+          }
+
+          // Sync SettingsPage section if clicked from sidebar
+          if (tab.startsWith('settings-')) {
+            const section = tab.replace('settings-', '');
+            setSettingsActiveSection(section as any);
+          } else if (tab === 'settings') {
+            setSettingsActiveSection('profissional');
           }
         }}
       />
@@ -270,7 +284,10 @@ const AppContent: React.FC = () => {
               ) : currentView === 'ai-assistant' ? (
                 <AiAssistant />
               ) : (
-                <SettingsPage />
+                <SettingsPage 
+                  activeSection={settingsActiveSection} 
+                  onSectionChange={setSettingsActiveSection} 
+                />
               )}
             </div>
           </div>

@@ -14,12 +14,24 @@ import Button from './ui/Button';
 
 type SettingsTab = 'profissional' | 'atendimento' | 'gestao' | 'sistema' | 'seguranca';
 
-const SettingsPage: React.FC = () => {
+interface SettingsPageProps {
+  activeSection?: SettingsTab;
+  onSectionChange?: (section: SettingsTab) => void;
+}
+
+const SettingsPage: React.FC<SettingsPageProps> = ({ 
+  activeSection: externalActiveSection, 
+  onSectionChange 
+}) => {
   const { profile: userProfile, refreshProfile } = useUser();
-  const [activeSection, setActiveSection] = useState<SettingsTab>('profissional');
+  const [activeSectionState, setActiveSectionState] = useState<SettingsTab>('profissional');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
+
+  // Use external section if provided, otherwise fallback to local state
+  const activeSection = externalActiveSection || activeSectionState;
+  const setActiveSection = onSectionChange || setActiveSectionState;
 
   const [profile, setProfile] = useState({
     display_name: '',
@@ -178,33 +190,8 @@ const SettingsPage: React.FC = () => {
   const sectionTitleClasses = "text-sm font-bold text-nutri-text uppercase tracking-widest flex items-center gap-2 mb-6";
 
   return (
-    <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 animate-in fade-in duration-500 pb-24 px-1">
-      <aside className="w-full lg:w-72 shrink-0">
-        <Card noPadding className="sticky top-24 overflow-hidden">
-          <div className="p-6 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-[10px] font-bold text-nutri-text-sec uppercase tracking-[0.2em]">Configurações</h2>
-          </div>
-          <nav className="p-3 space-y-1.5">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id as SettingsTab)}
-                className={`w-full flex items-center gap-3.5 px-5 py-4 rounded-[20px] text-sm font-bold transition-all group ${activeSection === section.id
-                  ? 'bg-nutri-blue text-white shadow-lg shadow-nutri-blue/20 scale-[1.02]'
-                  : 'text-nutri-text-sec hover:bg-slate-50 hover:text-nutri-blue'
-                  }`}
-              >
-                <div className={`${activeSection === section.id ? 'text-white' : 'text-slate-300 group-hover:text-nutri-blue'}`}>
-                  {section.icon}
-                </div>
-                {section.label}
-              </button>
-            ))}
-          </nav>
-        </Card>
-      </aside>
-
-      <div className="flex-1 space-y-8 min-w-0">
+    <div className="max-w-[1200px] mx-auto animate-in fade-in duration-500 pb-24 px-1">
+      <div className="space-y-8 min-w-0">
         {loading ? (
           <Card className="flex items-center justify-center min-h-[400px]">
             <div className="flex flex-col items-center gap-4">
