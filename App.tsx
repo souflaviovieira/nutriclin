@@ -105,7 +105,8 @@ const AppContent: React.FC = () => {
     </div>
   );
 
-  if (!session) return <LoginPage onLogin={() => { }} />;
+  // TODO: TEMPORÁRIO - Login desativado para desenvolvimento
+  // if (!session) return <LoginPage onLogin={() => { }} />;
 
   return (
     <div className="min-h-screen bg-nutri-secondary selection:bg-nutri-blue/20 selection:text-nutri-text">
