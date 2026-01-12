@@ -151,8 +151,8 @@ const FinanceManager: React.FC<FinanceManagerProps> = ({ onBack }) => {
             <ArrowLeft size={24} />
           </button>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter">Gestão Financeira</h1>
-            <p className="text-slate-500 text-sm font-medium">Acompanhe o crescimento e performance estratégica da sua clínica.</p>
+            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter">Relatórios</h1>
+            <p className="text-slate-500 text-sm font-medium">Acompanhe a performance estratégica e os indicadores da sua clínica.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">

@@ -125,13 +125,25 @@ const AppContent: React.FC = () => {
           const views: Record<string, View> = {
             dashboard: 'dashboard',
             patients: 'patients',
-            plans: 'plans-library',
+            alimentos: 'plans-library',
+            receitas: 'plans-library',
+            substituicoes: 'plans-library',
+            modelos: 'plans-library',
             billing: 'finance',
             appointments: 'appointments',
             settings: 'settings',
             'ai-assistant': 'ai-assistant'
           };
           setCurrentView(views[tab] || 'dashboard');
+
+          // Sync PlansLibrary if one of its sub-items is clicked
+          if (['alimentos', 'receitas', 'substituicoes', 'modelos'].includes(tab)) {
+            setPlansActiveTab(tab as any);
+            if (tab === 'alimentos') setPlansActiveSubTab('alimentos-base');
+            if (tab === 'receitas') setPlansActiveSubTab('comunidade');
+            if (tab === 'substituicoes') setPlansActiveSubTab('listas');
+            if (tab === 'modelos') setPlansActiveSubTab('meal-plans');
+          }
         }}
       />
 
@@ -147,8 +159,8 @@ const AppContent: React.FC = () => {
                 <div className="animate-in fade-in duration-700 space-y-8">
                   <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <h1 className="text-2xl md:text-3xl font-bold text-nutri-text tracking-tighter">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! 👋</h1>
-                      <p className="text-nutri-text-sec font-medium text-sm">Aqui está o panorama da sua clínica hoje.</p>
+                      <h1 className="text-2xl md:text-3xl font-bold text-nutri-text tracking-tighter">Minha Clínica</h1>
+                      <p className="text-nutri-text-sec font-medium text-sm">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! Veja o panorama de hoje.</p>
                     </div>
                     <div className="flex gap-3">
                       <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-nutri-soft hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">

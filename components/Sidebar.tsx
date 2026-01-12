@@ -85,72 +85,75 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           {/* Navigation */}
-          <nav className="flex-1 py-4 space-y-1.5 overflow-y-auto overflow-x-hidden no-scrollbar px-3">
-            {!isCollapsed && (
-              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 mb-3 animate-in fade-in duration-500 delay-100">
-                Menu Principal
-              </p>
-            )}
+          <nav className="flex-1 py-4 space-y-6 overflow-y-auto overflow-x-hidden no-scrollbar px-3">
+            {NAV_ITEMS.map((group, groupIdx) => (
+              <div key={groupIdx} className="space-y-1.5">
+                {!isCollapsed && group.title && (
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] px-4 mb-2 animate-in fade-in duration-500">
+                    {group.title}
+                  </p>
+                )}
+                {group.items.map((item) => {
+                  const isActive = activeTab === item.id;
 
-            {NAV_ITEMS.map((item) => {
-              const isActive = activeTab === item.id;
+                  return (
+                    <div key={item.id} className="relative group/item">
+                      <button
+                        onClick={() => {
+                          setActiveTab(item.id);
+                          if (window.innerWidth < 1024) toggleSidebar();
+                        }}
+                        onMouseEnter={() => setHoveredItem(item.id)}
+                        onMouseLeave={() => setHoveredItem(null)}
+                        className={`
+                           w-full flex items-center gap-3.5 relative transition-all duration-200 group
+                           ${isCollapsed ? 'justify-center px-0 py-3 rounded-2xl' : 'px-4 py-3 rounded-xl'}
+                           ${isActive
+                            ? 'bg-nutri-blue/5 text-nutri-blue'
+                            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                         `}
+                      >
+                        {/* Active Indicator Line for Collapsed Mode (Optional) */}
+                        {isCollapsed && isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-nutri-blue rounded-r-full"></div>
+                        )}
 
-              return (
-                <div key={item.id} className="relative group/item">
-                  <button
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      if (window.innerWidth < 1024) toggleSidebar();
-                    }}
-                    onMouseEnter={() => setHoveredItem(item.id)}
-                    onMouseLeave={() => setHoveredItem(null)}
-                    className={`
-                       w-full flex items-center gap-3.5 relative transition-all duration-200 group
-                       ${isCollapsed ? 'justify-center px-0 py-3 rounded-2xl' : 'px-4 py-3 rounded-xl'}
-                       ${isActive
-                        ? 'bg-nutri-blue/5 text-nutri-blue'
-                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
-                     `}
-                  >
-                    {/* Active Indicator Line for Collapsed Mode (Optional) */}
-                    {isCollapsed && isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-nutri-blue rounded-r-full"></div>
-                    )}
+                        <div className={`
+                           relative z-10 transition-colors duration-200
+                           ${isActive ? 'text-nutri-blue' : 'text-slate-400 group-hover:text-nutri-blue'}
+                         `}>
+                          {item.icon}
+                        </div>
 
-                    <div className={`
-                       relative z-10 transition-colors duration-200
-                       ${isActive ? 'text-nutri-blue' : 'text-slate-400 group-hover:text-nutri-blue'}
-                     `}>
-                      {item.icon}
+                        {/* Label - visible only when expanded */}
+                        <span
+                          className={`
+                             text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
+                             ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
+                           `}
+                        >
+                          {item.label}
+                        </span>
+
+                        {/* Right Active Dot (Expanded only) */}
+                        {!isCollapsed && isActive && (
+                          <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-nutri-blue shadow-sm"></div>
+                        )}
+                      </button>
+
+                      {/* Tooltip for Collapsed Mode */}
+                      {isCollapsed && hoveredItem === item.id && (
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl whitespace-nowrap z-[60] animate-in fade-in slide-in-from-left-2 duration-200 pointer-events-none">
+                          {item.label}
+                          {/* Little arrow */}
+                          <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 -z-10"></div>
+                        </div>
+                      )}
                     </div>
-
-                    {/* Label - visible only when expanded */}
-                    <span
-                      className={`
-                         text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
-                         ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
-                       `}
-                    >
-                      {item.label}
-                    </span>
-
-                    {/* Right Active Dot (Expanded only) */}
-                    {!isCollapsed && isActive && (
-                      <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-nutri-blue shadow-sm"></div>
-                    )}
-                  </button>
-
-                  {/* Tooltip for Collapsed Mode */}
-                  {isCollapsed && hoveredItem === item.id && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl whitespace-nowrap z-[60] animate-in fade-in slide-in-from-left-2 duration-200 pointer-events-none">
-                      {item.label}
-                      {/* Little arrow */}
-                      <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 -z-10"></div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            ))}
           </nav>
 
           {/* Footer / Settings Link */}

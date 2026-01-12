@@ -11,17 +11,45 @@ import {
   Settings,
   LayoutDashboard,
   LogOut,
-  Sparkles
+  Sparkles,
+  Home,
+  UserCircle,
+  BarChart3,
+  Apple,
+  CookingPot,
+  Scale,
+  ClipboardPlus
 } from 'lucide-react';
 import { Appointment, Metric, Alert, Patient } from './types';
 
 export const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-  { id: 'patients', label: 'Pacientes', icon: <Users size={20} /> },
-  { id: 'appointments', label: 'Agenda', icon: <Calendar size={20} /> },
-  { id: 'plans', label: 'Planos Alimentares', icon: <Clipboard size={20} /> },
-  { id: 'billing', label: 'Gestão', icon: <Briefcase size={20} /> },
-  { id: 'ai-assistant', label: 'Nutri AI', icon: <Sparkles size={20} /> },
+  { 
+    items: [
+      { id: 'dashboard', label: 'Minha Clínica', icon: <Home size={20} /> }
+    ]
+  },
+  {
+    title: 'GESTÃO',
+    items: [
+      { id: 'appointments', label: 'Agenda', icon: <Calendar size={20} /> },
+      { id: 'patients', label: 'Clientes', icon: <UserCircle size={20} /> },
+      { id: 'billing', label: 'Relatórios', icon: <BarChart3 size={20} /> },
+    ]
+  },
+  {
+    title: 'PLANO ALIMENTAR',
+    items: [
+      { id: 'alimentos', label: 'Alimentos', icon: <Apple size={20} /> },
+      { id: 'receitas', label: 'Receitas', icon: <CookingPot size={20} /> },
+      { id: 'substituicoes', label: 'Substituições', icon: <Scale size={20} /> },
+      { id: 'modelos', label: 'Modelos', icon: <ClipboardPlus size={20} /> },
+    ]
+  },
+  {
+    items: [
+       { id: 'ai-assistant', label: 'Nutri AI', icon: <Sparkles size={20} /> }
+    ]
+  }
 ];
 
 export const APPOINTMENT_PRICES: Record<string, string> = {
