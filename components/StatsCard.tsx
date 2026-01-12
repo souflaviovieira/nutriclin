@@ -15,9 +15,9 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
   const isPositive = metric.trend > 0;
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0px_4px_20px_rgba(0,0,0,0.05)] hover:border-nutri-blue/20 hover:shadow-[0px_8px_30px_rgba(0,0,0,0.08)] transition-all group overflow-hidden relative">
+    <div className="bg-white p-6 rounded-xl border border-slate-100/60 transition-all group overflow-hidden relative">
       <div className="flex items-start justify-between relative z-10">
-        <div className={`p-4 rounded-2xl transition-all duration-300 ${metric.color.split(' ')[0]} ${metric.color.split(' ')[1]} border shadow-lg group-hover:scale-110 group-hover:rotate-3`}>
+        <div className={`p-4 rounded-xl transition-all duration-300 ${metric.color.split(' ')[0]} ${metric.color.split(' ')[1]} border group-hover:scale-110 group-hover:rotate-3`}>
           <IconComponent size={24} strokeWidth={2.5} />
         </div>
         <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.1em] px-2.5 py-1.5 rounded-full ${isPositive ? 'bg-nutri-success/10 text-nutri-success border border-nutri-success/20' : 'bg-nutri-error/10 text-nutri-error border border-nutri-error/20'}`}>

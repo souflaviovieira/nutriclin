@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                     <Bell size={20} />
                     <span className="absolute top-3 right-3 w-2 h-2 bg-nutri-error rounded-full border-2 border-nutri-secondary"></span>
                 </button>
-                <div 
+                <div
                     onClick={onProfileClick}
                     className="flex items-center gap-3.5 pl-2 md:pl-5 border-l border-nutri-text-dis/20 cursor-pointer group"
                 >
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                             Sair
                         </button>
                     </div>
-                    <div className="w-10 h-10 rounded-2xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black shadow-nutri-soft rotate-3 overflow-hidden group-hover:rotate-0 transition-all border-2 border-transparent group-hover:border-white">
+                    <div className="w-10 h-10 rounded-xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black rotate-3 overflow-hidden group-hover:rotate-0 transition-all border-2 border-transparent group-hover:border-white">
                         {profile?.avatar_url ? (
                             <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (

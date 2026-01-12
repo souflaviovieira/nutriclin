@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({
              ${isCollapsed ? 'p-4 justify-center' : 'p-6 pb-2'}
           `}>
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="bg-nutri-blue p-2.5 rounded-xl text-white shadow-nutri-soft shrink-0">
+              <div className="bg-nutri-blue p-2.5 rounded-xl text-white shrink-0">
                 <Apple size={24} fill="white" />
               </div>
               <div className={`

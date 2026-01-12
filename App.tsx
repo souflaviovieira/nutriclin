@@ -212,102 +212,104 @@ const AppContent: React.FC = () => {
 
       <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         {/* Unified Header */}
-        <Header 
-          session={session} 
+        <Header
+          session={session}
           title={title}
           description={description}
-          onToggleSidebar={() => setIsSidebarOpen(true)} 
-          onProfileClick={() => setActiveTab('settings')} 
+          onToggleSidebar={() => setIsSidebarOpen(true)}
+          onProfileClick={() => setActiveTab('settings')}
         />
 
         {/* Floating Main Container */}
         <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8 overflow-hidden">
-          <div className="w-full h-full bg-transparent overflow-y-auto no-scrollbar">
-            <div className="p-6 md:p-10 max-w-[1600px] mx-auto w-full">
-              {currentView === 'dashboard' ? (
-                <div className="animate-in fade-in duration-700 space-y-8">
-                  <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex gap-3 ml-auto">
-                      <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-nutri-soft hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
-                        <Plus size={18} strokeWidth={3} /> NOVO PACIENTE
-                      </button>
-                      <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95 shadow-sm">
-                        <Calendar size={18} className="text-nutri-blue" strokeWidth={2.5} /> Agendar
-                      </button>
-                    </div>
-                  </section>
-                  <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    {MOCK_METRICS.map((metric, idx) => <StatsCard key={idx} metric={metric} />)}
-                  </section>
-                  <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    <div className="xl:col-span-2 space-y-6"><RevenueChart /></div>
-                    <div className="space-y-6 flex flex-col">
-                      <AppointmentsList />
-                      <AlertsPanel />
-                    </div>
-                  </section>
-                </div>
-              ) : currentView === 'patients' ? (
-                <PatientList onAddPatient={() => setCurrentView('new-patient')} onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }} onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }} onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }} />
-              ) : currentView === 'patient-detail' ? (
-                <PatientDetail patientId={selectedPatientId || '1'} onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }} onEdit={() => setCurrentView('edit-patient')} onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }} onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }} />
-              ) : currentView === 'new-patient' ? (
-                <PatientForm onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
-              ) : currentView === 'edit-patient' ? (
-                <PatientForm initialData={getSelectedPatient() as any} onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
-              ) : currentView === 'new-appointment' ? (
-                <AppointmentForm initialPatientId={selectedPatientId} onCancel={() => setCurrentView('dashboard')} onSave={() => setCurrentView('appointments')} />
-              ) : currentView === 'ongoing-consultation' ? (
-                <ClinicalConsultation patientId={selectedPatientId || '1'} patientName={getSelectedPatient()?.name || 'Paciente'} onClose={() => setCurrentView('patient-detail')} onFinish={handleFinishConsultation} />
-              ) : currentView === 'plans-library' ? (
-                <PlansLibrary
-                  onViewModel={(name) => { setSelectedModelName(name); setCurrentView('meal-plan-detail'); }}
-                  onViewRecommendation={(name) => { setSelectedRecommendationName(name); setCurrentView('recommendation-model-view'); }}
-                  onViewFood={(food) => { setSelectedFoodItem(food); setCurrentView('food-detail'); }}
-                  onViewRecipe={(recipe) => { setSelectedRecipe(recipe); setCurrentView('recipe-detail'); }}
-                  onViewSubstitution={(item) => { setSelectedSubstitution(item); setCurrentView('substitution-detail'); }}
-                  onCreateRecipe={() => setCurrentView('create-recipe')}
-                  activeTab={plansActiveTab}
-                  activeSubTab={plansActiveSubTab}
-                  setActiveSubTab={setPlansActiveSubTab}
-                  isFoodModalOpen={isFoodModalOpen}
-                  setIsFoodModalOpen={setIsFoodModalOpen}
-                  foodToEdit={foodToEdit}
-                  setFoodToEdit={setFoodToEdit}
-                />
-              ) : currentView === 'meal-plan-detail' ? (
-                <MealPlanModelView name={selectedModelName || ''} onBack={() => setCurrentView('plans-library')} />
-              ) : currentView === 'recommendation-model-view' ? (
-                <RecommendationModelView name={selectedRecommendationName || ''} onBack={() => setCurrentView('plans-library')} />
-              ) : currentView === 'food-detail' ? (
-                <FoodDetailView
-                  food={selectedFoodItem}
-                  onBack={() => setCurrentView('plans-library')}
-                  onEdit={(food) => {
-                    setFoodToEdit(food);
-                    setIsFoodModalOpen(true);
-                  }}
-                />
-              ) : currentView === 'recipe-detail' ? (
-                <RecipeDetailView recipe={selectedRecipe} onBack={() => setCurrentView('plans-library')} />
-              ) : currentView === 'substitution-detail' ? (
-                <SubstitutionDetailView item={selectedSubstitution} onBack={() => setCurrentView('plans-library')} />
-              ) : currentView === 'create-recipe' ? (
-                <RecipeForm onCancel={() => setCurrentView('plans-library')} />
-              ) : currentView === 'meal-plan' ? (
-                <MealPlanCreator onBack={() => setCurrentView('dashboard')} patientName="Ana Maria Silva" />
-              ) : currentView === 'finance' ? (
-                <FinanceManager onBack={() => setCurrentView('dashboard')} />
-              ) : currentView === 'appointments' ? (
-                <ScheduleManager />
-              ) : currentView === 'ai-assistant' ? (
-                <AiAssistant />
-              ) : (
-                <SettingsPage 
-                  activeSection={settingsActiveSection} 
-                  onSectionChange={setSettingsActiveSection} 
-                />
-              )}
+          <div className="w-full h-full bg-white rounded-xl shadow-nutri-floating overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto no-scrollbar">
+              <div className="p-6 md:p-10 max-w-[1600px] mx-auto w-full">
+                {currentView === 'dashboard' ? (
+                  <div className="animate-in fade-in duration-700 space-y-8">
+                    <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex gap-3 ml-auto">
+                        <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
+                          <Plus size={18} strokeWidth={3} /> NOVO PACIENTE
+                        </button>
+                        <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95">
+                          <Calendar size={18} className="text-nutri-blue" strokeWidth={2.5} /> Agendar
+                        </button>
+                      </div>
+                    </section>
+                    <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                      {MOCK_METRICS.map((metric, idx) => <StatsCard key={idx} metric={metric} />)}
+                    </section>
+                    <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                      <div className="xl:col-span-2 space-y-6"><RevenueChart /></div>
+                      <div className="space-y-6 flex flex-col">
+                        <AppointmentsList />
+                        <AlertsPanel />
+                      </div>
+                    </section>
+                  </div>
+                ) : currentView === 'patients' ? (
+                  <PatientList onAddPatient={() => setCurrentView('new-patient')} onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }} onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }} onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }} />
+                ) : currentView === 'patient-detail' ? (
+                  <PatientDetail patientId={selectedPatientId || '1'} onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }} onEdit={() => setCurrentView('edit-patient')} onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }} onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }} />
+                ) : currentView === 'new-patient' ? (
+                  <PatientForm onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
+                ) : currentView === 'edit-patient' ? (
+                  <PatientForm initialData={getSelectedPatient() as any} onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
+                ) : currentView === 'new-appointment' ? (
+                  <AppointmentForm initialPatientId={selectedPatientId} onCancel={() => setCurrentView('dashboard')} onSave={() => setCurrentView('appointments')} />
+                ) : currentView === 'ongoing-consultation' ? (
+                  <ClinicalConsultation patientId={selectedPatientId || '1'} patientName={getSelectedPatient()?.name || 'Paciente'} onClose={() => setCurrentView('patient-detail')} onFinish={handleFinishConsultation} />
+                ) : currentView === 'plans-library' ? (
+                  <PlansLibrary
+                    onViewModel={(name) => { setSelectedModelName(name); setCurrentView('meal-plan-detail'); }}
+                    onViewRecommendation={(name) => { setSelectedRecommendationName(name); setCurrentView('recommendation-model-view'); }}
+                    onViewFood={(food) => { setSelectedFoodItem(food); setCurrentView('food-detail'); }}
+                    onViewRecipe={(recipe) => { setSelectedRecipe(recipe); setCurrentView('recipe-detail'); }}
+                    onViewSubstitution={(item) => { setSelectedSubstitution(item); setCurrentView('substitution-detail'); }}
+                    onCreateRecipe={() => setCurrentView('create-recipe')}
+                    activeTab={plansActiveTab}
+                    activeSubTab={plansActiveSubTab}
+                    setActiveSubTab={setPlansActiveSubTab}
+                    isFoodModalOpen={isFoodModalOpen}
+                    setIsFoodModalOpen={setIsFoodModalOpen}
+                    foodToEdit={foodToEdit}
+                    setFoodToEdit={setFoodToEdit}
+                  />
+                ) : currentView === 'meal-plan-detail' ? (
+                  <MealPlanModelView name={selectedModelName || ''} onBack={() => setCurrentView('plans-library')} />
+                ) : currentView === 'recommendation-model-view' ? (
+                  <RecommendationModelView name={selectedRecommendationName || ''} onBack={() => setCurrentView('plans-library')} />
+                ) : currentView === 'food-detail' ? (
+                  <FoodDetailView
+                    food={selectedFoodItem}
+                    onBack={() => setCurrentView('plans-library')}
+                    onEdit={(food) => {
+                      setFoodToEdit(food);
+                      setIsFoodModalOpen(true);
+                    }}
+                  />
+                ) : currentView === 'recipe-detail' ? (
+                  <RecipeDetailView recipe={selectedRecipe} onBack={() => setCurrentView('plans-library')} />
+                ) : currentView === 'substitution-detail' ? (
+                  <SubstitutionDetailView item={selectedSubstitution} onBack={() => setCurrentView('plans-library')} />
+                ) : currentView === 'create-recipe' ? (
+                  <RecipeForm onCancel={() => setCurrentView('plans-library')} />
+                ) : currentView === 'meal-plan' ? (
+                  <MealPlanCreator onBack={() => setCurrentView('dashboard')} patientName="Ana Maria Silva" />
+                ) : currentView === 'finance' ? (
+                  <FinanceManager onBack={() => setCurrentView('dashboard')} />
+                ) : currentView === 'appointments' ? (
+                  <ScheduleManager />
+                ) : currentView === 'ai-assistant' ? (
+                  <AiAssistant />
+                ) : (
+                  <SettingsPage
+                    activeSection={settingsActiveSection}
+                    onSectionChange={setSettingsActiveSection}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>

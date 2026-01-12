@@ -1,8 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
-import { 
-  ArrowLeft, Layout, Clipboard, TrendingUp, FileText, Utensils, 
-  User, Calendar, Edit2, Zap, Clock 
+import {
+  ArrowLeft, Layout, Clipboard, TrendingUp, FileText, Utensils,
+  User, Calendar, Edit2, Zap, Clock
 } from 'lucide-react';
 import PatientRecord from './PatientRecord';
 import PatientEvolution from './PatientEvolution';
@@ -21,7 +21,7 @@ interface PatientDetailProps {
 
 type Tab = 'resumo' | 'prontuario' | 'evolucao' | 'planos' | 'relatorios';
 
-const PatientDetail: React.FC<PatientDetailProps> = ({ 
+const PatientDetail: React.FC<PatientDetailProps> = ({
   patientId, onBack, onEdit, onSchedule, onConsultNow
 }) => {
   const [activeTab, setActiveTab] = useState<Tab>('resumo');
@@ -43,11 +43,11 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
   return (
     <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20 px-1">
       {/* Header Info simplified */}
-      <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-100/60">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <img src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} className="w-16 h-16 rounded-2xl object-cover ring-4 ring-nutri-blue/5 shadow-sm" alt="Paciente" />
+              <img src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} className="w-16 h-16 rounded-xl object-cover ring-4 ring-nutri-blue/5" alt="Paciente" />
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
             </div>
             <div className="flex flex-col">
@@ -62,10 +62,10 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
             </div>
           </div>
           <div className="flex gap-3 w-full lg:w-auto shrink-0">
-            <button onClick={() => onSchedule(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200">
+            <button onClick={() => onSchedule(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 text-slate-700 rounded-lg text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200">
               <Calendar size={18} /> Agendar
             </button>
-            <button onClick={() => onConsultNow(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-nutri-blue-hover transition-all shadow-xl shadow-nutri-blue/20 active:scale-95">
+            <button onClick={() => onConsultNow(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-lg text-[11px] font-black uppercase tracking-widest hover:bg-nutri-blue-hover transition-all active:scale-95">
               <Zap size={18} className="text-white fill-white" /> Consultar
             </button>
           </div>
@@ -73,16 +73,15 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex overflow-x-auto no-scrollbar gap-1.5 p-1.5 bg-white/60 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm sticky top-2 z-20 mx-1">
+      <div className="flex overflow-x-auto no-scrollbar gap-1.5 p-1.5 bg-white/60 backdrop-blur-md rounded-xl border border-slate-100 sticky top-2 z-20 mx-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as Tab)}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-[11px] md:text-xs font-black transition-all whitespace-nowrap ${
-              activeTab === tab.id
-                ? 'bg-nutri-blue text-white shadow-lg shadow-nutri-blue/20 border border-nutri-blue-hover'
+            className={`flex items-center gap-2 px-5 py-3 rounded-lg text-[11px] md:text-xs font-black transition-all whitespace-nowrap ${activeTab === tab.id
+                ? 'bg-nutri-blue text-white border border-nutri-blue-hover'
                 : 'text-slate-500 hover:text-slate-800 hover:bg-white border border-transparent'
-            }`}
+              }`}
           >
             {tab.icon}
             {tab.label.toUpperCase()}
@@ -95,7 +94,7 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
         {activeTab === 'resumo' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white p-6 md:p-10 rounded-3xl border border-slate-100 shadow-sm">
+              <div className="bg-white p-6 md:p-10 rounded-xl border border-slate-100/60">
                 <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
                   <TrendingUp size={20} className="text-nutri-blue" /> Resumo Evolutivo
                 </h3>
@@ -119,8 +118,8 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white p-6 md:p-10 rounded-3xl border border-slate-100 shadow-sm">
+
+              <div className="bg-white p-6 md:p-10 rounded-xl border border-slate-100/60">
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] flex items-center gap-3">
                     <Utensils size={20} className="text-nutri-blue" /> Prescrição Ativa
@@ -139,7 +138,7 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+              <div className="bg-white p-8 rounded-xl border border-slate-100/60">
                 <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-6 flex items-center gap-3">Pendente</h3>
                 <div className="space-y-4">
                   <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 border-l-4 border-l-amber-400">

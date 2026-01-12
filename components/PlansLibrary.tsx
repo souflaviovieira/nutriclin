@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
-import { 
-  Apple, 
-  Search, 
-  Plus, 
-  ChevronRight, 
-  Flame, 
-  Droplets, 
-  Circle, 
+import {
+  Apple,
+  Search,
+  Plus,
+  ChevronRight,
+  Flame,
+  Droplets,
+  Circle,
   Diamond,
   BookOpen,
   Scale,
@@ -43,7 +43,7 @@ interface PlansLibraryProps {
 // Defining MainTab type to fix missing type errors
 type MainTab = 'alimentos' | 'receitas' | 'substituicoes' | 'modelos';
 
-const PlansLibrary: React.FC<PlansLibraryProps> = ({ 
+const PlansLibrary: React.FC<PlansLibraryProps> = ({
   onViewModel, onViewRecommendation, onViewFood, onViewRecipe, onViewSubstitution, onCreateRecipe,
   activeTab, activeSubTab, setActiveSubTab,
   isFoodModalOpen, setIsFoodModalOpen, foodToEdit, setFoodToEdit
@@ -79,8 +79,8 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
   const FilterSelect = ({ label, value, options, onChange }: any) => (
     <div className="space-y-2 flex-1 min-w-[120px]">
       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
-      <select 
-        value={value} 
+      <select
+        value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 focus:ring-4 focus:ring-nutri-blue/5 outline-none transition-all"
       >
@@ -90,75 +90,75 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
   );
 
   const recipeList = [
-    { 
+    {
       id: 'r1',
-      title: 'Crepioca', 
-      author: 'Rosimeire de Macedo Reis', 
-      type: 'Café da manhã e lanches', 
-      energy: '231', fat: '6', carbs: '36', protein: '8', 
+      title: 'Crepioca',
+      author: 'Rosimeire de Macedo Reis',
+      type: 'Café da manhã e lanches',
+      energy: '231', fat: '6', carbs: '36', protein: '8',
       likes: '749',
       img: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r2',
-      title: 'Lasanha de abobrinha', 
-      author: 'Géssica Araújo', 
-      type: 'Pratos de carne', 
-      energy: '134', fat: '8', carbs: '3', protein: '13', 
+      title: 'Lasanha de abobrinha',
+      author: 'Géssica Araújo',
+      type: 'Pratos de carne',
+      energy: '134', fat: '8', carbs: '3', protein: '13',
       likes: '509',
       img: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r3',
-      title: 'Overnight Oats', 
-      author: 'Mara Regina Santos Da Silva', 
-      type: 'Pratos vegetarianos, Café da manhã e lanches', 
-      energy: '179', fat: '8', carbs: '26', protein: '6', 
+      title: 'Overnight Oats',
+      author: 'Mara Regina Santos Da Silva',
+      type: 'Pratos vegetarianos, Café da manhã e lanches',
+      energy: '179', fat: '8', carbs: '26', protein: '6',
       likes: '384',
       img: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r4',
-      title: 'Salada Niçoise Francesa', 
-      author: 'Kamyla Pereira', 
-      type: 'Saladas', 
-      energy: '52', fat: '3', carbs: '4', protein: '3', 
+      title: 'Salada Niçoise Francesa',
+      author: 'Kamyla Pereira',
+      type: 'Saladas',
+      energy: '52', fat: '3', carbs: '4', protein: '3',
       likes: '269',
       img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r5',
-      title: 'Picolé de abacaxi', 
-      author: 'Bruna Nazar Melo Jardini', 
-      type: 'Sobremesas', 
-      energy: '27', fat: '-', carbs: '7', protein: '-', 
+      title: 'Picolé de abacaxi',
+      author: 'Bruna Nazar Melo Jardini',
+      type: 'Sobremesas',
+      energy: '27', fat: '-', carbs: '7', protein: '-',
       likes: '260',
       img: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r6',
-      title: 'Pão Protéico', 
-      author: 'Mara Regina Santos Da Silva', 
-      type: 'Café da manhã e lanches, Pão', 
-      energy: '159', fat: '7', carbs: '1', protein: '22', 
+      title: 'Pão Protéico',
+      author: 'Mara Regina Santos Da Silva',
+      type: 'Café da manhã e lanches, Pão',
+      energy: '159', fat: '7', carbs: '1', protein: '22',
       likes: '253',
       img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r7',
-      title: 'Arroz de couve flor', 
-      author: 'Mara Regina Santos Da Silva', 
-      type: 'Entradas e acompanhamentos', 
-      energy: '46', fat: '3', carbs: '5', protein: '2', 
+      title: 'Arroz de couve flor',
+      author: 'Mara Regina Santos Da Silva',
+      type: 'Entradas e acompanhamentos',
+      energy: '46', fat: '3', carbs: '5', protein: '2',
       likes: '246',
       img: 'https://images.unsplash.com/photo-1512058560566-d8b4e24e2d9a?q=80&w=400&h=300&fit=crop'
     },
-    { 
+    {
       id: 'r8',
-      title: 'Patê de Frango com Ricota', 
-      author: 'Harvillyn Jhessy P Rolim Wagner', 
-      type: 'Café da manhã e lanches, Pratos de carne', 
-      energy: '136', fat: '4', carbs: '2', protein: '22', 
+      title: 'Patê de Frango com Ricota',
+      author: 'Harvillyn Jhessy P Rolim Wagner',
+      type: 'Café da manhã e lanches, Pratos de carne',
+      energy: '136', fat: '4', carbs: '2', protein: '22',
       likes: '212',
       img: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=400&h=300&fit=crop'
     }
@@ -232,8 +232,8 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
   return (
     <div className="w-full max-w-[1600px] mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-10 px-1">
       {/* Main Module Content Container */}
-      <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm p-4 md:p-8 space-y-6 md:space-y-8 relative">
-        
+      <div className="bg-white border border-slate-100 p-4 md:p-8 space-y-6 md:space-y-8 relative">
+
         {/* Module Controls Area */}
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -241,15 +241,15 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
               <div className="flex gap-3">
                 <div className="relative group flex-1">
                   <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder={`Pesquisar em ${activeTab === 'alimentos' ? (activeSubTab === 'alimentos-base' ? 'alimentos' : 'suplementos') : activeTab === 'receitas' ? 'receitas' : activeTab === 'substituicoes' ? 'substituições' : 'modelos'}...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-14 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-[20px] focus:ring-4 focus:ring-nutri-blue/5 focus:border-nutri-blue focus:bg-white outline-none text-[13px] font-semibold text-slate-700 transition-all shadow-inner placeholder:text-slate-300"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setShowFilterPanel(!showFilterPanel)}
                   className={`px-5 py-3.5 border rounded-[20px] transition-all shadow-sm flex items-center justify-center ${showFilterPanel ? 'bg-nutri-blue text-white border-nutri-blue' : 'bg-slate-50 text-slate-400 border-slate-100 hover:text-nutri-blue hover:border-nutri-blue/30 hover:bg-white'}`}
                 >
@@ -257,13 +257,13 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
                 </button>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={() => {
                 if (activeTab === 'receitas') onCreateRecipe?.();
                 if (activeTab === 'alimentos') setIsFoodModalOpen(true);
               }}
-              className="flex items-center justify-center gap-2 px-8 py-3.5 bg-nutri-blue text-white rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all w-full lg:w-auto transform hover:scale-[1.02] active:scale-95 z-20"
+              className="flex items-center justify-center gap-2 px-8 py-3.5 bg-nutri-blue text-white rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] hover:bg-nutri-blue-hover transition-all w-full lg:w-auto transform hover:scale-[1.02] active:scale-95 z-20"
             >
               <Plus size={18} strokeWidth={3} />
               {activeTab === 'alimentos' && (activeSubTab === 'alimentos-base' ? "Adicionar Alimento" : "Adicionar Suplemento")}
@@ -276,50 +276,50 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
           {/* Painel de Filtros Avançados */}
           {showFilterPanel && (
             <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 flex flex-wrap gap-6 animate-in slide-in-from-top-2 duration-300">
-               <FilterSelect 
-                  label="Energia" 
-                  value={filters.energy} 
-                  onChange={(val: any) => setFilters({...filters, energy: val})}
-                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Caloria'}, {val: 'medio', label: 'Média'}, {val: 'alto', label: 'Alta'}]} 
-               />
-               <FilterSelect 
-                  label="Proteína" 
-                  value={filters.protein} 
-                  onChange={(val: any) => setFilters({...filters, protein: val})}
-                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixo Teor'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Proteico'}]} 
-               />
-               <FilterSelect 
-                  label="Carboidratos" 
-                  value={filters.carbs} 
-                  onChange={(val: any) => setFilters({...filters, carbs: val})}
-                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Low Carb'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alto Teor'}]} 
-               />
-               <FilterSelect 
-                  label="Gorduras" 
-                  value={filters.fat} 
-                  onChange={(val: any) => setFilters({...filters, fat: val})}
-                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Gordura'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alta Gordura'}]} 
-               />
-               <div className="flex items-end pb-1">
-                  <button 
-                    onClick={() => setFilters({energy: 'todos', protein: 'todos', carbs: 'todos', fat: 'todos'})}
-                    className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
-                    title="Limpar filtros"
-                  >
-                    <X size={18}/>
-                  </button>
-               </div>
+              <FilterSelect
+                label="Energia"
+                value={filters.energy}
+                onChange={(val: any) => setFilters({ ...filters, energy: val })}
+                options={[{ val: 'todos', label: 'Todos' }, { val: 'baixo', label: 'Baixa Caloria' }, { val: 'medio', label: 'Média' }, { val: 'alto', label: 'Alta' }]}
+              />
+              <FilterSelect
+                label="Proteína"
+                value={filters.protein}
+                onChange={(val: any) => setFilters({ ...filters, protein: val })}
+                options={[{ val: 'todos', label: 'Todos' }, { val: 'baixo', label: 'Baixo Teor' }, { val: 'medio', label: 'Médio' }, { val: 'alto', label: 'Proteico' }]}
+              />
+              <FilterSelect
+                label="Carboidratos"
+                value={filters.carbs}
+                onChange={(val: any) => setFilters({ ...filters, carbs: val })}
+                options={[{ val: 'todos', label: 'Todos' }, { val: 'baixo', label: 'Low Carb' }, { val: 'medio', label: 'Médio' }, { val: 'alto', label: 'Alto Teor' }]}
+              />
+              <FilterSelect
+                label="Gorduras"
+                value={filters.fat}
+                onChange={(val: any) => setFilters({ ...filters, fat: val })}
+                options={[{ val: 'todos', label: 'Todos' }, { val: 'baixo', label: 'Baixa Gordura' }, { val: 'medio', label: 'Médio' }, { val: 'alto', label: 'Alta Gordura' }]}
+              />
+              <div className="flex items-end pb-1">
+                <button
+                  onClick={() => setFilters({ energy: 'todos', protein: 'todos', carbs: 'todos', fat: 'todos' })}
+                  className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                  title="Limpar filtros"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
           )}
         </div>
 
         {/* --- DYNAMIC CONTENT LISTS --- */}
-        
+
         {/* CARD LIST: ALIMENTOS / SUBSTITUIÇÕES / PLANOS */}
         {(activeTab === 'alimentos' || activeTab === 'substituicoes' || (activeTab === 'modelos' && activeSubTab === 'meal-plans')) && (
           <div className="grid grid-cols-1 gap-4">
-            {(activeTab === 'alimentos' 
-              ? (activeSubTab === 'alimentos-base' 
+            {(activeTab === 'alimentos'
+              ? (activeSubTab === 'alimentos-base'
                 ? [
                   { name: 'Mix de legumes no vapor Liv Up', brand: 'LIV UP', energy: '38', fat: '0', carbs: '6', protein: '3' },
                   { name: 'Purê de mandioquinha Liv Up', brand: 'LIV UP', energy: '96', fat: '3', carbs: '18', protein: '1' },
@@ -340,30 +340,30 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
               )
               : activeTab === 'substituicoes'
                 ? [
-                    { name: 'Cereal e Tubérculos', brand: 'LISTAS DO SISTEMA', energy: '96', fat: '1', carbs: '21', protein: '2', isSubstitution: true },
-                    { name: 'Pão', brand: 'LISTAS DO SISTEMA', energy: '132', fat: '3', carbs: '24', protein: '4', isSubstitution: true },
-                    { name: 'Leguminosas', brand: 'LISTAS DO SISTEMA', energy: '75', fat: '0', carbs: '13', protein: '5', isSubstitution: true },
-                    { name: 'Fruta', brand: 'LISTAS DO SISTEMA', energy: '37', fat: '0', carbs: '10', protein: '1', isSubstitution: true },
-                    { name: 'Gordura', brand: 'LISTAS DO SISTEMA', energy: '69', fat: '8', carbs: '0', protein: '--', isSubstitution: true },
-                    { name: 'Carne, Peixe e Ovos', brand: 'LISTAS DO SISTEMA', energy: '239', fat: '9', carbs: '1', protein: '37', isSubstitution: true },
-                    { name: 'Leite', brand: 'LISTAS DO SISTEMA', energy: '59', fat: '4', carbs: '2', protein: '4', isSubstitution: true },
-                  ]
+                  { name: 'Cereal e Tubérculos', brand: 'LISTAS DO SISTEMA', energy: '96', fat: '1', carbs: '21', protein: '2', isSubstitution: true },
+                  { name: 'Pão', brand: 'LISTAS DO SISTEMA', energy: '132', fat: '3', carbs: '24', protein: '4', isSubstitution: true },
+                  { name: 'Leguminosas', brand: 'LISTAS DO SISTEMA', energy: '75', fat: '0', carbs: '13', protein: '5', isSubstitution: true },
+                  { name: 'Fruta', brand: 'LISTAS DO SISTEMA', energy: '37', fat: '0', carbs: '10', protein: '1', isSubstitution: true },
+                  { name: 'Gordura', brand: 'LISTAS DO SISTEMA', energy: '69', fat: '8', carbs: '0', protein: '--', isSubstitution: true },
+                  { name: 'Carne, Peixe e Ovos', brand: 'LISTAS DO SISTEMA', energy: '239', fat: '9', carbs: '1', protein: '37', isSubstitution: true },
+                  { name: 'Leite', brand: 'LISTAS DO SISTEMA', energy: '59', fat: '4', carbs: '2', protein: '4', isSubstitution: true },
+                ]
                 : mealPlans.map(plan => ({ ...plan, brand: 'MODELOS DO SISTEMA', isModel: true }))
             ).map((item: any, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 onClick={() => {
                   if (item.isModel) onViewModel?.(item.name);
                   else if (item.isSubstitution) onViewSubstitution?.(item);
                   else if (activeTab === 'alimentos') onViewFood?.(item);
                 }}
-                className={`bg-white p-5 sm:p-6 rounded-[28px] border border-slate-100 shadow-sm hover:border-nutri-blue/20 hover:shadow-md transition-all flex flex-col md:flex-row items-center gap-6 group cursor-pointer`}
+                className={`bg-white p-5 sm:p-6 rounded-xl border border-slate-100/60 transition-all flex flex-col md:flex-row items-center gap-6 group cursor-pointer`}
               >
                 <div className="flex-1 min-w-0 w-full text-center md:text-left space-y-1">
                   <h4 className="text-[15px] sm:text-[17px] font-black text-slate-800 tracking-tight leading-tight group-hover:text-nutri-blue transition-colors">{item.name}</h4>
                   <p className="text-[9px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">{item.brand}</p>
                 </div>
-                
+
                 <div className="grid grid-cols-2 sm:grid-cols-4 bg-slate-50/50 p-1.5 rounded-2xl border border-slate-50 w-full md:w-[480px] shrink-0 divide-x sm:divide-x divide-slate-100">
                   <MacroItem label="Energia" value={item.energy} unit="kcal" type="energia" />
                   <MacroItem label="Gordura" value={item.fat} unit={item.isModel ? '%' : 'g'} type="gordura" />
@@ -385,15 +385,15 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
         {activeTab === 'receitas' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-bottom-4 duration-500">
             {recipeList.map((recipe) => (
-              <div 
-                key={recipe.id} 
+              <div
+                key={recipe.id}
                 onClick={() => onViewRecipe?.(recipe)}
-                className="bg-white rounded-[24px] border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col md:flex-row overflow-hidden"
+                className="bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex flex-col md:flex-row overflow-hidden"
               >
                 {/* Image Section */}
                 <div className="relative w-full md:w-48 h-48 md:h-auto shrink-0">
                   <img src={recipe.img} alt={recipe.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl text-[8px] font-black text-nutri-blue uppercase tracking-widest shadow-sm border border-white/50 flex items-center gap-1.5">
+                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg text-[8px] font-black text-nutri-blue uppercase tracking-widest border border-white/50 flex items-center gap-1.5">
                     <Users size={10} /> COMUNIDADE
                   </div>
                 </div>
@@ -404,13 +404,13 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
                     <div className="space-y-1">
                       <h4 className="text-lg font-black text-slate-800 tracking-tight leading-tight group-hover:text-nutri-blue transition-colors">{recipe.title}</h4>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                         <UserCircle size={14} className="text-slate-300" />
-                         <span className="truncate max-w-[120px]">{recipe.author}</span>
+                        <UserCircle size={14} className="text-slate-300" />
+                        <span className="truncate max-w-[120px]">{recipe.author}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                       <Heart size={12} className="text-rose-500 fill-rose-500" />
-                       <span className="text-[10px] font-black text-slate-600">{recipe.likes}</span>
+                      <Heart size={12} className="text-rose-500 fill-rose-500" />
+                      <span className="text-[10px] font-black text-slate-600">{recipe.likes}</span>
                     </div>
                   </div>
 
@@ -460,10 +460,10 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
         {activeTab === 'modelos' && activeSubTab === 'avoid-foods' && (
           <div className="grid grid-cols-1 gap-4 animate-in slide-in-from-bottom-4">
             {['Alimentação saudável', 'Diabetes', 'Hipercolesterolemia', 'Hipertensão', 'Obesidade', 'Pós-Cirúrgico', 'Esportiva'].map(item => (
-              <div 
-                key={item} 
+              <div
+                key={item}
                 onClick={() => onViewRecommendation?.(item)}
-                className="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm hover:border-nutri-blue/30 hover:shadow-md transition-all cursor-pointer group flex items-center justify-between"
+                className="p-6 md:p-8 bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex items-center justify-between"
               >
                 <div className="space-y-1">
                   <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{item}</h4>
@@ -481,10 +481,10 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
         {activeTab === 'modelos' && activeSubTab === 'recommendations' && (
           <div className="grid grid-cols-1 gap-4 animate-in slide-in-from-bottom-4">
             {['Alimentação saudável'].map(item => (
-              <div 
-                key={item} 
+              <div
+                key={item}
                 onClick={() => onViewRecommendation?.(item)}
-                className="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm hover:border-nutri-blue/30 hover:shadow-md transition-all cursor-pointer group flex items-center justify-between"
+                className="p-6 md:p-8 bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex items-center justify-between"
               >
                 <div className="space-y-1">
                   <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{item}</h4>
