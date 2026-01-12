@@ -179,6 +179,7 @@ const ScheduleManager: React.FC = () => {
     );
   }
 
+  return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto pb-20">
       
       {/* Control Bar with Action */}
