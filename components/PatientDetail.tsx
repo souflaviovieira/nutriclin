@@ -42,34 +42,30 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20 px-1">
-      {/* Header Info */}
-      <div className="bg-white p-4 md:p-8 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex items-center gap-4 w-full">
-            <button onClick={onBack} className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-nutri-blue transition-colors shrink-0 border border-transparent hover:border-slate-100">
-              <ArrowLeft size={22} />
-            </button>
-            <img src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} className="w-14 h-14 md:w-20 md:h-20 rounded-3xl object-cover ring-4 ring-nutri-blue/10 shrink-0 shadow-sm" alt="Paciente" />
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="text-xl md:text-2xl font-black text-slate-900 truncate">{patient.name}</h1>
-                <span className="text-[9px] font-black text-nutri-blue bg-nutri-blue/10 px-2.5 py-1 rounded-full uppercase tracking-widest border border-nutri-blue/20">Ativo</span>
+      {/* Header Info simplified */}
+      <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <img src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} className="w-16 h-16 rounded-2xl object-cover ring-4 ring-nutri-blue/5 shadow-sm" alt="Paciente" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black text-nutri-blue bg-nutri-blue/10 px-2.5 py-1 rounded-full uppercase tracking-widest border border-nutri-blue/20">Paciente Ativo</span>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-500 font-medium text-xs md:text-sm">
+              <div className="flex items-center gap-3 text-slate-500 font-bold text-xs mt-1">
                 <span>{patient.age} anos</span>
-                <span className="hidden sm:inline">•</span>
-                <span className="text-nutri-blue font-bold">{patient.objective}</span>
-                <span className="hidden sm:inline">•</span>
-                <span>Última: {patient.lastConsultation}</span>
-                <button onClick={onEdit} className="p-1 text-slate-400 hover:text-nutri-blue transition-colors ml-1"><Edit2 size={16} /></button>
+                <span className="w-1 h-1 bg-slate-200 rounded-full"></span>
+                <span className="text-nutri-blue">{patient.objective}</span>
               </div>
             </div>
           </div>
           <div className="flex gap-3 w-full lg:w-auto shrink-0">
-            <button onClick={() => onSchedule(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-50 text-slate-700 rounded-2xl text-xs font-black hover:bg-slate-100 transition-all border border-slate-200">
+            <button onClick={() => onSchedule(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200">
               <Calendar size={18} /> Agendar
             </button>
-            <button onClick={() => onConsultNow(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-nutri-blue text-white rounded-2xl text-xs font-black hover:bg-nutri-blue-hover transition-all shadow-xl shadow-nutri-blue/20 active:scale-95">
+            <button onClick={() => onConsultNow(patientId)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-nutri-blue-hover transition-all shadow-xl shadow-nutri-blue/20 active:scale-95">
               <Zap size={18} className="text-white fill-white" /> Consultar
             </button>
           </div>

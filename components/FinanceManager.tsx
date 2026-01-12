@@ -144,26 +144,15 @@ const FinanceManager: React.FC<FinanceManagerProps> = ({ onBack }) => {
   return (
     <div className="max-w-[1600px] mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24 px-1 md:px-4">
       
-      {/* HEADER PRINCIPAL */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[32px] border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-6">
-          <button onClick={onBack} className="p-3 hover:bg-slate-50 rounded-2xl text-slate-400 hover:text-nutri-blue transition-all border border-transparent hover:border-slate-100">
-            <ArrowLeft size={24} />
-          </button>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter">Relatórios</h1>
-            <p className="text-slate-500 text-sm font-medium">Acompanhe a performance estratégica e os indicadores da sua clínica.</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
-            <Download size={18} /> Exportar Planilha
-          </button>
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-3.5 bg-nutri-blue text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all active:scale-95">
-            <Filter size={18} strokeWidth={2.5} /> Filtrar Data
-          </button>
-        </div>
-      </header>
+      {/* Botões de Ação Reposicionados */}
+      <div className="flex flex-wrap justify-end gap-3 px-2">
+        <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+          <Download size={18} /> Exportar Planilha
+        </button>
+        <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-nutri-blue text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all active:scale-95">
+          <Filter size={18} strokeWidth={2.5} /> Filtrar Data
+        </button>
+      </div>
 
       {/* QUADRO ESTATÍSTICAS */}
       <section className="bg-white p-6 md:p-10 rounded-[40px] border border-slate-100 shadow-sm">

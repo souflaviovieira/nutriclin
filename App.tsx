@@ -108,6 +108,35 @@ const AppContent: React.FC = () => {
   // TODO: TEMPORÁRIO - Login desativado para desenvolvimento
   // if (!session) return <LoginPage onLogin={() => { }} />;
 
+  const getPageInfo = (): { title: string, description?: string } => {
+    const firstName = profile?.display_name?.split(' ')[0] || 'Doutor(a)';
+
+    const info: Record<string, { title: string, description?: string }> = {
+      dashboard: { title: 'Minha Clínica', description: `Olá, ${firstName}! Veja o panorama de hoje.` },
+      patients: { title: 'Clientes', description: 'Gerencie e visualize seus pacientes cadastrados.' },
+      'patient-detail': { title: getSelectedPatient()?.name || 'Detalhes do Cliente', description: 'Prontuário e histórico detalhado.' },
+      'new-patient': { title: 'Novo Cliente', description: 'Cadastre um novo paciente no sistema.' },
+      'edit-patient': { title: 'Editar Cliente', description: 'Atualize os dados do paciente.' },
+      'new-appointment': { title: 'Novo Agendamento', description: 'Marque uma nova consulta na sua agenda.' },
+      'ongoing-consultation': { title: 'Consulta em Andamento', description: 'Realizando atendimento clínico agora.' },
+      'plans-library': { title: 'Biblioteca de Planos', description: 'Gerencie alimentos, receitas, substituições e modelos.' },
+      'meal-plan-detail': { title: selectedModelName || 'Modelo de Plano', description: 'Visualizando detalhes do modelo selecionado.' },
+      'recommendation-model-view': { title: selectedRecommendationName || 'Recomendação', description: 'Visualizando detalhes da recomendação.' },
+      'food-detail': { title: selectedFoodItem?.name || 'Detalhes do Alimento', description: 'Informações nutricionais completas.' },
+      'recipe-detail': { title: selectedRecipe?.title || 'Detalhes da Receita', description: 'Ingredientes e modo de preparo.' },
+      'substitution-detail': { title: selectedSubstitution?.name || 'Lista de Substituição', description: 'Opções equivalentes para o plano.' },
+      'create-recipe': { title: 'Nova Receita', description: 'Crie e salve uma nova receita na sua biblioteca.' },
+      finance: { title: 'Relatórios', description: 'Acompanhe a performance estratégica e os indicadores.' },
+      appointments: { title: 'Agenda', description: 'Organize suas consultas e compromissos diários.' },
+      'ai-assistant': { title: 'Nutri AI', description: 'Sua assistente inteligente para suporte clínico.' },
+      settings: { title: 'Configurações', description: 'Personalize seu perfil e as preferências do sistema.' },
+    };
+
+    return info[currentView] || { title: 'NutriClin Pro' };
+  };
+
+  const { title, description } = getPageInfo();
+
   return (
     <div className="min-h-screen bg-nutri-secondary selection:bg-nutri-blue/20 selection:text-nutri-text">
       <Sidebar
@@ -149,7 +178,13 @@ const AppContent: React.FC = () => {
 
       <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         {/* Unified Header */}
-        <Header session={session} onToggleSidebar={() => setIsSidebarOpen(true)} onProfileClick={() => setActiveTab('settings')} />
+        <Header 
+          session={session} 
+          title={title}
+          description={description}
+          onToggleSidebar={() => setIsSidebarOpen(true)} 
+          onProfileClick={() => setActiveTab('settings')} 
+        />
 
         {/* Floating Main Container */}
         <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8 overflow-hidden">
@@ -158,11 +193,7 @@ const AppContent: React.FC = () => {
               {currentView === 'dashboard' ? (
                 <div className="animate-in fade-in duration-700 space-y-8">
                   <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <h1 className="text-2xl md:text-3xl font-bold text-nutri-text tracking-tighter">Minha Clínica</h1>
-                      <p className="text-nutri-text-sec font-medium text-sm">Olá, {profile?.display_name?.split(' ')[0] || 'Doutor(a)'}! Veja o panorama de hoje.</p>
-                    </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 ml-auto">
                       <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-nutri-soft hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
                         <Plus size={18} strokeWidth={3} /> NOVO PACIENTE
                       </button>

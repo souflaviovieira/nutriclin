@@ -5,29 +5,27 @@ import { useUser } from '../../contexts/UserContext';
 
 interface HeaderProps {
     session: any;
+    title?: string;
+    description?: string;
     onToggleSidebar: () => void;
     onProfileClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ session, onToggleSidebar, onProfileClick }) => {
+const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSidebar, onProfileClick }) => {
     const { profile } = useUser();
 
     return (
         <header className="flex-shrink-0 bg-nutri-secondary px-6 md:px-10 py-6 flex items-center justify-between">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
                 <button
                     onClick={onToggleSidebar}
                     className="lg:hidden p-2.5 text-nutri-text-sec hover:bg-nutri-main/50 rounded-2xl transition-colors"
                 >
                     <Menu size={22} />
                 </button>
-                <div className="hidden md:flex items-center bg-nutri-main/50 backdrop-blur-md rounded-2xl px-5 py-2.5 w-80 border border-white/40 focus-within:ring-4 focus-within:ring-nutri-blue/10 focus-within:bg-nutri-main transition-all">
-                    <Search size={18} className="text-nutri-text-dis" />
-                    <input
-                        type="text"
-                        placeholder="Buscar paciente..."
-                        className="bg-transparent border-none focus:outline-none text-sm ml-3 w-full text-nutri-text font-medium placeholder:text-nutri-text-dis"
-                    />
+                <div className="flex flex-col">
+                    <h2 className="text-xl md:text-2xl font-bold text-nutri-text tracking-tighter leading-tight">{title}</h2>
+                    {description && <p className="text-nutri-text-sec font-medium text-xs md:text-sm">{description}</p>}
                 </div>
             </div>
             <div className="flex items-center gap-2 md:gap-5">
