@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                     className="flex items-center gap-3.5 pl-2 md:pl-5 border-l border-nutri-text-dis/20 cursor-pointer group"
                 >
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-nutri-text tracking-tight group-hover:text-nutri-blue transition-colors">{profile?.display_name || 'Usuário'}</p>
+                        <p className="text-xs font-black text-nutri-text tracking-tight group-hover:text-nutri-blue transition-colors" onClick={onProfileClick}>{profile?.display_name || 'Usuário'}</p>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();

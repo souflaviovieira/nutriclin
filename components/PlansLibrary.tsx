@@ -384,117 +384,128 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
         {/* GRID LIST: RECEITAS */}
         {activeTab === 'receitas' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-bottom-4 duration-500">
-            {recipeList.map((recipe) => (
-              <div
-                key={recipe.id}
-                onClick={() => onViewRecipe?.(recipe)}
-                className="bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex flex-col md:flex-row overflow-hidden"
-              >
-                {/* Image Section */}
-                <div className="relative w-full md:w-48 h-48 md:h-auto shrink-0">
-                  <img src={recipe.img} alt={recipe.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg text-[8px] font-black text-nutri-blue uppercase tracking-widest border border-white/50 flex items-center gap-1.5">
-                    <Users size={10} /> COMUNIDADE
+            {recipeList.map((recipe, idx) => {
+              const isMyRecipe = idx % 3 === 0; // Mock logic for demo
+              return (
+                <div
+                  key={recipe.id}
+                  onClick={() => onViewRecipe?.(recipe)}
+                  className="bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex flex-col md:flex-row overflow-hidden"
+                >
+                  {/* Image Section */}
+                  <div className="relative w-full md:w-48 h-48 md:h-auto shrink-0">
+                    <img src={recipe.img} alt={recipe.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className={`absolute top-3 left-3 backdrop-blur-md px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest border flex items-center gap-1.5 ${isMyRecipe ? 'bg-nutri-blue/90 text-white border-nutri-blue' : 'bg-white/95 text-slate-500 border-white/50'}`}>
+                      {isMyRecipe ? <UserCircle size={10} /> : <Users size={10} />}
+                      {isMyRecipe ? 'MINHA RECEITA' : 'COMUNIDADE'}
+                    </div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="flex-1 p-6 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <h4 className="text-lg font-black text-slate-800 tracking-tight leading-tight group-hover:text-nutri-blue transition-colors">{recipe.title}</h4>
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                          <UserCircle size={14} className="text-slate-300" />
+                          <span className="truncate max-w-[120px]">{recipe.author}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                        <Heart size={12} className="text-rose-500 fill-rose-500" />
+                        <span className="text-[10px] font-black text-slate-600">{recipe.likes}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 bg-slate-50/80 px-3 py-1.5 rounded-lg w-fit">
+                      <Zap size={12} className="text-amber-500" />
+                      <span className="uppercase tracking-widest line-clamp-1">{recipe.type}</span>
+                    </div>
+
+                    {/* Tiny Macros Row */}
+                    <div className="grid grid-cols-4 gap-2 pt-4 border-t border-slate-50">
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <Flame size={10} className="text-orange-500" />
+                          <span className="text-[11px] font-black text-slate-700">{recipe.energy}</span>
+                        </div>
+                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Kcal</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <Droplets size={10} className="text-amber-500" />
+                          <span className="text-[11px] font-black text-slate-700">{recipe.fat}g</span>
+                        </div>
+                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Gord.</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <Circle size={10} className="text-blue-500" />
+                          <span className="text-[11px] font-black text-slate-700">{recipe.carbs}g</span>
+                        </div>
+                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Carb.</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <Diamond size={10} className="text-emerald-500" />
+                          <span className="text-[11px] font-black text-slate-700">{recipe.protein}g</span>
+                        </div>
+                        <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Prot.</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Content Section */}
-                <div className="flex-1 p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <h4 className="text-lg font-black text-slate-800 tracking-tight leading-tight group-hover:text-nutri-blue transition-colors">{recipe.title}</h4>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                        <UserCircle size={14} className="text-slate-300" />
-                        <span className="truncate max-w-[120px]">{recipe.author}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                      <Heart size={12} className="text-rose-500 fill-rose-500" />
-                      <span className="text-[10px] font-black text-slate-600">{recipe.likes}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 bg-slate-50/80 px-3 py-1.5 rounded-lg w-fit">
-                    <Zap size={12} className="text-amber-500" />
-                    <span className="uppercase tracking-widest line-clamp-1">{recipe.type}</span>
-                  </div>
-
-                  {/* Tiny Macros Row */}
-                  <div className="grid grid-cols-4 gap-2 pt-4 border-t border-slate-50">
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <Flame size={10} className="text-orange-500" />
-                        <span className="text-[11px] font-black text-slate-700">{recipe.energy}</span>
-                      </div>
-                      <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Kcal</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <Droplets size={10} className="text-amber-500" />
-                        <span className="text-[11px] font-black text-slate-700">{recipe.fat}g</span>
-                      </div>
-                      <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Gord.</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <Circle size={10} className="text-blue-500" />
-                        <span className="text-[11px] font-black text-slate-700">{recipe.carbs}g</span>
-                      </div>
-                      <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Carb.</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <Diamond size={10} className="text-emerald-500" />
-                        <span className="text-[11px] font-black text-slate-700">{recipe.protein}g</span>
-                      </div>
-                      <span className="text-[7px] font-black text-slate-300 uppercase tracking-tighter">Prot.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        {/* LAYOUT: AVOID FOODS */}
-        {activeTab === 'modelos' && activeSubTab === 'avoid-foods' && (
-          <div className="grid grid-cols-1 gap-4 animate-in slide-in-from-bottom-4">
-            {['Alimentação saudável', 'Diabetes', 'Hipercolesterolemia', 'Hipertensão', 'Obesidade', 'Pós-Cirúrgico', 'Esportiva'].map(item => (
-              <div
-                key={item}
-                onClick={() => onViewRecommendation?.(item)}
-                className="p-6 md:p-8 bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex items-center justify-between"
-              >
-                <div className="space-y-1">
-                  <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{item}</h4>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Modelos do sistema</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-nutri-blue/5 group-hover:text-nutri-blue group-hover:border-nutri-blue/20 transition-all shrink-0">
-                  <ChevronRight size={20} />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* LAYOUT: RECOMMENDATIONS */}
+        {/* LAYOUT: RECOMMENDATIONS (Unified with Avoid Foods) */}
         {activeTab === 'modelos' && activeSubTab === 'recommendations' && (
-          <div className="grid grid-cols-1 gap-4 animate-in slide-in-from-bottom-4">
-            {['Alimentação saudável'].map(item => (
-              <div
-                key={item}
-                onClick={() => onViewRecommendation?.(item)}
-                className="p-6 md:p-8 bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex items-center justify-between"
-              >
-                <div className="space-y-1">
-                  <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{item}</h4>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Modelos do sistema</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-nutri-blue/5 group-hover:text-nutri-blue group-hover:border-nutri-blue/20 transition-all shrink-0">
-                  <ChevronRight size={20} />
-                </div>
+          <div className="space-y-8 animate-in slide-in-from-bottom-4">
+
+            {/* General Recommendations */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Guias Gerais</h3>
+              <div className="grid grid-cols-1 gap-4">
+                {['Alimentação saudável', 'Guia de Hidratação', 'Higiene do Sono'].map(item => (
+                  <div
+                    key={item}
+                    onClick={() => onViewRecommendation?.(item)}
+                    className="p-6 md:p-8 bg-white rounded-xl border border-slate-100/60 transition-all cursor-pointer group flex items-center justify-between hover:shadow-md hover:border-nutri-blue/20"
+                  >
+                    <div className="space-y-1">
+                      <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{item}</h4>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Modelos do sistema</p>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-nutri-blue/5 group-hover:text-nutri-blue group-hover:border-nutri-blue/20 transition-all shrink-0">
+                      <ChevronRight size={20} />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Foods to Avoid Section - Restyled as Cards */}
+            <div className="space-y-4 pt-4 border-t border-slate-50">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                <X size={14} className="text-rose-400" /> Alimentos a Evitar
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {['Diabetes', 'Hipercolesterolemia', 'Hipertensão', 'Obesidade', 'Pós-Cirúrgico', 'Esportiva', 'Gastrite'].map(item => (
+                  <div
+                    key={item}
+                    onClick={() => onViewRecommendation?.(`Alimentos a evitar: ${item}`)}
+                    className="p-5 bg-rose-50/30 rounded-xl border border-rose-100/50 transition-all cursor-pointer group flex items-center justify-between hover:bg-rose-50 hover:border-rose-200"
+                  >
+                    <div className="space-y-1">
+                      <h4 className="text-sm sm:text-base font-black text-slate-700 group-hover:text-rose-600 transition-colors">{item}</h4>
+                      <p className="text-[8px] font-bold text-rose-300 uppercase tracking-[0.1em]">Restrição Alimentar</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

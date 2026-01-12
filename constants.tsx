@@ -47,22 +47,10 @@ export const NAV_ITEMS = [
     items: [
       { id: 'alimentos', label: 'Alimentos', icon: <Apple size={20} /> },
       { id: 'alimentos-suplementos', label: 'Suplementos', icon: <Zap size={20} /> },
-      { id: 'receitas-comunidade', label: 'Receitas (Comunidade)', icon: <Users size={20} /> },
-      { id: 'receitas-minhas', label: 'Minhas Receitas', icon: <UserCircle size={20} /> },
+      { id: 'receitas-minhas', label: 'Receitas', icon: <CookingPot size={20} /> },
       { id: 'substituicoes', label: 'Substituições', icon: <Scale size={20} /> },
       { id: 'modelos-planos', label: 'Modelos de Planos', icon: <ClipboardPlus size={20} /> },
-      { id: 'modelos-evitar', label: 'Alimentos a Evitar', icon: <X size={20} /> },
       { id: 'modelos-recomendacoes', label: 'Recomendações', icon: <FileText size={20} /> },
-    ]
-  },
-  {
-    title: 'CONFIGURAÇÕES',
-    items: [
-      { id: 'settings-profissional', label: 'Profissional', icon: <UserCircle size={20} /> },
-      { id: 'settings-atendimento', label: 'Atendimento', icon: <Clock size={20} /> },
-      { id: 'settings-gestao', label: 'Gestão', icon: <Target size={20} /> },
-      { id: 'settings-sistema', label: 'Sistema', icon: <Settings size={20} /> },
-      { id: 'settings-seguranca', label: 'Segurança', icon: <Shield size={20} /> },
     ]
   },
   {
