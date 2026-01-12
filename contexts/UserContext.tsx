@@ -29,14 +29,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // Fallback para desenvolvimento quando login está desativado
-        setProfile({
-          id: 'dev-user',
-          email: 'dev@nutriclin.local',
-          display_name: 'Usuário Dev',
-          specialty: 'Nutricionista',
-          crn: '',
-        });
+        // Tentar carregar do localStorage primeiro para persistência em modo dev
+        const savedProfile = localStorage.getItem('nutriclin_dev_profile');
+        if (savedProfile) {
+          setProfile(JSON.parse(savedProfile));
+        } else {
+          // Fallback inicial se nada salvo
+          const defaultDevProfile = {
+            id: 'dev-user',
+            email: 'dev@nutriclin.local',
+            display_name: 'Usuário Dev',
+            specialty: 'Nutricionista',
+            crn: '',
+          };
+          setProfile(defaultDevProfile);
+          localStorage.setItem('nutriclin_dev_profile', JSON.stringify(defaultDevProfile));
+        }
         return;
       }
 
@@ -77,6 +85,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             fetchProfile();
         } else if (event === 'SIGNED_OUT') {
             setProfile(null);
+            localStorage.removeItem('nutriclin_dev_profile');
         }
     });
 

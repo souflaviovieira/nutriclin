@@ -119,7 +119,14 @@ const SettingsPage: React.FC = () => {
         oldPath: oldUrl
       });
 
-      setProfile(prev => ({ ...prev, [`${type}_url`]: publicUrl }));
+      const updatedProfile = { ...profile, [`${type}_url`]: publicUrl };
+      setProfile(updatedProfile);
+      
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) {
+        localStorage.setItem('nutriclin_dev_profile', JSON.stringify(updatedProfile));
+      }
+      
       await refreshProfile();
     } catch (error) {
       console.error(`Error uploading ${type}:`, error);
@@ -137,6 +144,7 @@ const SettingsPage: React.FC = () => {
       // Se não há usuário, simular sucesso (modo desenvolvimento)
       if (!user) {
         console.log('Modo desenvolvimento: salvando localmente apenas');
+        localStorage.setItem('nutriclin_dev_profile', JSON.stringify(profile));
         await refreshProfile();
         alert('Configurações salvas com sucesso! (modo dev)');
         return;
