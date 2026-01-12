@@ -135,9 +135,9 @@ const AppContent: React.FC = () => {
         }}
       />
 
-      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
+      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         {/* Unified Header */}
-        <Header session={session} onToggleSidebar={() => setIsSidebarOpen(true)} />
+        <Header session={session} onToggleSidebar={() => setIsSidebarOpen(true)} onProfileClick={() => setActiveTab('settings')} />
 
         {/* Floating Main Container */}
         <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8 overflow-hidden">

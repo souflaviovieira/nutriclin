@@ -21,7 +21,6 @@ export const NAV_ITEMS = [
   { id: 'appointments', label: 'Agenda', icon: <Calendar size={20} /> },
   { id: 'plans', label: 'Planos Alimentares', icon: <Clipboard size={20} /> },
   { id: 'billing', label: 'Gestão', icon: <Briefcase size={20} /> },
-  { id: 'settings', label: 'Configurações', icon: <Settings size={20} /> },
   { id: 'ai-assistant', label: 'Nutri AI', icon: <Sparkles size={20} /> },
 ];
 

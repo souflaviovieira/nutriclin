@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { NAV_ITEMS } from '../constants';
-import { LogOut, Apple, ChevronLeft, ChevronRight, User as UserIcon } from 'lucide-react';
+import { LogOut, Apple, ChevronLeft, ChevronRight, User as UserIcon, Settings } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 
 interface SidebarProps {
@@ -43,8 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           fixed inset-y-0 left-0 z-50 bg-nutri-secondary border-r border-slate-200/50 shadow-none
           flex flex-col transition-all duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          ${isCollapsed ? 'lg:w-20' : 'lg:w-72'}
-          w-72
+          ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
+          w-64
         `}
       >
         <div className="flex flex-col h-full overflow-hidden">
@@ -85,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           {/* Navigation */}
-          <nav className="flex-1 py-8 space-y-2 overflow-y-auto overflow-x-hidden no-scrollbar px-3">
+          <nav className="flex-1 py-4 space-y-1.5 overflow-y-auto overflow-x-hidden no-scrollbar px-3">
             {!isCollapsed && (
               <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em] px-4 mb-3 animate-in fade-in duration-500 delay-100">
                 Menu Principal
@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onMouseLeave={() => setHoveredItem(null)}
                     className={`
                        w-full flex items-center gap-3.5 relative transition-all duration-200 group
-                       ${isCollapsed ? 'justify-center px-0 py-3 rounded-2xl' : 'px-4 py-3.5 rounded-xl'}
+                       ${isCollapsed ? 'justify-center px-0 py-3 rounded-2xl' : 'px-4 py-3 rounded-xl'}
                        ${isActive
                         ? 'bg-nutri-blue/5 text-nutri-blue'
                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
@@ -153,45 +153,53 @@ const Sidebar: React.FC<SidebarProps> = ({
             })}
           </nav>
 
-          {/* Footer / User Profile */}
-          <div className={`mt-auto border-t border-slate-50 transition-all duration-300 ${isCollapsed ? 'p-3' : 'p-5'}`}>
-            <div
+          {/* Footer / Settings Link */}
+          <div className={`mt-auto border-t border-slate-50 transition-all duration-300 ${isCollapsed ? 'p-3' : 'p-4'}`}>
+            <button
+              onClick={() => {
+                setActiveTab('settings');
+                if (window.innerWidth < 1024) toggleSidebar();
+              }}
+              onMouseEnter={() => setHoveredItem('settings')}
+              onMouseLeave={() => setHoveredItem(null)}
               className={`
-                flex items-center gap-3 transition-all duration-300 relative group cursor-pointer
-                ${isCollapsed ? 'justify-center p-2 rounded-xl hover:bg-slate-50' : 'p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-nutri-blue/30'}
-              `}
+                 w-full flex items-center gap-3.5 relative transition-all duration-200 group
+                 ${isCollapsed ? 'justify-center p-3 rounded-2xl' : 'px-4 py-3.5 rounded-xl'}
+                 ${activeTab === 'settings'
+                  ? 'bg-nutri-blue/5 text-nutri-blue'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+               `}
             >
-              <div className="relative shrink-0">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} className="w-10 h-10 rounded-xl object-cover ring-2 ring-white shadow-sm" alt="Profile" />
-                ) : (
-                  <div className="w-10 h-10 rounded-xl bg-nutri-blue/10 flex items-center justify-center text-nutri-blue">
-                    <UserIcon size={20} />
-                  </div>
-                )}
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
-              </div>
-
-              <div className={`
-                 flex flex-col min-w-0 transition-all duration-300 overflow-hidden
-                 ${isCollapsed ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100'}
-               `}>
-                <span className="text-xs font-black text-slate-800 truncate">{profile?.display_name || 'Usuário'}</span>
-                <span className="text-[10px] font-bold text-nutri-blue uppercase tracking-wider truncate">Ver Perfil</span>
-              </div>
-
-              {/* Collapsed Warning/Tooltip for User */}
-              {isCollapsed && (
-                <div className="absolute left-full bottom-0 ml-3 px-3 py-2 bg-white border border-slate-100 text-slate-600 text-xs font-bold rounded-xl shadow-xl w-32 z-[60] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200">
-                  <p className="truncate">{profile?.display_name}</p>
-                  <p className="text-[9px] text-nutri-blue uppercase">Configurações</p>
-                </div>
+              {isCollapsed && activeTab === 'settings' && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-nutri-blue rounded-r-full"></div>
               )}
-            </div>
+              <div className={`
+                 relative z-10 transition-colors duration-200
+                 ${activeTab === 'settings' ? 'text-nutri-blue' : 'text-slate-400 group-hover:text-nutri-blue'}
+               `}>
+                <Settings size={20} />
+              </div>
+              <span
+                className={`
+                   text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
+                   ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
+                 `}
+              >
+                Configurações
+              </span>
+            </button>
+
+            {/* Tooltip for Settings in Collapsed Mode */}
+            {isCollapsed && hoveredItem === 'settings' && (
+              <div className="absolute left-full bottom-8 ml-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl whitespace-nowrap z-[60] animate-in fade-in slide-in-from-left-2 duration-200 pointer-events-none">
+                Configurações
+                <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 -z-10"></div>
+              </div>
+            )}
 
             {/* Logout Button */}
             {!isCollapsed && (
-              <button className="w-full mt-2 flex items-center justify-center gap-2 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-xs font-bold">
+              <button className="w-full mt-2 flex items-center justify-center gap-2 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest">
                 <LogOut size={14} /> Sair
               </button>
             )}
