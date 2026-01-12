@@ -21,7 +21,10 @@ import {
   ClipboardPlus,
   Zap,
   X,
-  FileText
+  FileText,
+  Clock,
+  Target,
+  Shield
 } from 'lucide-react';
 import { Appointment, Metric, Alert, Patient } from './types';
 
