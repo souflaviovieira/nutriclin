@@ -29,7 +29,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setProfile(null);
+        // Fallback para desenvolvimento quando login está desativado
+        setProfile({
+          id: 'dev-user',
+          email: 'dev@nutriclin.local',
+          display_name: 'Usuário Dev',
+          specialty: 'Nutricionista',
+          crn: '',
+        });
         return;
       }
 
