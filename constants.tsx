@@ -18,7 +18,10 @@ import {
   Apple,
   CookingPot,
   Scale,
-  ClipboardPlus
+  ClipboardPlus,
+  Zap,
+  X,
+  FileText
 } from 'lucide-react';
 import { Appointment, Metric, Alert, Patient } from './types';
 
@@ -40,9 +43,13 @@ export const NAV_ITEMS = [
     title: 'PLANO ALIMENTAR',
     items: [
       { id: 'alimentos', label: 'Alimentos', icon: <Apple size={20} /> },
-      { id: 'receitas', label: 'Receitas', icon: <CookingPot size={20} /> },
+      { id: 'alimentos-suplementos', label: 'Suplementos', icon: <Zap size={20} /> },
+      { id: 'receitas-comunidade', label: 'Receitas (Comunidade)', icon: <Users size={20} /> },
+      { id: 'receitas-minhas', label: 'Minhas Receitas', icon: <UserCircle size={20} /> },
       { id: 'substituicoes', label: 'Substituições', icon: <Scale size={20} /> },
-      { id: 'modelos', label: 'Modelos', icon: <ClipboardPlus size={20} /> },
+      { id: 'modelos-planos', label: 'Modelos de Planos', icon: <ClipboardPlus size={20} /> },
+      { id: 'modelos-evitar', label: 'Alimentos a Evitar', icon: <X size={20} /> },
+      { id: 'modelos-recomendacoes', label: 'Recomendações', icon: <FileText size={20} /> },
     ]
   },
   {

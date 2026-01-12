@@ -32,7 +32,6 @@ interface PlansLibraryProps {
   onViewSubstitution?: (item: any) => void;
   onCreateRecipe?: () => void;
   activeTab: MainTab;
-  setActiveTab: (tab: MainTab) => void;
   activeSubTab: string;
   setActiveSubTab: (subTab: string) => void;
   isFoodModalOpen: boolean;
@@ -46,7 +45,7 @@ type MainTab = 'alimentos' | 'receitas' | 'substituicoes' | 'modelos';
 
 const PlansLibrary: React.FC<PlansLibraryProps> = ({ 
   onViewModel, onViewRecommendation, onViewFood, onViewRecipe, onViewSubstitution, onCreateRecipe,
-  activeTab, setActiveTab, activeSubTab, setActiveSubTab,
+  activeTab, activeSubTab, setActiveSubTab,
   isFoodModalOpen, setIsFoodModalOpen, foodToEdit, setFoodToEdit
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,13 +56,6 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
     carbs: 'todos',
     fat: 'todos'
   });
-
-  const MainTabs = [
-    { id: 'alimentos', label: 'Alimentos', icon: <Apple size={18} /> },
-    { id: 'receitas', label: 'Receitas', icon: <BookOpen size={18} /> },
-    { id: 'substituicoes', label: 'Substituições', icon: <Scale size={18} /> },
-    { id: 'modelos', label: 'Modelos', icon: <Layout size={18} /> },
-  ];
 
   const MacroIcon = ({ type }: { type: 'energia' | 'gordura' | 'carbo' | 'proteina' }) => {
     switch (type) {
@@ -244,32 +236,26 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
         
         {/* Module Controls Area */}
         <div className="space-y-6">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative">
-            <div className="flex overflow-x-auto no-scrollbar gap-2 border-b border-slate-100 lg:border-none lg:pb-0 pb-1 flex-1">
-              {activeTab === 'alimentos' && (
-                <>
-                  <button onClick={() => setActiveSubTab('alimentos-base')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'alimentos-base' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>ALIMENTOS</button>
-                  <button onClick={() => setActiveSubTab('suplementos')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'suplementos' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>SUPLEMENTOS</button>
-                </>
-              )}
-              {activeTab === 'receitas' && (
-                <>
-                  <button onClick={() => setActiveSubTab('comunidade')} className={`flex items-center gap-2 px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'comunidade' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}><Users size={14} /> COMUNIDADE</button>
-                  <button onClick={() => setActiveSubTab('minhas')} className={`flex items-center gap-2 px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'minhas' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}><User size={14} /> MINHAS</button>
-                </>
-              )}
-              {activeTab === 'substituicoes' && (
-                <>
-                  <button onClick={() => setActiveSubTab('listas')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'listas' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>LISTAS</button>
-                </>
-              )}
-              {activeTab === 'modelos' && (
-                <>
-                  <button onClick={() => setActiveSubTab('meal-plans')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'meal-plans' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>PLANOS</button>
-                  <button onClick={() => setActiveSubTab('avoid-foods')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'avoid-foods' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>ALIMENTOS A EVITAR</button>
-                  <button onClick={() => setActiveSubTab('recommendations')} className={`px-5 py-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] transition-all border-b-2 whitespace-nowrap ${activeSubTab === 'recommendations' ? 'border-nutri-blue text-nutri-blue' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>RECOMENDAÇÕES</button>
-                </>
-              )}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex-1">
+              <div className="flex gap-3">
+                <div className="relative group flex-1">
+                  <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors" />
+                  <input 
+                    type="text" 
+                    placeholder={`Pesquisar em ${activeTab === 'alimentos' ? (activeSubTab === 'alimentos-base' ? 'alimentos' : 'suplementos') : activeTab === 'receitas' ? 'receitas' : activeTab === 'substituicoes' ? 'substituições' : 'modelos'}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-14 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-[20px] focus:ring-4 focus:ring-nutri-blue/5 focus:border-nutri-blue focus:bg-white outline-none text-[13px] font-semibold text-slate-700 transition-all shadow-inner placeholder:text-slate-300"
+                  />
+                </div>
+                <button 
+                  onClick={() => setShowFilterPanel(!showFilterPanel)}
+                  className={`px-5 py-3.5 border rounded-[20px] transition-all shadow-sm flex items-center justify-center ${showFilterPanel ? 'bg-nutri-blue text-white border-nutri-blue' : 'bg-slate-50 text-slate-400 border-slate-100 hover:text-nutri-blue hover:border-nutri-blue/30 hover:bg-white'}`}
+                >
+                  <Filter size={18} />
+                </button>
+              </div>
             </div>
             
             <button 
@@ -277,7 +263,7 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
                 if (activeTab === 'receitas') onCreateRecipe?.();
                 if (activeTab === 'alimentos') setIsFoodModalOpen(true);
               }}
-              className="flex items-center justify-center gap-2 px-8 py-3.5 bg-nutri-blue text-white rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all w-full lg:w-auto mb-4 lg:mb-0 transform lg:absolute lg:right-0 lg:top-0 hover:scale-[1.02] active:scale-95 z-20"
+              className="flex items-center justify-center gap-2 px-8 py-3.5 bg-nutri-blue text-white rounded-2xl text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all w-full lg:w-auto transform hover:scale-[1.02] active:scale-95 z-20"
             >
               <Plus size={18} strokeWidth={3} />
               {activeTab === 'alimentos' && (activeSubTab === 'alimentos-base' ? "Adicionar Alimento" : "Adicionar Suplemento")}
@@ -287,66 +273,44 @@ const PlansLibrary: React.FC<PlansLibraryProps> = ({
             </button>
           </div>
 
-          {/* Área de Pesquisa e Filtros */}
-          <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="relative group flex-1">
-                <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder={`Pesquisar em ${activeTab === 'alimentos' ? (activeSubTab === 'alimentos-base' ? 'alimentos' : 'suplementos') : activeTab === 'receitas' ? 'receitas' : activeTab === 'substituicoes' ? 'substituições' : 'modelos'}...`}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-3.5 bg-slate-50 border border-slate-100 rounded-[20px] focus:ring-4 focus:ring-nutri-blue/5 focus:border-nutri-blue focus:bg-white outline-none text-[13px] font-semibold text-slate-700 transition-all shadow-inner placeholder:text-slate-300"
-                />
-              </div>
-              <button 
-                onClick={() => showFilterPanel ? setShowFilterPanel(false) : setShowFilterPanel(true)}
-                className={`px-5 py-3.5 border rounded-[20px] transition-all shadow-sm flex items-center justify-center ${showFilterPanel ? 'bg-nutri-blue text-white border-nutri-blue' : 'bg-slate-50 text-slate-400 border-slate-100 hover:text-nutri-blue hover:border-nutri-blue/30 hover:bg-white'}`}
-              >
-                <Filter size={18} />
-              </button>
+          {/* Painel de Filtros Avançados */}
+          {showFilterPanel && (
+            <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 flex flex-wrap gap-6 animate-in slide-in-from-top-2 duration-300">
+               <FilterSelect 
+                  label="Energia" 
+                  value={filters.energy} 
+                  onChange={(val: any) => setFilters({...filters, energy: val})}
+                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Caloria'}, {val: 'medio', label: 'Média'}, {val: 'alto', label: 'Alta'}]} 
+               />
+               <FilterSelect 
+                  label="Proteína" 
+                  value={filters.protein} 
+                  onChange={(val: any) => setFilters({...filters, protein: val})}
+                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixo Teor'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Proteico'}]} 
+               />
+               <FilterSelect 
+                  label="Carboidratos" 
+                  value={filters.carbs} 
+                  onChange={(val: any) => setFilters({...filters, carbs: val})}
+                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Low Carb'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alto Teor'}]} 
+               />
+               <FilterSelect 
+                  label="Gorduras" 
+                  value={filters.fat} 
+                  onChange={(val: any) => setFilters({...filters, fat: val})}
+                  options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Gordura'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alta Gordura'}]} 
+               />
+               <div className="flex items-end pb-1">
+                  <button 
+                    onClick={() => setFilters({energy: 'todos', protein: 'todos', carbs: 'todos', fat: 'todos'})}
+                    className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                    title="Limpar filtros"
+                  >
+                    <X size={18}/>
+                  </button>
+               </div>
             </div>
-
-            {/* Painel de Filtros Avançados */}
-            {showFilterPanel && (
-              <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 flex flex-wrap gap-6 animate-in slide-in-from-top-2 duration-300">
-                 <FilterSelect 
-                    label="Energia" 
-                    value={filters.energy} 
-                    onChange={(val: any) => setFilters({...filters, energy: val})}
-                    options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Caloria'}, {val: 'medio', label: 'Média'}, {val: 'alto', label: 'Alta'}]} 
-                 />
-                 <FilterSelect 
-                    label="Proteína" 
-                    value={filters.protein} 
-                    onChange={(val: any) => setFilters({...filters, protein: val})}
-                    options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixo Teor'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Proteico'}]} 
-                 />
-                 <FilterSelect 
-                    label="Carboidratos" 
-                    value={filters.carbs} 
-                    onChange={(val: any) => setFilters({...filters, carbs: val})}
-                    options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Low Carb'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alto Teor'}]} 
-                 />
-                 <FilterSelect 
-                    label="Gorduras" 
-                    value={filters.fat} 
-                    onChange={(val: any) => setFilters({...filters, fat: val})}
-                    options={[{val: 'todos', label: 'Todos'}, {val: 'baixo', label: 'Baixa Gordura'}, {val: 'medio', label: 'Médio'}, {val: 'alto', label: 'Alta Gordura'}]} 
-                 />
-                 <div className="flex items-end pb-1">
-                    <button 
-                      onClick={() => setFilters({energy: 'todos', protein: 'todos', carbs: 'todos', fat: 'todos'})}
-                      className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
-                      title="Limpar filtros"
-                    >
-                      <X size={18}/>
-                    </button>
-                 </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         {/* --- DYNAMIC CONTENT LISTS --- */}

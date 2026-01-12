@@ -120,7 +120,15 @@ const AppContent: React.FC = () => {
       'edit-patient': { title: 'Editar Cliente', description: 'Atualize os dados do paciente.' },
       'new-appointment': { title: 'Novo Agendamento', description: 'Marque uma nova consulta na sua agenda.' },
       'ongoing-consultation': { title: 'Consulta em Andamento', description: 'Realizando atendimento clínico agora.' },
-      'plans-library': { title: 'Biblioteca de Planos', description: 'Gerencie alimentos, receitas, substituições e modelos.' },
+      'plans-library': { title: 'Biblioteca', description: 'Repositório de recursos.' },
+      alimentos: { title: 'Banco de Alimentos', description: 'Consulte informações nutricionais completas.' },
+      'alimentos-suplementos': { title: 'Suplementos', description: 'Gestão de suplementos e fitoterápicos.' },
+      'receitas-comunidade': { title: 'Receitas (Comunidade)', description: 'Explore receitas compartilhadas.' },
+      'receitas-minhas': { title: 'Minhas Receitas', description: 'Gerencie seu acervo pessoal de receitas.' },
+      substituicoes: { title: 'Listas de Substituições', description: 'Organize tabelas de equivalência alimentar.' },
+      'modelos-planos': { title: 'Modelos de Planos', description: 'Base de planos alimentares pré-definidos.' },
+      'modelos-evitar': { title: 'Alimentos a Evitar', description: 'Listas de recomendações restritivas.' },
+      'modelos-recomendacoes': { title: 'Orientações e Recomendações', description: 'Modelos de textos e guias educativos.' },
       'meal-plan-detail': { title: selectedModelName || 'Modelo de Plano', description: 'Visualizando detalhes do modelo selecionado.' },
       'recommendation-model-view': { title: selectedRecommendationName || 'Recomendação', description: 'Visualizando detalhes da recomendação.' },
       'food-detail': { title: selectedFoodItem?.name || 'Detalhes do Alimento', description: 'Informações nutricionais completas.' },
@@ -156,9 +164,13 @@ const AppContent: React.FC = () => {
             dashboard: 'dashboard',
             patients: 'patients',
             alimentos: 'plans-library',
-            receitas: 'plans-library',
+            'alimentos-suplementos': 'plans-library',
+            'receitas-comunidade': 'plans-library',
+            'receitas-minhas': 'plans-library',
             substituicoes: 'plans-library',
-            modelos: 'plans-library',
+            'modelos-planos': 'plans-library',
+            'modelos-evitar': 'plans-library',
+            'modelos-recomendacoes': 'plans-library',
             billing: 'finance',
             appointments: 'appointments',
             settings: 'settings',
@@ -172,12 +184,20 @@ const AppContent: React.FC = () => {
           setCurrentView(views[tab] || 'dashboard');
 
           // Sync PlansLibrary if one of its sub-items is clicked
-          if (['alimentos', 'receitas', 'substituicoes', 'modelos'].includes(tab)) {
-            setPlansActiveTab(tab as any);
-            if (tab === 'alimentos') setPlansActiveSubTab('alimentos-base');
-            if (tab === 'receitas') setPlansActiveSubTab('comunidade');
-            if (tab === 'substituicoes') setPlansActiveSubTab('listas');
-            if (tab === 'modelos') setPlansActiveSubTab('meal-plans');
+          const plansTabMap: Record<string, { tab: string, subTab: string }> = {
+            alimentos: { tab: 'alimentos', subTab: 'alimentos-base' },
+            'alimentos-suplementos': { tab: 'alimentos', subTab: 'suplementos' },
+            'receitas-comunidade': { tab: 'receitas', subTab: 'comunidade' },
+            'receitas-minhas': { tab: 'receitas', subTab: 'minhas' },
+            substituicoes: { tab: 'substituicoes', subTab: 'listas' },
+            'modelos-planos': { tab: 'modelos', subTab: 'meal-plans' },
+            'modelos-evitar': { tab: 'modelos', subTab: 'avoid-foods' },
+            'modelos-recomendacoes': { tab: 'modelos', subTab: 'recommendations' }
+          };
+
+          if (plansTabMap[tab]) {
+            setPlansActiveTab(plansTabMap[tab].tab as any);
+            setPlansActiveSubTab(plansTabMap[tab].subTab);
           }
 
           // Sync SettingsPage section if clicked from sidebar
@@ -248,7 +268,6 @@ const AppContent: React.FC = () => {
                   onViewSubstitution={(item) => { setSelectedSubstitution(item); setCurrentView('substitution-detail'); }}
                   onCreateRecipe={() => setCurrentView('create-recipe')}
                   activeTab={plansActiveTab}
-                  setActiveTab={setPlansActiveTab}
                   activeSubTab={plansActiveSubTab}
                   setActiveSubTab={setPlansActiveSubTab}
                   isFoodModalOpen={isFoodModalOpen}
