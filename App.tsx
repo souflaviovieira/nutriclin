@@ -27,8 +27,9 @@ import RecipeDetailView from './components/RecipeDetailView';
 import RecipeForm from './components/RecipeForm';
 import SubstitutionDetailView from './components/SubstitutionDetailView';
 import FoodFormModal from './components/FoodFormModal';
+import { BottomNavigation, FloatingActionButton } from './components/navigation';
 import { MOCK_METRICS, MOCK_PATIENTS } from './constants';
-import { Loader2, Plus, Calendar } from 'lucide-react';
+import { Loader2, Plus, Calendar, UserPlus, CalendarPlus, Sparkles } from 'lucide-react';
 import { supabase } from './services/supabaseClient';
 import Header from './components/layout/Header';
 import { Patient, ConsultationRecord } from './types';
@@ -52,7 +53,6 @@ const AppContent: React.FC = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    // Ideally check localStorage here
     if (typeof window !== 'undefined') {
       return window.localStorage.getItem('sidebarCollapsed') === 'true';
     }
@@ -68,6 +68,16 @@ const AppContent: React.FC = () => {
   const [plansActiveTab, setPlansActiveTab] = useState<any>('alimentos');
   const [plansActiveSubTab, setPlansActiveSubTab] = useState<any>('alimentos-base');
   const [settingsActiveSection, setSettingsActiveSection] = useState<any>('profissional');
+
+  // Check if we're on mobile
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -97,6 +107,61 @@ const AppContent: React.FC = () => {
     }
   };
 
+  // Navigation handler for bottom navigation
+  const handleBottomNavChange = (tab: string) => {
+    setActiveTab(tab);
+    const views: Record<string, View> = {
+      dashboard: 'dashboard',
+      patients: 'patients',
+      alimentos: 'plans-library',
+      appointments: 'appointments',
+      settings: 'settings',
+    };
+    setCurrentView(views[tab] || 'dashboard');
+  };
+
+  // FAB Actions based on current view
+  const getFabActions = () => {
+    const baseActions = [
+      {
+        id: 'new-patient',
+        label: 'Novo Cliente',
+        icon: <UserPlus size={20} />,
+        onClick: () => {
+          setCurrentView('new-patient');
+          setActiveTab('patients');
+        },
+      },
+      {
+        id: 'new-appointment',
+        label: 'Agendar Consulta',
+        icon: <CalendarPlus size={20} />,
+        onClick: () => {
+          setCurrentView('new-appointment');
+          setActiveTab('appointments');
+        },
+      },
+      {
+        id: 'ai-assistant',
+        label: 'Nutri AI',
+        icon: <Sparkles size={20} />,
+        onClick: () => {
+          setCurrentView('ai-assistant');
+          setActiveTab('ai-assistant');
+        },
+        color: 'bg-gradient-to-br from-purple-500 to-pink-500 text-white',
+      },
+    ];
+
+    return baseActions;
+  };
+
+  // Determine if we should show FAB
+  const shouldShowFab = () => {
+    const noFabViews = ['new-patient', 'edit-patient', 'new-appointment', 'ongoing-consultation', 'create-recipe'];
+    return !noFabViews.includes(currentView);
+  };
+
   if (loading) return (
     <div className="min-h-screen bg-nutri-secondary flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
@@ -113,32 +178,32 @@ const AppContent: React.FC = () => {
     const firstName = profile?.display_name?.split(' ')[0] || 'Doutor(a)';
 
     const info: Record<string, { title: string, description?: string }> = {
-      dashboard: { title: 'Minha Clínica', description: `Olá, ${firstName}! Veja o panorama de hoje.` },
-      patients: { title: 'Clientes', description: 'Gerencie e visualize seus pacientes cadastrados.' },
-      'patient-detail': { title: getSelectedPatient()?.name || 'Detalhes do Cliente', description: 'Prontuário e histórico detalhado.' },
-      'new-patient': { title: 'Novo Cliente', description: 'Cadastre um novo paciente no sistema.' },
-      'edit-patient': { title: 'Editar Cliente', description: 'Atualize os dados do paciente.' },
-      'new-appointment': { title: 'Novo Agendamento', description: 'Marque uma nova consulta na sua agenda.' },
-      'ongoing-consultation': { title: 'Consulta em Andamento', description: 'Realizando atendimento clínico agora.' },
-      'plans-library': { title: 'Biblioteca', description: 'Repositório de recursos.' },
-      alimentos: { title: 'Banco de Alimentos', description: 'Consulte informações nutricionais completas.' },
-      'alimentos-suplementos': { title: 'Suplementos', description: 'Gestão de suplementos e fitoterápicos.' },
-      'receitas-comunidade': { title: 'Receitas (Comunidade)', description: 'Explore receitas compartilhadas.' },
-      'receitas-minhas': { title: 'Minhas Receitas', description: 'Gerencie seu acervo pessoal de receitas.' },
-      substituicoes: { title: 'Listas de Substituições', description: 'Organize tabelas de equivalência alimentar.' },
-      'modelos-planos': { title: 'Modelos de Planos', description: 'Base de planos alimentares pré-definidos.' },
-      'modelos-evitar': { title: 'Alimentos a Evitar', description: 'Listas de recomendações restritivas.' },
-      'modelos-recomendacoes': { title: 'Orientações e Recomendações', description: 'Modelos de textos e guias educativos.' },
-      'meal-plan-detail': { title: selectedModelName || 'Modelo de Plano', description: 'Visualizando detalhes do modelo selecionado.' },
-      'recommendation-model-view': { title: selectedRecommendationName || 'Recomendação', description: 'Visualizando detalhes da recomendação.' },
-      'food-detail': { title: selectedFoodItem?.name || 'Detalhes do Alimento', description: 'Informações nutricionais completas.' },
-      'recipe-detail': { title: selectedRecipe?.title || 'Detalhes da Receita', description: 'Ingredientes e modo de preparo.' },
-      'substitution-detail': { title: selectedSubstitution?.name || 'Lista de Substituição', description: 'Opções equivalentes para o plano.' },
-      'create-recipe': { title: 'Nova Receita', description: 'Crie e salve uma nova receita na sua biblioteca.' },
-      finance: { title: 'Relatórios', description: 'Acompanhe a performance estratégica e os indicadores.' },
-      appointments: { title: 'Agenda', description: 'Organize suas consultas e compromissos diários.' },
-      'ai-assistant': { title: 'Nutri AI', description: 'Sua assistente inteligente para suporte clínico.' },
-      settings: { title: 'Configurações', description: 'Personalize seu perfil e as preferências do sistema.' },
+      dashboard: { title: 'Início', description: `Olá, ${firstName}! Veja o panorama de hoje.` },
+      patients: { title: 'Clientes', description: 'Gerencie seus pacientes cadastrados.' },
+      'patient-detail': { title: getSelectedPatient()?.name || 'Detalhes', description: 'Prontuário e histórico.' },
+      'new-patient': { title: 'Novo Cliente', description: 'Cadastre um novo paciente.' },
+      'edit-patient': { title: 'Editar Cliente', description: 'Atualize os dados.' },
+      'new-appointment': { title: 'Agendar', description: 'Marque uma nova consulta.' },
+      'ongoing-consultation': { title: 'Consulta', description: 'Atendimento em andamento.' },
+      'plans-library': { title: 'Recursos', description: 'Biblioteca de materiais.' },
+      alimentos: { title: 'Alimentos', description: 'Base nutricional.' },
+      'alimentos-suplementos': { title: 'Suplementos', description: 'Gestão de suplementos.' },
+      'receitas-comunidade': { title: 'Receitas', description: 'Explore receitas.' },
+      'receitas-minhas': { title: 'Minhas Receitas', description: 'Seu acervo pessoal.' },
+      substituicoes: { title: 'Substituições', description: 'Equivalências alimentares.' },
+      'modelos-planos': { title: 'Templates', description: 'Planos pré-definidos.' },
+      'modelos-evitar': { title: 'Restrições', description: 'Listas restritivas.' },
+      'modelos-recomendacoes': { title: 'Orientações', description: 'Guias educativos.' },
+      'meal-plan-detail': { title: selectedModelName || 'Template', description: 'Detalhes do modelo.' },
+      'recommendation-model-view': { title: selectedRecommendationName || 'Orientação', description: 'Detalhes.' },
+      'food-detail': { title: selectedFoodItem?.name || 'Alimento', description: 'Info nutricional.' },
+      'recipe-detail': { title: selectedRecipe?.title || 'Receita', description: 'Modo de preparo.' },
+      'substitution-detail': { title: selectedSubstitution?.name || 'Substituição', description: 'Equivalências.' },
+      'create-recipe': { title: 'Nova Receita', description: 'Crie e salve.' },
+      finance: { title: 'Relatórios', description: 'Performance e indicadores.' },
+      appointments: { title: 'Agenda', description: 'Suas consultas.' },
+      'ai-assistant': { title: 'Nutri AI', description: 'Assistente inteligente.' },
+      settings: { title: 'Configurações', description: 'Personalize seu sistema.' },
     };
 
     return info[currentView] || { title: 'NutriClin Pro' };
@@ -146,112 +211,156 @@ const AppContent: React.FC = () => {
 
   const { title, description } = getPageInfo();
 
+  // Simplified tab handler for sidebar
+  const handleSidebarTabChange = (tab: string) => {
+    setActiveTab(tab);
+    const views: Record<string, View> = {
+      dashboard: 'dashboard',
+      patients: 'patients',
+      alimentos: 'plans-library',
+      'alimentos-suplementos': 'plans-library',
+      'receitas-comunidade': 'plans-library',
+      'receitas-minhas': 'plans-library',
+      substituicoes: 'plans-library',
+      'modelos-planos': 'plans-library',
+      'modelos-evitar': 'plans-library',
+      'modelos-recomendacoes': 'plans-library',
+      billing: 'finance',
+      appointments: 'appointments',
+      settings: 'settings',
+      'settings-profissional': 'settings',
+      'settings-atendimento': 'settings',
+      'settings-gestao': 'settings',
+      'settings-sistema': 'settings',
+      'settings-seguranca': 'settings',
+      'ai-assistant': 'ai-assistant'
+    };
+    setCurrentView(views[tab] || 'dashboard');
+
+    // Sync PlansLibrary if one of its sub-items is clicked
+    const plansTabMap: Record<string, { tab: string, subTab: string }> = {
+      alimentos: { tab: 'alimentos', subTab: 'alimentos-base' },
+      'alimentos-suplementos': { tab: 'alimentos', subTab: 'suplementos' },
+      'receitas-comunidade': { tab: 'receitas', subTab: 'comunidade' },
+      'receitas-minhas': { tab: 'receitas', subTab: 'minhas' },
+      substituicoes: { tab: 'substituicoes', subTab: 'listas' },
+      'modelos-planos': { tab: 'modelos', subTab: 'meal-plans' },
+      'modelos-evitar': { tab: 'modelos', subTab: 'avoid-foods' },
+      'modelos-recomendacoes': { tab: 'modelos', subTab: 'recommendations' }
+    };
+
+    if (plansTabMap[tab]) {
+      setPlansActiveTab(plansTabMap[tab].tab as any);
+      setPlansActiveSubTab(plansTabMap[tab].subTab);
+    }
+
+    // Sync SettingsPage section if clicked from sidebar
+    if (tab.startsWith('settings-')) {
+      const section = tab.replace('settings-', '');
+      setSettingsActiveSection(section as any);
+    } else if (tab === 'settings') {
+      setSettingsActiveSection('profissional');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-nutri-secondary selection:bg-nutri-blue/20 selection:text-nutri-text">
-      <Sidebar
-        activeTab={activeTab}
-        isOpen={isSidebarOpen}
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        isCollapsed={isSidebarCollapsed}
-        toggleCollapse={() => {
-          const newState = !isSidebarCollapsed;
-          setIsSidebarCollapsed(newState);
-          window.localStorage.setItem('sidebarCollapsed', String(newState));
-        }}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          const views: Record<string, View> = {
-            dashboard: 'dashboard',
-            patients: 'patients',
-            alimentos: 'plans-library',
-            'alimentos-suplementos': 'plans-library',
-            'receitas-comunidade': 'plans-library',
-            'receitas-minhas': 'plans-library',
-            substituicoes: 'plans-library',
-            'modelos-planos': 'plans-library',
-            'modelos-evitar': 'plans-library',
-            'modelos-recomendacoes': 'plans-library',
-            billing: 'finance',
-            appointments: 'appointments',
-            settings: 'settings',
-            'settings-profissional': 'settings',
-            'settings-atendimento': 'settings',
-            'settings-gestao': 'settings',
-            'settings-sistema': 'settings',
-            'settings-seguranca': 'settings',
-            'ai-assistant': 'ai-assistant'
-          };
-          setCurrentView(views[tab] || 'dashboard');
+      {/* Desktop Sidebar - Hidden on Mobile */}
+      <div className="hidden lg:block">
+        <Sidebar
+          activeTab={activeTab}
+          isOpen={isSidebarOpen}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isCollapsed={isSidebarCollapsed}
+          toggleCollapse={() => {
+            const newState = !isSidebarCollapsed;
+            setIsSidebarCollapsed(newState);
+            window.localStorage.setItem('sidebarCollapsed', String(newState));
+          }}
+          setActiveTab={handleSidebarTabChange}
+        />
+      </div>
 
-          // Sync PlansLibrary if one of its sub-items is clicked
-          const plansTabMap: Record<string, { tab: string, subTab: string }> = {
-            alimentos: { tab: 'alimentos', subTab: 'alimentos-base' },
-            'alimentos-suplementos': { tab: 'alimentos', subTab: 'suplementos' },
-            'receitas-comunidade': { tab: 'receitas', subTab: 'comunidade' },
-            'receitas-minhas': { tab: 'receitas', subTab: 'minhas' },
-            substituicoes: { tab: 'substituicoes', subTab: 'listas' },
-            'modelos-planos': { tab: 'modelos', subTab: 'meal-plans' },
-            'modelos-evitar': { tab: 'modelos', subTab: 'avoid-foods' },
-            'modelos-recomendacoes': { tab: 'modelos', subTab: 'recommendations' }
-          };
+      {/* Mobile Sidebar/Drawer */}
+      <div className="lg:hidden">
+        <Sidebar
+          activeTab={activeTab}
+          isOpen={isSidebarOpen}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isCollapsed={false}
+          toggleCollapse={() => {}}
+          setActiveTab={(tab) => {
+            handleSidebarTabChange(tab);
+            setIsSidebarOpen(false);
+          }}
+        />
+      </div>
 
-          if (plansTabMap[tab]) {
-            setPlansActiveTab(plansTabMap[tab].tab as any);
-            setPlansActiveSubTab(plansTabMap[tab].subTab);
-          }
-
-          // Sync SettingsPage section if clicked from sidebar
-          if (tab.startsWith('settings-')) {
-            const section = tab.replace('settings-', '');
-            setSettingsActiveSection(section as any);
-          } else if (tab === 'settings') {
-            setSettingsActiveSection('profissional');
-          }
-        }}
-      />
-
-      <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+      <main className={`
+        flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out h-screen overflow-hidden
+        ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}
+        pb-20 lg:pb-0
+      `}>
         {/* Unified Header */}
         <Header
           session={session}
           title={title}
           description={description}
           onToggleSidebar={() => setIsSidebarOpen(true)}
-          onProfileClick={() => setActiveTab('settings')}
+          onProfileClick={() => {
+            setActiveTab('settings');
+            setCurrentView('settings');
+          }}
         />
 
         {/* Floating Main Container */}
-        <div className="flex-1 px-4 md:px-8 pb-4 md:pb-8 overflow-hidden">
-          <div className="w-full h-full bg-white rounded-xl shadow-nutri-floating overflow-hidden flex flex-col">
+        <div className="flex-1 px-3 md:px-8 pb-3 md:pb-8 overflow-hidden">
+          <div className="w-full h-full bg-white rounded-2xl lg:rounded-xl shadow-nutri-floating overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto no-scrollbar">
-              <div className="p-6 md:p-10 max-w-[1600px] mx-auto w-full">
+              <div className="p-4 md:p-10 max-w-[1600px] mx-auto w-full">
                 {currentView === 'dashboard' ? (
-                  <div className="animate-in fade-in duration-700 space-y-8">
+                  <div className="animate-in fade-in duration-700 space-y-6">
+                    {/* Mobile Quick Actions */}
                     <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex gap-3 ml-auto">
+                      <div className="hidden lg:flex gap-3 ml-auto">
                         <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
-                          <Plus size={18} strokeWidth={3} /> NOVO PACIENTE
+                          <Plus size={18} strokeWidth={3} /> NOVO CLIENTE
                         </button>
                         <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95">
                           <Calendar size={18} className="text-nutri-blue" strokeWidth={2.5} /> Agendar
                         </button>
                       </div>
                     </section>
-                    <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    
+                    {/* Stats Cards - Responsive Grid */}
+                    <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                       {MOCK_METRICS.map((metric, idx) => <StatsCard key={idx} metric={metric} />)}
                     </section>
-                    <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    
+                    {/* Charts & Lists */}
+                    <section className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
                       <div className="xl:col-span-2 space-y-6"><RevenueChart /></div>
-                      <div className="space-y-6 flex flex-col">
+                      <div className="space-y-4 lg:space-y-6 flex flex-col">
                         <AppointmentsList />
                         <AlertsPanel />
                       </div>
                     </section>
                   </div>
                 ) : currentView === 'patients' ? (
-                  <PatientList onAddPatient={() => setCurrentView('new-patient')} onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }} onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }} onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }} />
+                  <PatientList 
+                    onAddPatient={() => setCurrentView('new-patient')} 
+                    onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }} 
+                    onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }} 
+                    onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }} 
+                  />
                 ) : currentView === 'patient-detail' ? (
-                  <PatientDetail patientId={selectedPatientId || '1'} onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }} onEdit={() => setCurrentView('edit-patient')} onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }} onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }} />
+                  <PatientDetail 
+                    patientId={selectedPatientId || '1'} 
+                    onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }} 
+                    onEdit={() => setCurrentView('edit-patient')} 
+                    onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }} 
+                    onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }} 
+                  />
                 ) : currentView === 'new-patient' ? (
                   <PatientForm onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
                 ) : currentView === 'edit-patient' ? (
@@ -314,11 +423,25 @@ const AppContent: React.FC = () => {
           </div>
         </div>
 
-        {/* Global Signature Footer */}
-        <footer className="flex-shrink-0 py-4 px-10 text-center bg-nutri-secondary">
+        {/* Desktop Footer */}
+        <footer className="hidden lg:flex flex-shrink-0 py-4 px-10 text-center bg-nutri-secondary justify-center">
           <p className="text-[10px] text-nutri-text-dis font-bold uppercase tracking-[0.3em] opacity-60">&copy; 2024 NutriClin Pro Systems</p>
         </footer>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNavigation 
+        activeTab={activeTab}
+        onTabChange={handleBottomNavChange}
+      />
+
+      {/* Floating Action Button - Mobile only, hidden on forms */}
+      {shouldShowFab() && (
+        <FloatingActionButton 
+          actions={getFabActions()}
+          showSpeedDial={true}
+        />
+      )}
 
       {/* Globally Accessible Food Form Modal */}
       <FoodFormModal
@@ -329,7 +452,6 @@ const AppContent: React.FC = () => {
         onSave={(food) => {
           setIsFoodModalOpen(false);
           setFoodToEdit(null);
-          // If we were in detail view, update it
           if (currentView === 'food-detail') {
             setSelectedFoodItem(food);
           }

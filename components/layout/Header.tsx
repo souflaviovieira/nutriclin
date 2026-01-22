@@ -1,6 +1,5 @@
 import React from 'react';
-import { Menu, Search, Bell, User } from 'lucide-react';
-import { supabase } from '../../services/supabaseClient';
+import { Menu, Bell, ChevronRight } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 
 interface HeaderProps {
@@ -15,48 +14,67 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
     const { profile } = useUser();
 
     return (
-        <header className="flex-shrink-0 bg-nutri-secondary px-6 md:px-10 py-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <header className="flex-shrink-0 bg-nutri-secondary px-4 md:px-10 py-4 md:py-6 flex items-center justify-between gap-3">
+            {/* Left: Menu + Title */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+                {/* Mobile Menu Button */}
                 <button
                     onClick={onToggleSidebar}
-                    className="lg:hidden p-2.5 text-nutri-text-sec hover:bg-nutri-main/50 rounded-2xl transition-colors"
+                    className="lg:hidden p-2.5 text-nutri-text-sec hover:bg-white rounded-xl transition-colors active:scale-95"
+                    aria-label="Menu"
                 >
                     <Menu size={22} />
                 </button>
-                <div className="flex flex-col">
-                    <h2 className="text-xl md:text-2xl font-bold text-nutri-text tracking-tighter leading-tight">{title}</h2>
-                    {description && <p className="text-nutri-text-sec font-medium text-xs md:text-sm">{description}</p>}
+                
+                {/* Title Block */}
+                <div className="min-w-0 flex-1">
+                    <h2 className="text-lg md:text-2xl font-bold text-nutri-text tracking-tight leading-tight truncate">
+                        {title}
+                    </h2>
+                    {description && (
+                        <p className="text-nutri-text-sec font-medium text-xs md:text-sm truncate hidden sm:block">
+                            {description}
+                        </p>
+                    )}
                 </div>
             </div>
-            <div className="flex items-center gap-2 md:gap-5">
-                <button className="p-3 text-nutri-text-sec hover:bg-nutri-main/50 rounded-2xl relative transition-all">
-                    <Bell size={20} />
-                    <span className="absolute top-3 right-3 w-2 h-2 bg-nutri-error rounded-full border-2 border-nutri-secondary"></span>
-                </button>
-                <div
-                    onClick={onProfileClick}
-                    className="flex items-center gap-3.5 pl-2 md:pl-5 border-l border-nutri-text-dis/20 cursor-pointer group"
+
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                {/* Notifications */}
+                <button 
+                    className="p-2.5 md:p-3 text-nutri-text-sec hover:bg-white rounded-xl relative transition-all active:scale-95"
+                    aria-label="Notificações"
                 >
-                    <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-nutri-text tracking-tight group-hover:text-nutri-blue transition-colors" onClick={onProfileClick}>{profile?.display_name || 'Usuário'}</p>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                supabase.auth.signOut();
-                            }}
-                            className="text-[10px] text-nutri-error font-black uppercase tracking-widest hover:opacity-70 transition-opacity"
-                        >
-                            Sair
-                        </button>
+                    <Bell size={20} />
+                    <span className="absolute top-2 right-2 md:top-3 md:right-3 w-2 h-2 bg-nutri-error rounded-full border-2 border-nutri-secondary" />
+                </button>
+
+                {/* Profile */}
+                <button
+                    onClick={onProfileClick}
+                    className="flex items-center gap-2 md:gap-3 p-1 md:pl-4 md:border-l border-nutri-text-dis/20 group"
+                    aria-label="Perfil"
+                >
+                    {/* Desktop: Name + Sign out */}
+                    <div className="text-right hidden md:block">
+                        <p className="text-xs font-black text-nutri-text tracking-tight group-hover:text-nutri-blue transition-colors">
+                            {profile?.display_name || 'Usuário'}
+                        </p>
+                        <span className="text-[10px] text-nutri-text-dis font-bold">
+                            Ver Perfil
+                        </span>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black rotate-3 overflow-hidden group-hover:rotate-0 transition-all border-2 border-transparent group-hover:border-white">
+                    
+                    {/* Avatar */}
+                    <div className="w-10 h-10 md:w-10 md:h-10 rounded-xl bg-nutri-blue flex items-center justify-center text-white text-xs font-black overflow-hidden group-hover:ring-2 ring-nutri-blue/30 transition-all">
                         {profile?.avatar_url ? (
                             <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <span>{profile?.display_name?.charAt(0).toUpperCase() || 'U'}</span>
                         )}
                     </div>
-                </div>
+                </button>
             </div>
         </header>
     );

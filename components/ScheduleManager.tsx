@@ -9,11 +9,7 @@ import {
   Filter, 
   MoreVertical,
   CheckCircle2,
-  DollarSign,
-  TrendingUp,
-  Search,
-  ChevronDown,
-  UserPlus
+  X
 } from 'lucide-react';
 import { MOCK_APPOINTMENTS } from '../constants';
 import { Appointment } from '../types';
@@ -23,18 +19,16 @@ type CalendarView = 'dia' | 'semana' | 'mes';
 
 const ScheduleManager: React.FC = () => {
   const [view, setView] = useState<CalendarView>('dia');
-  const [selectedDate, setSelectedDate] = useState(new Date(2024, 2, 20)); // Base: 20 de Março de 2024
+  const [selectedDate, setSelectedDate] = useState(new Date(2024, 2, 20));
   const [isAddingAppointment, setIsAddingAppointment] = useState(false);
   const [preSelectedData, setPreSelectedData] = useState<{date?: string, time?: string} | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({ type: 'Todos', status: 'Todos' });
   
-  // Estado local para permitir a manipulação dos agendamentos (Drag & Drop)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS as unknown as Appointment[]);
   const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
 
   // --- Helper Functions ---
-  
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
   const getWeekDays = (date: Date) => {
@@ -67,25 +61,13 @@ const ScheduleManager: React.FC = () => {
   };
 
   // --- Drag & Drop Handlers ---
-
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggedAppId(id);
     e.dataTransfer.setData('appointmentId', id);
     e.dataTransfer.effectAllowed = 'move';
-    
-    // Adiciona uma classe visual ao elemento sendo arrastado após um pequeno delay
-    const target = e.currentTarget as HTMLElement;
-    setTimeout(() => {
-      target.style.opacity = '0.5';
-    }, 0);
   };
 
-  const handleDragEnd = (e: React.DragEvent) => {
-    setDraggedAppId(null);
-    const target = e.currentTarget as HTMLElement;
-    target.style.opacity = '1';
-  };
-
+  const handleDragEnd = () => setDraggedAppId(null);
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
@@ -94,25 +76,14 @@ const ScheduleManager: React.FC = () => {
   const handleDrop = (e: React.DragEvent, newDate: string, newTime?: string) => {
     e.preventDefault();
     const id = e.dataTransfer.getData('appointmentId');
-    
     if (!id) return;
-
-    setAppointments(prev => prev.map(app => {
-      if (app.id === id) {
-        return {
-          ...app,
-          date: newDate,
-          time: newTime || app.time // Se não houver novo horário (ex: visão mês), mantém o anterior
-        };
-      }
-      return app;
-    }));
-    
+    setAppointments(prev => prev.map(app => 
+      app.id === id ? { ...app, date: newDate, time: newTime || app.time } : app
+    ));
     setDraggedAppId(null);
   };
 
-  // --- Filtered & In-View Data ---
-
+  // --- Filtered Data ---
   const visibleAppointments = useMemo(() => {
     let list = appointments;
     
@@ -134,13 +105,7 @@ const ScheduleManager: React.FC = () => {
     return list;
   }, [selectedDate, view, filters, appointments]);
 
-  const financialSummary = useMemo(() => {
-    const count = visibleAppointments.length;
-    return { count };
-  }, [visibleAppointments]);
-
   // --- Actions ---
-
   const handleOpenAppointment = (date?: string, time?: string) => {
     setPreSelectedData({ date, time });
     setIsAddingAppointment(true);
@@ -154,7 +119,7 @@ const ScheduleManager: React.FC = () => {
     setSelectedDate(next);
   };
 
-  const statusColors: any = {
+  const statusColors: Record<string, string> = {
     'Confirmado': 'bg-emerald-50 text-emerald-700 border-emerald-100',
     'Pendente': 'bg-amber-50 text-amber-700 border-amber-100',
     'Realizada': 'bg-blue-50 text-blue-700 border-blue-100',
@@ -180,109 +145,198 @@ const ScheduleManager: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto pb-20">
+    <div className="space-y-4 lg:space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto pb-24 lg:pb-8">
       
-      {/* Control Bar with Action */}
-      <section className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-4">
-        <div className="flex bg-slate-100 p-1 rounded-xl shrink-0">
-          {(['dia', 'semana', 'mes'] as const).map((v) => (
-            <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`px-6 py-2 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
-                view === v 
-                ? 'bg-white text-nutri-blue shadow-sm' 
-                : 'text-slate-400 hover:text-slate-600'
-              }`}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <button onClick={() => changePeriod(-1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
-            <ChevronLeft size={20} />
-          </button>
-          <div className="text-center min-w-[180px]">
-            <h3 className="text-sm font-bold text-slate-800">
-              {view === 'dia' && selectedDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
-              {view === 'semana' && `Semana de ${getWeekDays(selectedDate)[0].getDate()} a ${getWeekDays(selectedDate)[6].getDate()} de Março`}
-              {view === 'mes' && selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-            </h3>
+      {/* Mobile-First Control Bar */}
+      <section className="bg-white p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm">
+        {/* View Tabs */}
+        <div className="flex justify-center mb-3 lg:mb-0 lg:hidden">
+          <div className="flex bg-slate-100 p-1 rounded-xl w-full">
+            {(['dia', 'semana', 'mes'] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
+                  view === v 
+                  ? 'bg-white text-nutri-blue shadow-sm' 
+                  : 'text-slate-400'
+                }`}
+              >
+                {v === 'dia' ? 'Dia' : v === 'semana' ? 'Sem' : 'Mês'}
+              </button>
+            ))}
           </div>
-          <button onClick={() => changePeriod(1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
-            <ChevronRight size={20} />
-          </button>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex items-center justify-between gap-4">
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            {(['dia', 'semana', 'mes'] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`px-6 py-2 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
+                  view === v ? 'bg-white text-nutri-blue shadow-sm' : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button onClick={() => changePeriod(-1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
+              <ChevronLeft size={20} />
+            </button>
+            <div className="text-center min-w-[180px]">
+              <h3 className="text-sm font-bold text-slate-800">
+                {view === 'dia' && selectedDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
+                {view === 'semana' && `Semana de ${getWeekDays(selectedDate)[0].getDate()} a ${getWeekDays(selectedDate)[6].getDate()}`}
+                {view === 'mes' && selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              </h3>
+            </div>
+            <button onClick={() => changePeriod(1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${showFilters ? 'bg-nutri-blue/10 border-nutri-blue text-nutri-blue' : 'bg-white border-slate-200 text-slate-600'}`}
             >
               <Filter size={16} /> Filtros
             </button>
-            {showFilters && (
-              <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-100 shadow-xl rounded-2xl z-50 p-4 space-y-4 animate-in fade-in zoom-in duration-200">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Status</label>
-                  <select 
-                    value={filters.status}
-                    onChange={(e) => setFilters({...filters, status: e.target.value})}
-                    className="w-full bg-slate-50 border-none rounded-lg p-2 text-xs font-medium outline-none text-slate-800"
-                  >
-                    <option>Todos</option>
-                    <option>Confirmado</option>
-                    <option>Pendente</option>
-                    <option>Realizada</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Atendimento</label>
-                  <select 
-                    value={filters.type}
-                    onChange={(e) => setFilters({...filters, type: e.target.value})}
-                    className="w-full bg-slate-50 border-none rounded-lg p-2 text-xs font-medium outline-none text-slate-800"
-                  >
-                    <option>Todos</option>
-                    <option>Primeira Consulta</option>
-                    <option>Retorno</option>
-                    <option>Avaliação</option>
-                  </select>
-                </div>
-              </div>
-            )}
+            <button 
+              onClick={() => handleOpenAppointment()}
+              className="flex items-center gap-2 px-6 py-2 bg-nutri-blue text-white rounded-xl text-xs font-bold shadow-lg shadow-nutri-blue/10 hover:bg-nutri-blue-hover transition-all active:scale-95"
+            >
+              <Plus size={16} strokeWidth={3} /> Nova Consulta
+            </button>
           </div>
-          <button 
-            onClick={() => handleOpenAppointment()}
-            className="flex items-center gap-2 px-6 py-2 bg-nutri-blue text-white rounded-xl text-xs font-bold shadow-lg shadow-nutri-blue/10 hover:bg-nutri-blue-hover transition-all active:scale-95 whitespace-nowrap"
-          >
-            <Plus size={16} strokeWidth={3} /> Nova Consulta
+        </div>
+
+        {/* Mobile Date Navigator */}
+        <div className="flex items-center justify-between lg:hidden">
+          <button onClick={() => changePeriod(-1)} className="p-2 text-slate-400 active:bg-slate-50 rounded-lg">
+            <ChevronLeft size={22} />
+          </button>
+          <div className="text-center flex-1">
+            <h3 className="text-sm font-bold text-slate-800">
+              {view === 'dia' && selectedDate.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
+              {view === 'semana' && `${getWeekDays(selectedDate)[0].getDate()} - ${getWeekDays(selectedDate)[6].getDate()} ${selectedDate.toLocaleDateString('pt-BR', { month: 'short' })}`}
+              {view === 'mes' && selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+            </h3>
+          </div>
+          <button onClick={() => changePeriod(1)} className="p-2 text-slate-400 active:bg-slate-50 rounded-lg">
+            <ChevronRight size={22} />
           </button>
         </div>
       </section>
 
-      {/* Main Content View */}
-      <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px]">
-        
+      {/* Filter Panel - Mobile Bottom Sheet Style */}
+      {showFilters && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">Filtros</h3>
+              <button onClick={() => setShowFilters(false)} className="p-2 text-slate-400">
+                <X size={24} />
+              </button>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-400 uppercase block mb-2">Status</label>
+              <div className="flex flex-wrap gap-2">
+                {['Todos', 'Confirmado', 'Pendente', 'Realizada'].map(s => (
+                  <button
+                    key={s}
+                    onClick={() => setFilters({...filters, status: s})}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      filters.status === s 
+                        ? 'bg-nutri-blue text-white' 
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-400 uppercase block mb-2">Tipo</label>
+              <div className="flex flex-wrap gap-2">
+                {['Todos', 'Primeira Consulta', 'Retorno', 'Avaliação'].map(t => (
+                  <button
+                    key={t}
+                    onClick={() => setFilters({...filters, type: t})}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      filters.type === t 
+                        ? 'bg-nutri-blue text-white' 
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appointments List - Mobile View */}
+      {view === 'dia' && (
+        <section className="lg:hidden space-y-3">
+          {visibleAppointments.length === 0 ? (
+            <div className="bg-white p-8 rounded-xl border border-slate-100 text-center">
+              <CalendarIcon size={40} className="mx-auto text-slate-200 mb-3" />
+              <p className="text-sm font-bold text-slate-600">Nenhuma consulta</p>
+              <p className="text-xs text-slate-400 mt-1">Toque no + para agendar</p>
+            </div>
+          ) : (
+            visibleAppointments.sort((a,b) => a.time.localeCompare(b.time)).map(app => (
+              <div 
+                key={app.id}
+                className={`p-4 rounded-xl border shadow-sm flex items-center gap-4 active:scale-[0.99] transition-all ${statusColors[app.status]}`}
+              >
+                <div className="text-center min-w-[50px]">
+                  <p className="text-lg font-black">{app.time}</p>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-sm truncate">{app.patientName}</h4>
+                  <p className="text-[10px] opacity-70 font-bold uppercase">{app.type}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold">R$ {app.price}</span>
+                  <button className="p-2 rounded-lg hover:bg-black/5">
+                    <MoreVertical size={18} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {/* Desktop Calendar Views */}
+      <section className="hidden lg:block bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px]">
         {/* VIEW: DIA */}
         {view === 'dia' && (
           <div className="flex flex-col">
             <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cronograma Diário</span>
-              <span className="text-[10px] font-bold text-nutri-blue bg-nutri-blue/10 px-2 py-1 rounded-lg">Agora: 10:45</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cronograma</span>
+              <span className="text-[10px] font-bold text-nutri-blue bg-nutri-blue/10 px-2 py-1 rounded-lg">Agora</span>
             </div>
             <div className="divide-y divide-slate-50">
-              {Array.from({ length: 15 }, (_, i) => i + 7).map(hour => {
+              {Array.from({ length: 12 }, (_, i) => i + 7).map(hour => {
                 const hourStr = `${hour.toString().padStart(2, '0')}:00`;
                 const apps = visibleAppointments.filter(a => a.time.startsWith(hour.toString().padStart(2, '0')));
                 
                 return (
                   <div 
                     key={hour} 
-                    className="flex min-h-[80px] group"
+                    className="flex min-h-[70px] group"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, formatDate(selectedDate), hourStr)}
                   >
@@ -308,23 +362,18 @@ const ScheduleManager: React.FC = () => {
                                 <p className="text-[10px] opacity-70 font-bold uppercase">{app.type} • {app.time}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                               <span className="text-xs font-bold">R$ {app.price}</span>
-                              <button className="p-1 hover:bg-black/5 rounded-lg opacity-40 hover:opacity-100 transition-all">
-                                <MoreVertical size={16} />
-                              </button>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <div className="h-full flex items-center px-4">
-                          <button 
-                            onClick={() => handleOpenAppointment(formatDate(selectedDate), hourStr)}
-                            className="text-[10px] font-bold text-slate-300 hover:text-nutri-blue opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1 uppercase tracking-widest"
-                          >
-                            <Plus size={12} /> Horário Livre
-                          </button>
-                        </div>
+                        <button 
+                          onClick={() => handleOpenAppointment(formatDate(selectedDate), hourStr)}
+                          className="h-full w-full flex items-center px-4 text-[10px] font-bold text-slate-300 hover:text-nutri-blue opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          <Plus size={12} className="mr-1" /> Horário livre
+                        </button>
                       )}
                     </div>
                   </div>
@@ -345,47 +394,34 @@ const ScheduleManager: React.FC = () => {
               return (
                 <div 
                   key={idx} 
-                  className={`flex flex-col min-h-[600px] group/day transition-colors ${isToday ? 'bg-nutri-blue/5' : ''}`}
+                  className={`flex flex-col min-h-[500px] group/day ${isToday ? 'bg-nutri-blue/5' : ''}`}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, dateStr)}
                 >
-                  <div className={`p-5 border-b border-slate-50 text-center relative ${isToday ? 'bg-nutri-blue/10' : 'bg-white'}`}>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                  <div className={`p-4 border-b border-slate-50 text-center ${isToday ? 'bg-nutri-blue/10' : 'bg-white'}`}>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
                       {day.toLocaleDateString('pt-BR', { weekday: 'short' })}
                     </p>
-                    <div className={`inline-flex items-center justify-center w-9 h-9 rounded-full text-lg font-black transition-all ${isToday ? 'bg-nutri-blue text-white shadow-lg' : 'text-slate-700'}`}>
+                    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-base font-black ${isToday ? 'bg-nutri-blue text-white' : 'text-slate-700'}`}>
                       {day.getDate()}
                     </div>
                   </div>
-                  <div className="flex-1 p-3 space-y-3 overflow-y-auto no-scrollbar relative bg-slate-50/20 group-hover/day:bg-nutri-blue/5 transition-colors">
+                  <div className="flex-1 p-2 space-y-2 overflow-y-auto no-scrollbar">
                     {dayApps.sort((a,b) => a.time.localeCompare(b.time)).map(app => (
                       <div 
                         key={app.id} 
                         draggable
                         onDragStart={(e) => handleDragStart(e, app.id)}
                         onDragEnd={handleDragEnd}
-                        className={`p-2.5 rounded-xl border flex items-center gap-3 shadow-sm transition-all cursor-grab active:cursor-grabbing hover:scale-[1.05] group ${statusColors[app.status]}`}
+                        className={`p-2 rounded-lg border flex items-center gap-2 text-xs shadow-sm cursor-grab ${statusColors[app.status]}`}
                       >
-                        <div className="w-7 h-7 rounded-lg bg-white/60 flex items-center justify-center shrink-0 font-black text-[10px]">
-                          {app.patientName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                           <span className="text-[10px] font-black truncate leading-tight uppercase tracking-tight">{app.patientName.split(' ')[0]}</span>
-                           <span className="text-[9px] font-bold opacity-60 flex items-center gap-1"><Clock size={8}/> {app.time}</span>
-                        </div>
+                        <span className="font-bold">{app.time.slice(0,5)}</span>
+                        <span className="truncate">{app.patientName.split(' ')[0]}</span>
                       </div>
                     ))}
-                    
-                    <button 
-                      onClick={() => handleOpenAppointment(dateStr)}
-                      className="w-full py-6 rounded-xl border-2 border-dashed border-transparent hover:border-nutri-blue/20 hover:bg-white flex items-center justify-center text-nutri-blue/40 opacity-0 group-hover/day:opacity-100 transition-all"
-                    >
-                      <Plus size={20} />
-                    </button>
-
                     {dayApps.length === 0 && (
-                      <div className="h-full flex items-center justify-center opacity-[0.03] pointer-events-none">
-                        <CalendarIcon size={64} />
+                      <div className="h-full flex items-center justify-center opacity-10">
+                        <CalendarIcon size={32} />
                       </div>
                     )}
                   </div>
@@ -397,10 +433,10 @@ const ScheduleManager: React.FC = () => {
 
         {/* VIEW: MES */}
         {view === 'mes' && (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col">
             <div className="grid grid-cols-7 bg-slate-50/50 border-b border-slate-50">
               {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
-                <div key={d} className="p-3 text-[10px] font-bold text-slate-400 uppercase text-center tracking-widest">
+                <div key={d} className="p-3 text-[10px] font-bold text-slate-400 uppercase text-center">
                   {d}
                 </div>
               ))}
@@ -408,49 +444,25 @@ const ScheduleManager: React.FC = () => {
             <div className="grid grid-cols-7 flex-1 divide-x divide-y divide-slate-50">
               {getMonthDays(selectedDate).map((dayObj, idx) => {
                 const dateStr = formatDate(dayObj.date);
-                const dayApps = visibleAppointments.filter(a => a.date === dateStr);
+                const dayApps = appointments.filter(a => a.date === dateStr);
                 const isToday = dateStr === formatDate(new Date());
-                const isSelected = dateStr === formatDate(selectedDate);
 
                 return (
                   <div 
                     key={idx} 
                     onClick={() => { setSelectedDate(dayObj.date); setView('dia'); }}
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, dateStr)}
-                    className={`min-h-[100px] p-2 transition-all cursor-pointer hover:bg-nutri-blue/5 flex flex-col items-center group relative ${!dayObj.currentMonth ? 'opacity-30 grayscale' : ''} ${isSelected ? 'ring-2 ring-nutri-blue/20 z-10' : ''}`}
+                    className={`min-h-[80px] p-2 cursor-pointer hover:bg-nutri-blue/5 flex flex-col items-center ${!dayObj.currentMonth ? 'opacity-30' : ''}`}
                   >
-                    <span className={`text-xs font-bold mb-2 w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-nutri-blue text-white' : 'text-slate-500 group-hover:text-nutri-blue'}`}>
+                    <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-nutri-blue text-white' : 'text-slate-500'}`}>
                       {dayObj.date.getDate()}
                     </span>
-
-                    <button 
-                      onClick={(e) => { 
-                        e.stopPropagation(); 
-                        handleOpenAppointment(dateStr); 
-                      }}
-                      className="absolute bottom-2 right-2 p-1.5 bg-nutri-blue text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-all scale-75 hover:scale-100"
-                    >
-                      <Plus size={14} />
-                    </button>
-                    
-                    <div className="flex flex-wrap gap-1 justify-center mt-auto mb-6">
+                    <div className="flex gap-0.5 mt-2">
                       {dayApps.slice(0, 3).map(app => (
-                        <div 
-                          key={app.id} 
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, app.id)}
-                          onDragEnd={handleDragEnd}
-                          className="w-1.5 h-1.5 rounded-full bg-nutri-blue/50"
-                        ></div>
+                        <div key={app.id} className="w-1.5 h-1.5 rounded-full bg-nutri-blue/50" />
                       ))}
-                      {dayApps.length > 3 && <span className="text-[8px] font-bold text-slate-400">+{dayApps.length - 3}</span>}
                     </div>
-
-                    {dayApps.length > 0 && dayObj.currentMonth && (
-                      <div className="absolute bottom-2 left-2 text-[8px] font-bold text-slate-400 uppercase tracking-tighter hidden sm:block">
-                        R$ {dayApps.reduce((s, a) => s + a.price, 0)}
-                      </div>
+                    {dayApps.length > 3 && (
+                      <span className="text-[8px] font-bold text-slate-400 mt-1">+{dayApps.length - 3}</span>
                     )}
                   </div>
                 );
@@ -460,10 +472,84 @@ const ScheduleManager: React.FC = () => {
         )}
       </section>
 
-      {/* Quick Help Footer */}
-      <footer className="text-center space-y-2">
+      {/* Mobile Week/Month Views - Simplified */}
+      {view === 'semana' && (
+        <section className="lg:hidden">
+          <div className="flex overflow-x-auto no-scrollbar gap-2 pb-2 -mx-4 px-4">
+            {getWeekDays(selectedDate).map((day, idx) => {
+              const dateStr = formatDate(day);
+              const isToday = dateStr === formatDate(new Date());
+              const isSelected = dateStr === formatDate(selectedDate);
+              const dayApps = appointments.filter(a => a.date === dateStr);
+              
+              return (
+                <button 
+                  key={idx}
+                  onClick={() => { setSelectedDate(day); setView('dia'); }}
+                  className={`flex flex-col items-center p-3 rounded-2xl min-w-[60px] transition-all ${
+                    isSelected 
+                      ? 'bg-nutri-blue text-white' 
+                      : isToday 
+                        ? 'bg-nutri-blue/10 text-nutri-blue border border-nutri-blue/20' 
+                        : 'bg-white border border-slate-100'
+                  }`}
+                >
+                  <span className="text-[10px] font-bold uppercase opacity-70">
+                    {day.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0,3)}
+                  </span>
+                  <span className="text-lg font-black mt-1">{day.getDate()}</span>
+                  {dayApps.length > 0 && (
+                    <span className={`text-[10px] font-bold mt-1 ${isSelected ? 'text-white/80' : 'text-nutri-blue'}`}>
+                      {dayApps.length} cons
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {view === 'mes' && (
+        <section className="lg:hidden bg-white rounded-2xl border border-slate-100 p-4">
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
+            {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
+              <span key={i} className="text-[10px] font-bold text-slate-400">{d}</span>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {getMonthDays(selectedDate).map((dayObj, idx) => {
+              const dateStr = formatDate(dayObj.date);
+              const isToday = dateStr === formatDate(new Date());
+              const dayApps = appointments.filter(a => a.date === dateStr);
+              
+              return (
+                <button
+                  key={idx}
+                  onClick={() => { setSelectedDate(dayObj.date); setView('dia'); }}
+                  className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-bold transition-all ${
+                    !dayObj.currentMonth 
+                      ? 'text-slate-300' 
+                      : isToday 
+                        ? 'bg-nutri-blue text-white' 
+                        : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {dayObj.date.getDate()}
+                  {dayApps.length > 0 && dayObj.currentMonth && (
+                    <div className={`w-1 h-1 rounded-full mt-0.5 ${isToday ? 'bg-white' : 'bg-nutri-blue'}`} />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Tip Footer */}
+      <footer className="hidden lg:block text-center">
         <p className="text-[10px] text-slate-400 font-medium flex items-center justify-center gap-1">
-          <CheckCircle2 size={12} className="text-nutri-blue" /> Arraste uma consulta para remarcar o horário ou dia rapidamente
+          <CheckCircle2 size={12} className="text-nutri-blue" /> Arraste uma consulta para remarcar
         </p>
       </footer>
     </div>
