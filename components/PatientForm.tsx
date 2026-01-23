@@ -71,11 +71,19 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
     setLoading(true);
 
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        alert("Erro: Usuário não autenticado.");
+        setLoading(false);
+        return;
+      }
+
       const payload = {
+        user_id: userData.user.id,
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        birth_date: formData.birth_date,
+        birth_date: formData.birth_date || null,
         gender: formData.gender,
         profession: formData.profession,
         cpf: formData.cpf,
@@ -89,25 +97,41 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
           neighborhood: formData.neighborhood,
           city: formData.city,
           state: formData.state
-        }
+        },
+        updated_at: new Date().toISOString()
       };
 
       let error;
+      let newPatientData;
+
       if (initialData?.id) {
-        const { error: updateError } = await supabase.from('patients').update(payload).eq('id', initialData.id);
+        // Update
+        const { error: updateError, data } = await supabase
+          .from('patients')
+          .update(payload)
+          .eq('id', initialData.id)
+          .select()
+          .single();
         error = updateError;
+        newPatientData = data;
       } else {
-        const { error: insertError } = await supabase.from('patients').insert([{ ...payload, last_consultation: new Date().toLocaleDateString('pt-BR') }]);
+        // Insert
+        const { error: insertError, data } = await supabase
+          .from('patients')
+          .insert([{ ...payload, last_consultation: null }])
+          .select()
+          .single();
         error = insertError;
+        newPatientData = data;
       }
 
-      if (error) console.warn("Table simulation for demo.");
+      if (error) throw error;
 
       setShowSuccess(true);
-      setTimeout(() => onSave(formData, andSchedule), 1500);
-    } catch (err) {
-      console.error(err);
-      onSave(formData, andSchedule);
+      setTimeout(() => onSave(newPatientData, andSchedule), 1500);
+    } catch (err: any) {
+      console.error("Erro ao salvar paciente:", err);
+      alert(`Erro ao salvar: ${err.message || 'Verifique sua conexão'}`);
     } finally {
       setLoading(false);
     }

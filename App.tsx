@@ -27,12 +27,15 @@ import RecipeDetailView from './components/RecipeDetailView';
 import RecipeForm from './components/RecipeForm';
 import SubstitutionDetailView from './components/SubstitutionDetailView';
 import FoodFormModal from './components/FoodFormModal';
+import NextAppointmentCard from './components/NextAppointmentCard';
 import { BottomNavigation, FloatingActionButton } from './components/navigation';
 import { MOCK_METRICS, MOCK_PATIENTS } from './constants';
 import { Loader2, Plus, Calendar, UserPlus, CalendarPlus, Sparkles } from 'lucide-react';
 import { supabase } from './services/supabaseClient';
 import Header from './components/layout/Header';
 import { Patient, ConsultationRecord } from './types';
+import { consultationService } from './services/consultationService';
+import { patientService } from './services/patientService';
 
 import { UserProvider, useUser } from './contexts/UserContext';
 
@@ -88,13 +91,44 @@ const AppContent: React.FC = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Load Real Patients
+  useEffect(() => {
+    const fetchPatients = async () => {
+       try {
+         const realPatients = await patientService.listPatients();
+         if(realPatients && realPatients.length > 0) {
+             // Mapeia os campos do DB para a interface local se necessário
+            setLocalPatients(realPatients as any);
+         }
+       } catch(err) {
+         console.error("Failed to load patients", err);
+       }
+    };
+    if(session) fetchPatients();
+  }, [session]);
+  }, []);
+
   const getSelectedPatient = () => localPatients.find(p => p.id === selectedPatientId) || localPatients[0];
 
-  const handleFinishConsultation = (record: ConsultationRecord) => {
-    setLocalPatients(prev => prev.map(p => p.id === selectedPatientId ? {
-      ...p, lastConsultation: new Date().toLocaleDateString('pt-BR'), history: [...(p.history || []), record]
-    } : p));
-    setCurrentView('patient-detail');
+  const handleFinishConsultation = async (record: ConsultationRecord) => {
+    try {
+      if (selectedPatientId) {
+          await consultationService.saveFullConsultation(selectedPatientId, record);
+          
+          // Update local state optimistic
+          setLocalPatients(prev => prev.map(p => p.id === selectedPatientId ? {
+            ...p, 
+            lastConsultation: new Date().toLocaleDateString('pt-BR'), 
+            history: [...(p.history || []), record]
+          } : p));
+
+          alert("Consulta salva com sucesso!");
+      }
+      setCurrentView('patient-detail');
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao salvar consulta.");
+    }
   };
 
   const handleSavePatient = (data: any, andSchedule?: boolean) => {
@@ -163,10 +197,17 @@ const AppContent: React.FC = () => {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-nutri-secondary flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <Loader2 className="w-12 h-12 text-nutri-blue animate-spin" strokeWidth={3} />
-        <p className="text-xs font-bold text-nutri-text-dis uppercase tracking-[0.3em] animate-pulse">NutriClin Pro</p>
+    <div className="min-h-screen bg-cream-100 flex items-center justify-center">
+      <div className="flex flex-col items-center gap-5">
+        {/* Coral animated loader */}
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full border-4 border-cream-200"></div>
+          <div className="absolute inset-0 w-16 h-16 rounded-full border-4 border-coral-400 border-t-transparent animate-spin"></div>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-display font-bold text-coral-500 tracking-tight">NutriClin</p>
+          <p className="text-[10px] font-medium text-slate-warm-400 uppercase tracking-[0.2em] mt-1">Carregando...</p>
+        </div>
       </div>
     </div>
   );
@@ -264,7 +305,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-nutri-secondary selection:bg-nutri-blue/20 selection:text-nutri-text">
+    <div className="min-h-screen bg-cream-100 selection:bg-coral-100 selection:text-coral-600">
       {/* Desktop Sidebar - Hidden on Mobile */}
       <div className="hidden lg:block">
         <Sidebar
@@ -314,35 +355,71 @@ const AppContent: React.FC = () => {
         />
 
         {/* Floating Main Container */}
-        <div className="flex-1 px-3 md:px-8 pb-3 md:pb-8 overflow-hidden">
-          <div className="w-full h-full bg-white rounded-2xl lg:rounded-xl shadow-nutri-floating overflow-hidden flex flex-col">
-            <div className="flex-1 overflow-y-auto no-scrollbar">
-              <div className="p-4 md:p-10 max-w-[1600px] mx-auto w-full">
+        <div className="flex-1 px-3 md:px-8 pb-3 md:pb-8 overflow-hidden z-10 relative">
+          <div className="w-full h-full bg-white/80 backdrop-blur-md border border-cream-200 rounded-3xl lg:rounded-2xl shadow-soft-lg overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto no-scrollbar relative">
+              {/* Decorative grain texture */}
+              <div className="absolute inset-0 opacity-40 pointer-events-none grain-texture"></div>
+              
+              <div className="p-4 md:p-10 max-w-[1600px] mx-auto w-full relative z-10">
                 {currentView === 'dashboard' ? (
-                  <div className="animate-in fade-in duration-700 space-y-6">
-                    {/* Mobile Quick Actions */}
-                    <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="hidden lg:flex gap-3 ml-auto">
-                        <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-blue-hover hover:scale-[1.05] transition-all active:scale-95">
-                          <Plus size={18} strokeWidth={3} /> NOVO CLIENTE
-                        </button>
-                        <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-nutri-secondary text-nutri-text rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-nutri-border/30 hover:scale-[1.02] transition-all active:scale-95">
-                          <Calendar size={18} className="text-nutri-blue" strokeWidth={2.5} /> Agendar
-                        </button>
-                      </div>
+                  <div className="animate-in fade-in duration-700 space-y-8">
+                    {/* 1. HERO: Next Appointment (Focus on Now) */}
+                    <section>
+                      <NextAppointmentCard 
+                        patientName="Ana Sophia Oliveira"
+                        time="14:00"
+                        type="Retorno (45min)"
+                        isOnline={true}
+                        onStartConsultation={() => {
+                          setSelectedPatientId('1');
+                          setCurrentView('ongoing-consultation');
+                        }}
+                        onViewProfile={() => {
+                          setSelectedPatientId('1');
+                          setCurrentView('patient-detail');
+                        }}
+                      />
                     </section>
-                    
-                    {/* Stats Cards - Responsive Grid */}
+
+                    {/* 2. OPERATIONAL KPIs (Focus on Day/Week) - Replaces generic revenue */}
                     <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                      {/* Using existing metrics but should be customized for daily ops later */}
                       {MOCK_METRICS.map((metric, idx) => <StatsCard key={idx} metric={metric} />)}
                     </section>
                     
-                    {/* Charts & Lists */}
-                    <section className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
-                      <div className="xl:col-span-2 space-y-6"><RevenueChart /></div>
-                      <div className="space-y-4 lg:space-y-6 flex flex-col">
+                    {/* 3. MAIN WORKSPACE (Agenda & Alerts vs Revenue) */}
+                    <section className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+                      {/* Left Column: Immediate Action */}
+                      <div className="xl:col-span-2 space-y-6">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-display font-bold text-xl text-slate-warm-800">Sua Agenda Hoje</h3>
+                          <button onClick={() => { setCurrentView('appointments'); setActiveTab('appointments'); }} className="text-sm font-bold text-coral-500 hover:text-coral-600">
+                            Ver Agenda Completa
+                          </button>
+                        </div>
                         <AppointmentsList />
+                        
+                        {/* Secondary: Financials (Lower priority) */}
+                        <div className="pt-4 opacity-80 hover:opacity-100 transition-opacity">
+                           <RevenueChart />
+                        </div>
+                      </div>
+
+                      {/* Right Column: Support */}
+                      <div className="space-y-6 flex flex-col">
                         <AlertsPanel />
+                        
+                        {/* Quick Actions Card */}
+                        <div className="card-coral p-6 space-y-4">
+                          <h3 className="font-display font-bold text-lg text-slate-warm-800">Ações Rápidas</h3>
+                          <button onClick={() => { setCurrentView('new-patient'); setActiveTab('patients'); }} className="w-full flex items-center gap-3 p-3 rounded-xl bg-coral-50 text-coral-600 hover:bg-coral-100 transition-colors font-bold text-sm">
+                            <Plus size={18} /> Cadastrar Paciente
+                          </button>
+                          <button onClick={() => { setCurrentView('new-appointment'); setActiveTab('appointments'); }} className="w-full flex items-center gap-3 p-3 rounded-xl bg-cream-100 text-slate-warm-600 hover:bg-cream-200 transition-colors font-bold text-sm">
+                            <Calendar size={18} /> Agendar Consulta
+                          </button>
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -413,10 +490,7 @@ const AppContent: React.FC = () => {
                 ) : currentView === 'ai-assistant' ? (
                   <AiAssistant />
                 ) : (
-                  <SettingsPage
-                    activeSection={settingsActiveSection}
-                    onSectionChange={setSettingsActiveSection}
-                  />
+                  <SettingsPage initialSection="profissional" />
                 )}
               </div>
             </div>

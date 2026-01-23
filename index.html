@@ -4,48 +4,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NutriClin - Gestão Nutricional Profissional</title>
+  <title>NutriClin Pro - Gestão Nutricional Inteligente</title>
+  <meta name="description"
+    content="Sistema completo de gestão para nutricionistas. Organize pacientes, consultas e planos alimentares em uma plataforma moderna e intuitiva.">
+  <meta name="theme-color" content="#E07B5E">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link href="https://fonts.cdnfonts.com/css/geomanist" rel="stylesheet">
+  <!-- Modern Typography: DM Sans + Fraunces for editorial feel -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&display=swap"
+    rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'nutri-main': '#FFFFFF',
-            'nutri-secondary': '#F5F9FC',
-            'nutri-card': '#FAFBFC',
-            'nutri-blue': '#84d1c1',
-            'nutri-blue-hover': '#6bc2b1',
-            'nutri-text': '#2F3A45',
-            'nutri-text-sec': '#6B7280',
-            'nutri-text-dis': '#9CA3AF',
-            'nutri-success': '#4ADE80',
-            'nutri-warning': '#FACC15',
-            'nutri-error': '#F87171',
-            'nutri-border': '#E5E7EB',
+            // 🔥 PRECISION VITALITY PALETTE
+            // Primary: Coral/Terracotta - Vitalidade, Energia, Calor Humano
+            'coral': {
+              50: '#FEF6F4',
+              100: '#FDE8E3',
+              200: '#FBCFC5',
+              300: '#F7ADA0',
+              400: '#E07B5E',  // PRIMARY
+              500: '#D4694D',
+              600: '#B84F38',
+              700: '#9A3F2D',
+              800: '#7D3426',
+              900: '#672D23',
+            },
+            // Neutral Warm: Cream backgrounds
+            'cream': {
+              50: '#FFFDFB',
+              100: '#FDF6F0',   // Main background
+              200: '#FAF0E8',
+              300: '#F5E6DA',
+              400: '#E8D5C4',
+              500: '#D4C0AB',
+            },
+            // Slate for text and dark accents
+            'slate-warm': {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+              400: '#94A3B8',
+              500: '#64748B',
+              600: '#475569',
+              700: '#334155',
+              800: '#1E293B',   // Primary text
+              900: '#0F172A',
+            },
+            // Accent colors
+            'success': '#22C55E',
+            'warning': '#F59E0B',
+            'error': '#EF4444',
+            'info': '#0EA5E9',
+            // Legacy compatibility
+            'nutri-blue': '#E07B5E',
+            'nutri-blue-hover': '#D4694D',
+          },
+          fontFamily: {
+            'sans': ['DM Sans', 'system-ui', 'sans-serif'],
+            'display': ['DM Sans', 'system-ui', 'sans-serif'], // Unificando para harmonia
+          },
+          fontSize: {
+            'display-xl': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+            'display-lg': ['3rem', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '600' }],
+            'display-md': ['2rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'display-sm': ['1.5rem', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
           },
           boxShadow: {
-            'nutri-soft': '0px 4px 12px rgba(0,0,0,0.03)',
-            'nutri-floating': '0px 20px 50px rgba(0,0,0,0.06)',
-          }
+            'soft-xs': '0 1px 2px rgba(30, 41, 59, 0.04)',
+            'soft-sm': '0 2px 4px rgba(30, 41, 59, 0.06)',
+            'soft-md': '0 4px 12px rgba(30, 41, 59, 0.08)',
+            'soft-lg': '0 8px 24px rgba(30, 41, 59, 0.10)',
+            'soft-xl': '0 16px 48px rgba(30, 41, 59, 0.12)',
+            'glow-coral': '0 0 40px rgba(224, 123, 94, 0.15)',
+            'inner-soft': 'inset 0 2px 4px rgba(30, 41, 59, 0.04)',
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+            'slide-up': 'slideUp 0.5s ease-out forwards',
+            'slide-in-right': 'slideInRight 0.4s ease-out forwards',
+            'scale-in': 'scaleIn 0.3s ease-out forwards',
+            'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.95)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.7' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+          },
         }
       }
     }
   </script>
   <style>
+    /* Base Styles */
     body {
-      font-family: 'Geomanist', sans-serif;
-      background-color: #F5F9FC;
-      color: #2F3A45;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background-color: #FDF6F0;
+      color: #1E293B;
       -webkit-tap-highlight-color: transparent;
       overflow: hidden;
     }
 
-    /* Custom scrollbar */
+    /* Display Font */
+    .font-display {
+      font-family: 'Fraunces', Georgia, serif;
+    }
+
+    /* Grain texture overlay for depth */
+    .grain-texture::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Custom scrollbar - Coral accent */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -56,12 +163,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #E5E7EB;
+      background: #E8D5C4;
       border-radius: 10px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #9CA3AF;
+      background: #E07B5E;
     }
 
     .no-scrollbar::-webkit-scrollbar {
@@ -73,13 +180,16 @@
       scrollbar-width: none;
     }
 
-    .transition-all {
-      transition-property: all;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      transition-duration: 200ms;
+    /* Smooth transitions with spring physics feel */
+    .transition-spring {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Ocultar Spinners de inputs numéricos */
+    .transition-smooth {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Hide number input spinners */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -91,6 +201,45 @@
       -moz-appearance: textfield;
     }
 
+    /* Focus states with coral glow */
+    .focus-coral:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(224, 123, 94, 0.2);
+    }
+
+    /* Glassmorphism alternative: Frosted solid */
+    .frosted-card {
+      background: rgba(255, 253, 251, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Interactive states */
+    .interactive-lift {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+
+    .interactive-lift:hover {
+      transform: translateY(-2px);
+    }
+
+    .interactive-lift:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      ::before,
+      ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Print styles */
     @media print {
       body {
         background-color: white !important;
@@ -101,7 +250,7 @@
       aside,
       header,
       footer,
-      .print\:hidden,
+      .print\\:hidden,
       nav,
       button:not(.print-visible) {
         display: none !important;

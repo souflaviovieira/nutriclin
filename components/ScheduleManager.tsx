@@ -5,9 +5,7 @@ import {
   ChevronRight, 
   Plus, 
   Calendar as CalendarIcon, 
-  Clock, 
   Filter, 
-  MoreVertical,
   CheckCircle2,
   X
 } from 'lucide-react';
@@ -19,7 +17,7 @@ type CalendarView = 'dia' | 'semana' | 'mes';
 
 const ScheduleManager: React.FC = () => {
   const [view, setView] = useState<CalendarView>('dia');
-  const [selectedDate, setSelectedDate] = useState(new Date(2024, 2, 20));
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Data atual automática
   const [isAddingAppointment, setIsAddingAppointment] = useState(false);
   const [preSelectedData, setPreSelectedData] = useState<{date?: string, time?: string} | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -148,18 +146,18 @@ const ScheduleManager: React.FC = () => {
     <div className="space-y-4 lg:space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto pb-24 lg:pb-8">
       
       {/* Mobile-First Control Bar */}
-      <section className="bg-white p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-slate-100 shadow-sm">
+      <section className="bg-white/90 backdrop-blur-sm p-3 lg:p-4 rounded-xl lg:rounded-2xl border border-cream-200 shadow-soft-sm sticky top-0 z-20">
         {/* View Tabs */}
         <div className="flex justify-center mb-3 lg:mb-0 lg:hidden">
-          <div className="flex bg-slate-100 p-1 rounded-xl w-full">
+          <div className="flex bg-cream-100 p-1 rounded-xl w-full">
             {(['dia', 'semana', 'mes'] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
                 className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
                   view === v 
-                  ? 'bg-white text-nutri-blue shadow-sm' 
-                  : 'text-slate-400'
+                  ? 'bg-white text-coral-500 shadow-sm shadow-coral-100' 
+                  : 'text-slate-warm-400'
                 }`}
               >
                 {v === 'dia' ? 'Dia' : v === 'semana' ? 'Sem' : 'Mês'}
@@ -170,13 +168,13 @@ const ScheduleManager: React.FC = () => {
 
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center justify-between gap-4">
-          <div className="flex bg-slate-100 p-1 rounded-xl">
+          <div className="flex bg-cream-100 p-1 rounded-xl">
             {(['dia', 'semana', 'mes'] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
                 className={`px-6 py-2 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
-                  view === v ? 'bg-white text-nutri-blue shadow-sm' : 'text-slate-400 hover:text-slate-600'
+                  view === v ? 'bg-white text-coral-500 shadow-sm' : 'text-slate-warm-400 hover:text-slate-warm-600'
                 }`}
               >
                 {v}
@@ -185,17 +183,17 @@ const ScheduleManager: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button onClick={() => changePeriod(-1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
+            <button onClick={() => changePeriod(-1)} className="p-2 hover:bg-cream-100 rounded-lg text-slate-warm-400 transition-colors">
               <ChevronLeft size={20} />
             </button>
             <div className="text-center min-w-[180px]">
-              <h3 className="text-sm font-bold text-slate-800">
+              <h3 className="text-sm font-display font-bold text-slate-warm-800">
                 {view === 'dia' && selectedDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
                 {view === 'semana' && `Semana de ${getWeekDays(selectedDate)[0].getDate()} a ${getWeekDays(selectedDate)[6].getDate()}`}
                 {view === 'mes' && selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
               </h3>
             </div>
-            <button onClick={() => changePeriod(1)} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
+            <button onClick={() => changePeriod(1)} className="p-2 hover:bg-cream-100 rounded-lg text-slate-warm-400 transition-colors">
               <ChevronRight size={20} />
             </button>
           </div>
@@ -203,13 +201,13 @@ const ScheduleManager: React.FC = () => {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${showFilters ? 'bg-nutri-blue/10 border-nutri-blue text-nutri-blue' : 'bg-white border-slate-200 text-slate-600'}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${showFilters ? 'bg-coral-50 border-coral-200 text-coral-500' : 'bg-white border-cream-200 text-slate-warm-600'}`}
             >
               <Filter size={16} /> Filtros
             </button>
             <button 
               onClick={() => handleOpenAppointment()}
-              className="flex items-center gap-2 px-6 py-2 bg-nutri-blue text-white rounded-xl text-xs font-bold shadow-lg shadow-nutri-blue/10 hover:bg-nutri-blue-hover transition-all active:scale-95"
+              className="flex items-center gap-2 px-6 py-2 bg-gradient-to-br from-coral-400 to-coral-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-coral-200 hover:shadow-coral-300 transition-all active:scale-95"
             >
               <Plus size={16} strokeWidth={3} /> Nova Consulta
             </button>
@@ -218,17 +216,17 @@ const ScheduleManager: React.FC = () => {
 
         {/* Mobile Date Navigator */}
         <div className="flex items-center justify-between lg:hidden">
-          <button onClick={() => changePeriod(-1)} className="p-2 text-slate-400 active:bg-slate-50 rounded-lg">
+          <button onClick={() => changePeriod(-1)} className="p-2 text-slate-warm-400 active:bg-cream-100 rounded-lg">
             <ChevronLeft size={22} />
           </button>
           <div className="text-center flex-1">
-            <h3 className="text-sm font-bold text-slate-800">
+            <h3 className="text-sm font-bold text-slate-warm-800">
               {view === 'dia' && selectedDate.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
               {view === 'semana' && `${getWeekDays(selectedDate)[0].getDate()} - ${getWeekDays(selectedDate)[6].getDate()} ${selectedDate.toLocaleDateString('pt-BR', { month: 'short' })}`}
               {view === 'mes' && selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </h3>
           </div>
-          <button onClick={() => changePeriod(1)} className="p-2 text-slate-400 active:bg-slate-50 rounded-lg">
+          <button onClick={() => changePeriod(1)} className="p-2 text-slate-warm-400 active:bg-cream-100 rounded-lg">
             <ChevronRight size={22} />
           </button>
         </div>
@@ -237,25 +235,25 @@ const ScheduleManager: React.FC = () => {
       {/* Filter Panel - Mobile Bottom Sheet Style */}
       {showFilters && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300">
+          <div className="absolute inset-0 bg-slate-warm-900/20 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 space-y-4 animate-slide-up pb-safe">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Filtros</h3>
-              <button onClick={() => setShowFilters(false)} className="p-2 text-slate-400">
+              <h3 className="text-lg font-bold font-display text-slate-warm-800">Filtros</h3>
+              <button onClick={() => setShowFilters(false)} className="p-2 text-slate-warm-400 hover:bg-cream-100 rounded-full">
                 <X size={24} />
               </button>
             </div>
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase block mb-2">Status</label>
+              <label className="text-xs font-bold text-slate-warm-400 uppercase block mb-2 tracking-wide">Status</label>
               <div className="flex flex-wrap gap-2">
                 {['Todos', 'Confirmado', 'Pendente', 'Realizada'].map(s => (
                   <button
                     key={s}
                     onClick={() => setFilters({...filters, status: s})}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                       filters.status === s 
-                        ? 'bg-nutri-blue text-white' 
-                        : 'bg-slate-100 text-slate-600'
+                        ? 'bg-coral-500 text-white border-coral-500 shadow-md shadow-coral-200' 
+                        : 'bg-white text-slate-warm-600 border-cream-200'
                     }`}
                   >
                     {s}
@@ -264,16 +262,16 @@ const ScheduleManager: React.FC = () => {
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase block mb-2">Tipo</label>
+              <label className="text-xs font-bold text-slate-warm-400 uppercase block mb-2 tracking-wide">Tipo</label>
               <div className="flex flex-wrap gap-2">
                 {['Todos', 'Primeira Consulta', 'Retorno', 'Avaliação'].map(t => (
                   <button
                     key={t}
                     onClick={() => setFilters({...filters, type: t})}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                       filters.type === t 
-                        ? 'bg-nutri-blue text-white' 
-                        : 'bg-slate-100 text-slate-600'
+                        ? 'bg-coral-500 text-white border-coral-500 shadow-md shadow-coral-200' 
+                        : 'bg-white text-slate-warm-600 border-cream-200'
                     }`}
                   >
                     {t}
@@ -281,6 +279,12 @@ const ScheduleManager: React.FC = () => {
                 ))}
               </div>
             </div>
+            <button 
+              onClick={() => setShowFilters(false)}
+              className="w-full mt-4 py-3 bg-slate-warm-800 text-white rounded-xl font-bold"
+            >
+              Aplicar Filtros
+            </button>
           </div>
         </div>
       )}
@@ -289,29 +293,30 @@ const ScheduleManager: React.FC = () => {
       {view === 'dia' && (
         <section className="lg:hidden space-y-3">
           {visibleAppointments.length === 0 ? (
-            <div className="bg-white p-8 rounded-xl border border-slate-100 text-center">
-              <CalendarIcon size={40} className="mx-auto text-slate-200 mb-3" />
-              <p className="text-sm font-bold text-slate-600">Nenhuma consulta</p>
-              <p className="text-xs text-slate-400 mt-1">Toque no + para agendar</p>
+            <div className="bg-white p-8 rounded-xl border border-cream-200 text-center shadow-soft-sm">
+              <CalendarIcon size={40} className="mx-auto text-cream-300 mb-3" />
+              <p className="text-sm font-bold text-slate-warm-600">Nenhuma consulta</p>
+              <p className="text-xs text-slate-warm-400 mt-1">Toque no + para agendar</p>
             </div>
           ) : (
-            visibleAppointments.sort((a,b) => a.time.localeCompare(b.time)).map(app => (
+            visibleAppointments.sort((a,b) => a.time.localeCompare(b.time)).map((app, idx) => (
               <div 
                 key={app.id}
-                className={`p-4 rounded-xl border shadow-sm flex items-center gap-4 active:scale-[0.99] transition-all ${statusColors[app.status]}`}
+                className={`p-4 rounded-2xl border shadow-soft-sm flex items-center gap-4 active:scale-[0.98] transition-all bg-white animate-slide-up`}
+                style={{ animationDelay: `${idx * 50}ms` }}
               >
                 <div className="text-center min-w-[50px]">
-                  <p className="text-lg font-black">{app.time}</p>
+                  <p className="text-lg font-display font-bold text-slate-warm-800">{app.time}</p>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-sm truncate">{app.patientName}</h4>
-                  <p className="text-[10px] opacity-70 font-bold uppercase">{app.type}</p>
+                  <h4 className="font-bold text-sm truncate text-slate-warm-900">{app.patientName}</h4>
+                  <p className="text-[10px] text-slate-warm-500 font-bold uppercase tracking-wide">{app.type}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold">R$ {app.price}</span>
-                  <button className="p-2 rounded-lg hover:bg-black/5">
-                    <MoreVertical size={18} />
-                  </button>
+                  <span className={`w-3 h-3 rounded-full border-2 border-white shadow-sm ${
+                    app.status === 'Confirmado' ? 'bg-emerald-500' : 
+                    app.status === 'Pendente' ? 'bg-amber-500' : 'bg-slate-warm-300'
+                  }`} />
                 </div>
               </div>
             ))
@@ -320,15 +325,15 @@ const ScheduleManager: React.FC = () => {
       )}
 
       {/* Desktop Calendar Views */}
-      <section className="hidden lg:block bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px]">
+      <section className="hidden lg:block bg-white rounded-3xl border border-cream-200 shadow-soft-medium overflow-hidden min-h-[600px]">
         {/* VIEW: DIA */}
         {view === 'dia' && (
           <div className="flex flex-col">
-            <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cronograma</span>
-              <span className="text-[10px] font-bold text-nutri-blue bg-nutri-blue/10 px-2 py-1 rounded-lg">Agora</span>
+            <div className="p-4 border-b border-cream-100 bg-cream-50/50 flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-warm-400 uppercase tracking-widest">Cronograma</span>
+              <span className="text-[10px] font-bold text-coral-500 bg-coral-50 px-2 py-1 rounded-lg border border-coral-100">Agora</span>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-cream-100">
               {Array.from({ length: 12 }, (_, i) => i + 7).map(hour => {
                 const hourStr = `${hour.toString().padStart(2, '0')}:00`;
                 const apps = visibleAppointments.filter(a => a.time.startsWith(hour.toString().padStart(2, '0')));
@@ -336,14 +341,14 @@ const ScheduleManager: React.FC = () => {
                 return (
                   <div 
                     key={hour} 
-                    className="flex min-h-[70px] group"
+                    className="flex min-h-[80px] group hover:bg-cream-50/30 transition-colors"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, formatDate(selectedDate), hourStr)}
                   >
-                    <div className="w-20 p-4 text-[10px] font-bold text-slate-400 text-right border-r border-slate-50">
+                    <div className="w-20 p-4 text-[12px] font-medium text-slate-warm-400 text-right border-r border-cream-100 font-display">
                       {hourStr}
                     </div>
-                    <div className="flex-1 p-2 relative bg-slate-50/10 group-hover:bg-nutri-blue/5 transition-colors">
+                    <div className="flex-1 p-2 relative group-hover:bg-coral-50/10 transition-colors">
                       {apps.length > 0 ? (
                         apps.map(app => (
                           <div 
@@ -351,28 +356,33 @@ const ScheduleManager: React.FC = () => {
                             draggable
                             onDragStart={(e) => handleDragStart(e, app.id)}
                             onDragEnd={handleDragEnd}
-                            className={`p-3 rounded-xl border shadow-sm flex items-center justify-between transition-all cursor-grab active:cursor-grabbing hover:scale-[1.01] ${statusColors[app.status]}`}
+                            className={`p-3 mb-2 rounded-xl border border-cream-200 shadow-soft-xs bg-white hover:shadow-soft-md hover:border-coral-200 transition-all cursor-grab active:cursor-grabbing hover:translate-y-[-2px] flex items-center justify-between group/card`}
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-white/50 flex items-center justify-center font-bold text-xs">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-coral-100 to-coral-50 text-coral-600 flex items-center justify-center font-bold text-xs shadow-inner">
                                 {app.patientName.charAt(0)}
                               </div>
                               <div>
-                                <h4 className="text-sm font-bold tracking-tight">{app.patientName}</h4>
-                                <p className="text-[10px] opacity-70 font-bold uppercase">{app.type} • {app.time}</p>
+                                <h4 className="text-sm font-bold tracking-tight text-slate-warm-800">{app.patientName}</h4>
+                                <p className="text-[10px] text-slate-warm-500 font-bold uppercase">{app.type} • {app.time}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold">R$ {app.price}</span>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                                app.status === 'Confirmado' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                'bg-amber-50 text-amber-600 border-amber-100'
+                              }`}>
+                                {app.status}
+                              </span>
                             </div>
                           </div>
                         ))
                       ) : (
                         <button 
                           onClick={() => handleOpenAppointment(formatDate(selectedDate), hourStr)}
-                          className="h-full w-full flex items-center px-4 text-[10px] font-bold text-slate-300 hover:text-nutri-blue opacity-0 group-hover:opacity-100 transition-all"
+                          className="h-full w-full flex items-center px-4 text-[10px] font-bold text-slate-warm-300 hover:text-coral-400 opacity-0 group-hover:opacity-100 transition-all border-2 border-dashed border-transparent hover:border-coral-200 rounded-xl"
                         >
-                          <Plus size={12} className="mr-1" /> Horário livre
+                          <Plus size={14} className="mr-1" /> Adicionar na agenda
                         </button>
                       )}
                     </div>
@@ -385,7 +395,7 @@ const ScheduleManager: React.FC = () => {
 
         {/* VIEW: SEMANA */}
         {view === 'semana' && (
-          <div className="grid grid-cols-7 h-full divide-x divide-slate-100">
+          <div className="grid grid-cols-7 h-full divide-x divide-cream-100">
             {getWeekDays(selectedDate).map((day, idx) => {
               const dateStr = formatDate(day);
               const isToday = dateStr === formatDate(new Date());
@@ -394,15 +404,15 @@ const ScheduleManager: React.FC = () => {
               return (
                 <div 
                   key={idx} 
-                  className={`flex flex-col min-h-[500px] group/day ${isToday ? 'bg-nutri-blue/5' : ''}`}
+                  className={`flex flex-col min-h-[500px] group/day ${isToday ? 'bg-coral-50/30' : ''}`}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, dateStr)}
                 >
-                  <div className={`p-4 border-b border-slate-50 text-center ${isToday ? 'bg-nutri-blue/10' : 'bg-white'}`}>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  <div className={`p-4 border-b border-cream-100 text-center ${isToday ? 'bg-coral-50/50' : 'bg-white'}`}>
+                    <p className="text-[9px] font-black text-slate-warm-400 uppercase tracking-widest mb-1">
                       {day.toLocaleDateString('pt-BR', { weekday: 'short' })}
                     </p>
-                    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-base font-black ${isToday ? 'bg-nutri-blue text-white' : 'text-slate-700'}`}>
+                    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-base font-black transition-all ${isToday ? 'bg-coral-500 text-white shadow-md shadow-coral-200' : 'text-slate-warm-700'}`}>
                       {day.getDate()}
                     </div>
                   </div>
@@ -413,17 +423,15 @@ const ScheduleManager: React.FC = () => {
                         draggable
                         onDragStart={(e) => handleDragStart(e, app.id)}
                         onDragEnd={handleDragEnd}
-                        className={`p-2 rounded-lg border flex items-center gap-2 text-xs shadow-sm cursor-grab ${statusColors[app.status]}`}
+                        className={`p-2 rounded-lg border bg-white hover:border-coral-200 hover:shadow-md transition-all cursor-grab flex flex-col gap-1 group/card`}
                       >
-                        <span className="font-bold">{app.time.slice(0,5)}</span>
-                        <span className="truncate">{app.patientName.split(' ')[0]}</span>
+                         <div className="flex justify-between items-center">
+                            <span className="font-bold text-xs text-coral-600 bg-coral-50 px-1.5 rounded-md">{app.time.slice(0,5)}</span>
+                            <div className={`w-1.5 h-1.5 rounded-full ${app.status === 'Confirmado' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                         </div>
+                        <span className="truncate text-xs font-bold text-slate-warm-700">{app.patientName.split(' ')[0]}</span>
                       </div>
                     ))}
-                    {dayApps.length === 0 && (
-                      <div className="h-full flex items-center justify-center opacity-10">
-                        <CalendarIcon size={32} />
-                      </div>
-                    )}
                   </div>
                 </div>
               );
@@ -434,14 +442,14 @@ const ScheduleManager: React.FC = () => {
         {/* VIEW: MES */}
         {view === 'mes' && (
           <div className="flex flex-col">
-            <div className="grid grid-cols-7 bg-slate-50/50 border-b border-slate-50">
+            <div className="grid grid-cols-7 bg-cream-50/50 border-b border-cream-100">
               {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => (
-                <div key={d} className="p-3 text-[10px] font-bold text-slate-400 uppercase text-center">
+                <div key={d} className="p-3 text-[10px] font-bold text-slate-warm-400 uppercase text-center tracking-widest">
                   {d}
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-7 flex-1 divide-x divide-y divide-slate-50">
+            <div className="grid grid-cols-7 flex-1 divide-x divide-y divide-cream-100">
               {getMonthDays(selectedDate).map((dayObj, idx) => {
                 const dateStr = formatDate(dayObj.date);
                 const dayApps = appointments.filter(a => a.date === dateStr);
@@ -451,19 +459,22 @@ const ScheduleManager: React.FC = () => {
                   <div 
                     key={idx} 
                     onClick={() => { setSelectedDate(dayObj.date); setView('dia'); }}
-                    className={`min-h-[80px] p-2 cursor-pointer hover:bg-nutri-blue/5 flex flex-col items-center ${!dayObj.currentMonth ? 'opacity-30' : ''}`}
+                    className={`min-h-[100px] p-2 cursor-pointer hover:bg-coral-50/20 flex flex-col items-center transition-colors group ${!dayObj.currentMonth ? 'opacity-30 bg-slate-50' : 'bg-white'}`}
                   >
-                    <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-nutri-blue text-white' : 'text-slate-500'}`}>
+                    <span className={`text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full transition-all ${isToday ? 'bg-coral-500 text-white shadow-md shadow-coral-200' : 'text-slate-warm-500 group-hover:text-coral-500 group-hover:bg-coral-50'}`}>
                       {dayObj.date.getDate()}
                     </span>
-                    <div className="flex gap-0.5 mt-2">
-                      {dayApps.slice(0, 3).map(app => (
-                        <div key={app.id} className="w-1.5 h-1.5 rounded-full bg-nutri-blue/50" />
+                    
+                    <div className="mt-2 flex flex-col gap-1 w-full px-1">
+                      {dayApps.slice(0, 2).map(app => (
+                        <div key={app.id} className="h-1.5 rounded-full bg-coral-200 w-full opacity-60 flex items-center justify-center overflow-hidden">
+                           <div className={`w-full h-full ${app.status === 'Confirmado' ? 'bg-coral-400' : 'bg-amber-300'}`} />
+                        </div>
                       ))}
+                      {dayApps.length > 2 && (
+                        <span className="text-[8px] font-bold text-slate-warm-400 text-center">+{dayApps.length - 2}</span>
+                      )}
                     </div>
-                    {dayApps.length > 3 && (
-                      <span className="text-[8px] font-bold text-slate-400 mt-1">+{dayApps.length - 3}</span>
-                    )}
                   </div>
                 );
               })}
@@ -472,84 +483,10 @@ const ScheduleManager: React.FC = () => {
         )}
       </section>
 
-      {/* Mobile Week/Month Views - Simplified */}
-      {view === 'semana' && (
-        <section className="lg:hidden">
-          <div className="flex overflow-x-auto no-scrollbar gap-2 pb-2 -mx-4 px-4">
-            {getWeekDays(selectedDate).map((day, idx) => {
-              const dateStr = formatDate(day);
-              const isToday = dateStr === formatDate(new Date());
-              const isSelected = dateStr === formatDate(selectedDate);
-              const dayApps = appointments.filter(a => a.date === dateStr);
-              
-              return (
-                <button 
-                  key={idx}
-                  onClick={() => { setSelectedDate(day); setView('dia'); }}
-                  className={`flex flex-col items-center p-3 rounded-2xl min-w-[60px] transition-all ${
-                    isSelected 
-                      ? 'bg-nutri-blue text-white' 
-                      : isToday 
-                        ? 'bg-nutri-blue/10 text-nutri-blue border border-nutri-blue/20' 
-                        : 'bg-white border border-slate-100'
-                  }`}
-                >
-                  <span className="text-[10px] font-bold uppercase opacity-70">
-                    {day.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0,3)}
-                  </span>
-                  <span className="text-lg font-black mt-1">{day.getDate()}</span>
-                  {dayApps.length > 0 && (
-                    <span className={`text-[10px] font-bold mt-1 ${isSelected ? 'text-white/80' : 'text-nutri-blue'}`}>
-                      {dayApps.length} cons
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {view === 'mes' && (
-        <section className="lg:hidden bg-white rounded-2xl border border-slate-100 p-4">
-          <div className="grid grid-cols-7 gap-1 text-center mb-2">
-            {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
-              <span key={i} className="text-[10px] font-bold text-slate-400">{d}</span>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-1">
-            {getMonthDays(selectedDate).map((dayObj, idx) => {
-              const dateStr = formatDate(dayObj.date);
-              const isToday = dateStr === formatDate(new Date());
-              const dayApps = appointments.filter(a => a.date === dateStr);
-              
-              return (
-                <button
-                  key={idx}
-                  onClick={() => { setSelectedDate(dayObj.date); setView('dia'); }}
-                  className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-bold transition-all ${
-                    !dayObj.currentMonth 
-                      ? 'text-slate-300' 
-                      : isToday 
-                        ? 'bg-nutri-blue text-white' 
-                        : 'text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  {dayObj.date.getDate()}
-                  {dayApps.length > 0 && dayObj.currentMonth && (
-                    <div className={`w-1 h-1 rounded-full mt-0.5 ${isToday ? 'bg-white' : 'bg-nutri-blue'}`} />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
       {/* Tip Footer */}
       <footer className="hidden lg:block text-center">
-        <p className="text-[10px] text-slate-400 font-medium flex items-center justify-center gap-1">
-          <CheckCircle2 size={12} className="text-nutri-blue" /> Arraste uma consulta para remarcar
+        <p className="text-[10px] text-slate-warm-400 font-medium flex items-center justify-center gap-1">
+          <CheckCircle2 size={12} className="text-coral-400" /> Arraste uma consulta para remarcar rapidamente (Drag & Drop)
         </p>
       </footer>
     </div>

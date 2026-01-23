@@ -8,6 +8,9 @@ import {
   Calendar, Thermometer, Microscope
 } from 'lucide-react';
 import LoadingSpinner from './ui/LoadingSpinner';
+import { aiService } from '../services/aiService';
+import { patientService } from '../services/patientService';
+import AiAnalysisSection from './AiAnalysisSection';
 
 interface ClinicalConsultationProps {
   patientId: string;
@@ -324,31 +327,42 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
     </div>
   );
 
-  const MeasurementInput = ({ label, unit, path, value, icon, placeholder = "0.0" }: { label: string, unit: string, path: string, value: string, icon?: React.ReactNode, placeholder?: string }) => (
-    <div>
-      <label className={labelClasses}>{label}</label>
-      <div className="relative group">
-        {icon && (
-          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors">
-            {icon}
-          </div>
-        )}
-        <input
-          type="text"
-          inputMode="decimal"
-          pattern="[0-9]*[.,]?[0-9]*"
-          placeholder={placeholder}
-          value={value}
-          onFocus={(e) => e.currentTarget.select()}
-          onChange={(e) => handleInputChange(path, e.target.value)}
-          className={inputClasses + (icon ? " pl-11" : "") + " pr-12"}
-        />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase pointer-events-none group-focus-within:text-nutri-blue transition-colors">
-          {unit}
-        </span>
+
+  /* Smart Input para evitar bugs de cursor pulando em campos formatados */
+  const MeasurementInput = ({ label, unit, path, value, icon, placeholder = "0.0" }: { label: string, unit: string, path: string, value: string, icon?: React.ReactNode, placeholder?: string }) => {
+    const [localValue, setLocalValue] = useState(value);
+
+    // Sincroniza se o valor externo mudar drasticamente (ex: reset)
+    useEffect(() => {
+       if (value !== localValue) setLocalValue(value);
+    }, [value]);
+
+    return (
+      <div>
+        <label className={labelClasses}>{label}</label>
+        <div className="relative group">
+          {icon && (
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors">
+              {icon}
+            </div>
+          )}
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder={placeholder}
+            value={localValue}
+            onFocus={(e) => e.currentTarget.select()}
+            onChange={(e) => setLocalValue(e.target.value)}
+            onBlur={() => handleInputChange(path, localValue)} // Commit changes only on blur
+            className={inputClasses + (icon ? " pl-11" : "") + " pr-12"}
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase pointer-events-none group-focus-within:text-nutri-blue transition-colors">
+            {unit}
+          </span>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const CustomNumericInput = ({ label, path, value, placeholder = "0.0" }: { label: string, path: string, value: string, placeholder?: string }) => (
     <div>
@@ -825,9 +839,23 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
         )}
 
         {activeTab === 'observacoes' && (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <h3 className={sectionTitleClasses}><FileText size={16} className="text-nutri-blue" /> Análise Clínica</h3>
-            <textarea rows={12} value={formData.observacoes} onChange={(e) => handleInputChange('observacoes', e.target.value)} className={inputClasses + " resize-none p-6"} placeholder="Feedback subjetivo..." />
+          <div className="space-y-8 animate-in fade-in duration-300">
+             {/* AI Analysis Module */}
+             <AiAnalysisSection 
+                formData={formData} 
+                onApplyAnalysis={(text) => handleInputChange('observacoes', (formData.observacoes ? formData.observacoes + '\n\n' : '') + text)} 
+             />
+             
+            <section>
+                <h3 className={sectionTitleClasses}><FileText size={16} className="text-nutri-blue" /> Parecer Técnico Final</h3>
+                <textarea 
+                    rows={12} 
+                    value={formData.observacoes} 
+                    onChange={(e) => handleInputChange('observacoes', e.target.value)} 
+                    className={inputClasses + " resize-none p-6 font-medium leading-relaxed"} 
+                    placeholder="Digite suas observações finais ou use a IA acima para gerar um rascunho..." 
+                />
+            </section>
           </div>
         )}
       </div>

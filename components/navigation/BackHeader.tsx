@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Edit2 } from 'lucide-react';
 
 interface BackHeaderProps {
   title: string;
@@ -18,7 +18,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
 }) => {
   return (
     <header className={`
-      sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-100
+      sticky top-0 z-30 bg-cream-100/80 backdrop-blur-xl border-b border-cream-200
       ${showOnDesktop ? '' : 'lg:hidden'}
     `}>
       <div className="flex items-center justify-between px-4 py-3 min-h-[56px]">
@@ -26,18 +26,18 @@ const BackHeader: React.FC<BackHeaderProps> = ({
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
             onClick={onBack}
-            className="p-2 -ml-2 rounded-xl text-slate-600 hover:bg-slate-100 active:scale-95 transition-all"
+            className="p-2.5 -ml-2 rounded-xl text-slate-warm-500 hover:bg-cream-200 active:scale-95 transition-all"
             aria-label="Voltar"
           >
             <ArrowLeft size={22} strokeWidth={2.5} />
           </button>
           
           <div className="min-w-0">
-            <h1 className="text-base font-bold text-slate-800 truncate leading-tight">
+            <h1 className="text-base font-bold text-slate-warm-800 truncate leading-tight">
               {title}
             </h1>
             {subtitle && (
-              <p className="text-xs text-slate-500 truncate">
+              <p className="text-xs text-slate-warm-500 truncate">
                 {subtitle}
               </p>
             )}

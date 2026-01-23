@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, UserPlus, Calendar, FileText, Sparkles } from 'lucide-react';
+import { Plus, X, UserPlus, Calendar, Sparkles } from 'lucide-react';
 
 interface FABAction {
   id: string;
@@ -38,11 +38,11 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
           {actions.map((action, index) => (
             <div 
               key={action.id}
-              className="flex items-center gap-3 animate-in slide-in-from-bottom-2 fade-in"
+              className="flex items-center gap-3 animate-slide-up"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               {/* Label */}
-              <span className="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-lg whitespace-nowrap">
+              <span className="px-4 py-2 bg-slate-warm-800 text-white text-xs font-bold rounded-xl shadow-soft-lg whitespace-nowrap">
                 {action.label}
               </span>
               
@@ -54,9 +54,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
                 }}
                 className={`
                   w-12 h-12 rounded-full flex items-center justify-center
-                  shadow-lg shadow-slate-900/20 transition-all duration-200
+                  shadow-soft-lg transition-all duration-300 
                   active:scale-95 hover:scale-105
-                  ${action.color || 'bg-white text-nutri-blue'}
+                  ${action.color || 'bg-white text-coral-500 border border-coral-100'}
                 `}
               >
                 {action.icon}
@@ -69,21 +69,21 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
       {/* Backdrop when open */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm -z-10 animate-in fade-in duration-200"
+          className="fixed inset-0 bg-slate-warm-900/10 backdrop-blur-sm -z-10 animate-fade-in"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Main FAB */}
+      {/* Main FAB - Coral Gradient */}
       <button
         onClick={handleMainClick}
         className={`
           w-14 h-14 rounded-full flex items-center justify-center
-          shadow-xl shadow-nutri-blue/30 transition-all duration-300
-          active:scale-95 hover:scale-105 hover:shadow-2xl hover:shadow-nutri-blue/40
+          transition-all duration-300
+          active:scale-95 hover:scale-105
           ${isOpen 
-            ? 'bg-slate-800 rotate-45' 
-            : 'bg-nutri-blue'
+            ? 'bg-slate-warm-800 rotate-45 shadow-soft-xl' 
+            : 'bg-gradient-to-br from-coral-400 to-coral-500 shadow-[0_8px_24px_rgba(224,123,94,0.35)] hover:shadow-[0_12px_32px_rgba(224,123,94,0.45)]'
           }
         `}
       >
