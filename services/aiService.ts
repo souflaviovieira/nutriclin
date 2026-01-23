@@ -2,10 +2,10 @@
 import { GoogleGenAI } from "@google/genai";
 import { supabase } from "./supabaseClient";
 
-// Initialize Gemini (assuming API KEY is available via ENV or setting)
+// Initialize Gemini
 // Note: In a real app, calls should go through a backend proxy to hide the key.
-// Usando a classe correta do novo SDK
-const genAI = new GoogleGenAI({ apiKey: process.env.REACT_APP_GEMINI_API_KEY || 'fake-key' });
+const apiKey = process.env.REACT_APP_GEMINI_API_KEY || 'fake-key';
+const genAI = new GoogleGenAI({ apiKey });
 
 export const aiService = {
   async generateAnalysis(patientData: any) {
@@ -30,7 +30,6 @@ Paciente apresenta IMC de ${patientData.medicoes?.basicas?.imc || 'N/A'}, indica
     }
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const prompt = `
         Atue como um nutricionista sênior especialista em clínica. Analise os seguintes dados do paciente e forneça um resumo clínico, diagnóstico nutricional provável e sugestões de conduta.
         
@@ -39,12 +38,16 @@ Paciente apresenta IMC de ${patientData.medicoes?.basicas?.imc || 'N/A'}, indica
         Formato de saída: Markdown. Seja direto e técnico.
       `;
       
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      return response.text();
+      const response = await genAI.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: prompt
+      });
+      
+      return response.text;
     } catch (error) {
       console.error("AI Error:", error);
-      throw new Error("Falha ao gerar análise.");
+      // Fallback para mock em caso de erro de API (para não travar o fluxo)
+      return "Não foi possível gerar a análise com IA neste momento. Verifique sua conexão ou a chave de API.";
     }
   }
 };
