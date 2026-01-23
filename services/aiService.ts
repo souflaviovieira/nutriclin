@@ -1,4 +1,5 @@
 
+// AI Service - Updated for Stability
 import { GoogleGenAI } from "@google/genai";
 import { supabase } from "./supabaseClient";
 
