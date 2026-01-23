@@ -1,10 +1,11 @@
 
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { supabase } from "./supabaseClient";
 
 // Initialize Gemini (assuming API KEY is available via ENV or setting)
 // Note: In a real app, calls should go through a backend proxy to hide the key.
-const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY || 'fake-key');
+// Usando a classe correta do novo SDK
+const genAI = new GoogleGenAI({ apiKey: process.env.REACT_APP_GEMINI_API_KEY || 'fake-key' });
 
 export const aiService = {
   async generateAnalysis(patientData: any) {

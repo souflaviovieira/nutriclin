@@ -1,116 +1,88 @@
 
-import React from 'react';
-import { User, Mail, Phone, Camera } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Mail, Smartphone, Award, Camera } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import Input from '../ui/Input';
 
 const ProfileSettings: React.FC = () => {
   const { profile } = useUser();
+  const [formData, setFormData] = useState({
+      name: profile?.display_name || 'Dr. Flávio Vieira', // Fallback to user
+      email: profile?.email || 'flavio@nutriclin.com',
+      crn: 'CRN-3 12345',
+      specialty: 'Nutrição Esportiva e Funcional',
+      phone: '(11) 99999-9999',
+      bio: 'Especialista em emagrecimento saudável e performance esportiva com 10 anos de experiência clínica.'
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData({...formData, [e.target.name]: e.target.value});
+  };
 
   return (
     <div className="max-w-3xl space-y-8 animate-fade-in">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-display font-bold text-slate-warm-800">Seu Perfil Profissional</h2>
-        <p className="text-slate-warm-500">Gerencie suas informações pessoais e de exibição.</p>
+       {/* Header */}
+       <div>
+        <h2 className="text-2xl font-display font-bold text-slate-warm-800">Dados Profissionais</h2>
+        <p className="text-slate-warm-500">Gerencie suas informações públicas e credenciais.</p>
       </div>
 
-      {/* Avatar Section */}
-      <div className="flex items-center gap-6 p-6 bg-white rounded-2xl border border-cream-200 shadow-soft-sm">
-        <div className="relative group cursor-pointer">
-          <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-coral-100 to-coral-50 flex items-center justify-center text-4xl font-display font-bold text-coral-500 overflow-hidden border-4 border-white shadow-md">
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              profile?.display_name?.charAt(0).toUpperCase() || 'U'
-            )}
-          </div>
-          <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <Camera className="text-white" size={24} />
-          </div>
-        </div>
-        <div>
-          <h3 className="font-bold text-lg text-slate-warm-800 mb-1">Foto de Perfil</h3>
-          <p className="text-sm text-slate-warm-500 mb-3">Recomendado: 400x400px, JPG ou PNG.</p>
-          <div className="flex gap-3">
-            <button className="px-4 py-2 bg-white border border-cream-300 rounded-xl text-xs font-bold text-slate-warm-600 hover:border-coral-300 hover:text-coral-500 transition-colors">
-              Alterar Foto
-            </button>
-            <button className="px-4 py-2 bg-transparent text-xs font-bold text-red-400 hover:text-red-500 transition-colors">
-              Remover
-            </button>
-          </div>
-        </div>
-      </div>
+       {/* Avatar & Basic Info */}
+       <div className="bg-white rounded-2xl border border-cream-200 shadow-soft-sm p-8 flex flex-col md:flex-row items-center gap-8">
+            <div className="relative group cursor-pointer">
+                <div className="w-24 h-24 rounded-full bg-slate-100 border-4 border-white shadow-md overflow-hidden ring-2 ring-cream-300">
+                    {profile?.avatar_url ? (
+                        <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                            <User size={40} />
+                        </div>
+                    )}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 rounded-full transition-opacity">
+                    <Camera size={24} />
+                </div>
+            </div>
+            <div className="flex-1 space-y-4 w-full text-center md:text-left">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Nome de Exibição" name="name" value={formData.name} onChange={handleChange} />
+                    <Input label="CRN / Registro Profissional" name="crn" value={formData.crn} onChange={handleChange} />
+                 </div>
+            </div>
+       </div>
 
-      {/* Form Details */}
-      <div className="bg-white rounded-2xl border border-cream-200 shadow-soft-sm overflow-hidden">
-        <div className="p-6 md:p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+       {/* Detailed Info */}
+       <div className="bg-white rounded-2xl border border-cream-200 shadow-soft-sm p-8 space-y-6">
+            <h3 className="font-bold text-lg text-slate-warm-800 border-b border-cream-100 pb-2 mb-4">Informações de Contato & Especialização</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <Input label="E-mail Profissional" name="email" value={formData.email} onChange={handleChange} type="email" icon={<Mail size={16} />} />
+                 <Input label="Celular / WhatsApp" name="phone" value={formData.phone} onChange={handleChange} icon={<Smartphone size={16} />} />
+            </div>
+
+            <div>
+                <Input label="Especialidade Principal" name="specialty" value={formData.specialty} onChange={handleChange} icon={<Award size={16} />} />
+            </div>
+
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider">Nome Completo</label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-warm-400" size={18} />
-                <input 
-                  type="text" 
-                  defaultValue={profile?.display_name || "Dra. Ana Silva"}
-                  className="w-full pl-12 pr-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
+                <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider block">Bio Profissional</label>
+                <textarea 
+                    name="bio"
+                    rows={4}
+                    value={formData.bio}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all resize-none"
+                    placeholder="Mini biografia para o perfil público..."
                 />
-              </div>
+                <p className="text-[10px] text-slate-warm-400 text-right">{formData.bio.length}/500</p>
             </div>
+       </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider">CRN / Registro</label>
-              <input 
-                type="text" 
-                defaultValue="CRN-3 12345"
-                className="w-full px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-warm-400" size={18} />
-                <input 
-                  type="email" 
-                  defaultValue={profile?.email || "ana.silva@nutri.com"}
-                  className="w-full pl-12 pr-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider">Telefone</label>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-warm-400" size={18} />
-                <input 
-                  type="tel" 
-                  defaultValue="(11) 99999-9999"
-                  className="w-full pl-12 pr-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-warm-400 uppercase tracking-wider">Bio / Especialidades</label>
-            <textarea 
-              rows={4}
-              defaultValue="Nutrição Esportiva, Emagrecimento e Performance. Especialista em dieta Low FODMAP."
-              className="w-full px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl text-slate-warm-800 font-medium focus:outline-none focus:border-coral-400 focus:ring-2 focus:ring-coral-100 transition-all resize-none"
-            />
-          </div>
-        </div>
-
-        <div className="px-6 py-4 bg-cream-50 border-t border-cream-200 flex justify-end gap-3">
-          <button className="px-6 py-2.5 rounded-xl text-slate-warm-500 font-bold text-sm hover:bg-cream-100 transition-colors">
-            Cancelar
-          </button>
-          <button className="px-6 py-2.5 rounded-xl bg-coral-500 text-white font-bold text-sm hover:bg-coral-600 transition-colors shadow-sm hover:shadow-md">
+       <div className="flex justify-end pt-4">
+          <button className="px-8 py-3 rounded-xl bg-slate-warm-800 text-white font-bold hover:bg-slate-warm-900 transition-all shadow-lg hover:shadow-xl active:scale-95">
             Salvar Alterações
           </button>
-        </div>
-      </div>
+       </div>
     </div>
   );
 };

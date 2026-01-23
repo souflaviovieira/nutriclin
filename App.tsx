@@ -106,7 +106,6 @@ const AppContent: React.FC = () => {
     };
     if(session) fetchPatients();
   }, [session]);
-  }, []);
 
   const getSelectedPatient = () => localPatients.find(p => p.id === selectedPatientId) || localPatients[0];
 
