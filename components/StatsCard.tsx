@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { Users, DollarSign, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, DollarSign, Calendar, TrendingUp, CalendarDays, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Metric } from '../types';
 
 const Icons: Record<string, any> = {
   Users,
   DollarSign,
   Calendar,
+  CalendarRange: CalendarDays,
   TrendingUp,
 };
 
@@ -28,7 +29,7 @@ const getIconStyle = (colorClass: string) => {
 };
 
 const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
-  const IconComponent = Icons[metric.icon];
+  const IconComponent = Icons[metric.icon] || Calendar; // Robust fallback to Calendar
   const isPositive = metric.trend > 0;
   const iconStyle = getIconStyle(metric.color || '');
 
