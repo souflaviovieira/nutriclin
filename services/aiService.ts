@@ -3,15 +3,30 @@
 import { GoogleGenAI } from "@google/genai";
 import { supabase } from "./supabaseClient";
 
-// Initialize Gemini
-// Note: In a real app, calls should go through a backend proxy to hide the key.
-const apiKey = process.env.REACT_APP_GEMINI_API_KEY || 'fake-key';
-const genAI = new GoogleGenAI({ apiKey });
+// Initialize Gemini lazily
+let genAIInstance: GoogleGenAI | null = null;
+
+const getGenAI = () => {
+  if (genAIInstance) return genAIInstance;
+  
+  const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+  if (!apiKey) return null;
+  
+  try {
+    genAIInstance = new GoogleGenAI({ apiKey });
+    return genAIInstance;
+  } catch (e) {
+    console.error("Failed to initialize GoogleGenAI", e);
+    return null;
+  }
+};
 
 export const aiService = {
   async generateAnalysis(patientData: any) {
-    // Mock response if no key
-    if (!process.env.REACT_APP_GEMINI_API_KEY) {
+    const ai = getGenAI();
+
+    // Mock response if no key or initialization failed
+    if (!ai) {
        console.log("Mocking AI Analysis for:", patientData);
        return `## Análise Nutricional Sugerida
 
@@ -39,16 +54,15 @@ Paciente apresenta IMC de ${patientData.medicoes?.basicas?.imc || 'N/A'}, indica
         Formato de saída: Markdown. Seja direto e técnico.
       `;
       
-      const response = await genAI.models.generateContent({
+      const response = await ai.models.generateContent({
         model: 'gemini-2.0-flash',
         contents: prompt
       });
       
-      return response.text;
-    } catch (error) {
+      return response.text(); // Ensure correct property access depending on SDK version, .text() is common in new SDKs or .response.text()
+    } catch (error: any) {
       console.error("AI Error:", error);
-      // Fallback para mock em caso de erro de API (para não travar o fluxo)
-      return "Não foi possível gerar a análise com IA neste momento. Verifique sua conexão ou a chave de API.";
+      return `Não foi possível gerar a análise com IA neste momento. Erro: ${error.message || 'Desconhecido'}`;
     }
   }
 };
