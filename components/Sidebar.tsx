@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[45] lg:hidden animate-in fade-in duration-300"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[45] lg:hidden animate-in fade-in duration-300"
           onClick={toggleSidebar}
         />
       )}
@@ -40,11 +40,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar Container */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 bg-nutri-secondary border-r border-slate-200/50 shadow-none
-          flex flex-col transition-all duration-300 ease-in-out
+          fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out
+          border-r border-slate-200/50 shadow-2xl lg:shadow-none
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
-          w-64
+          w-64 bg-nutri-secondary/98 backdrop-blur-3xl lg:bg-nutri-secondary lg:backdrop-blur-none
         `}
       >
         <div className="flex flex-col h-full overflow-hidden">
@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Mobile Close Button */}
-            <button onClick={toggleSidebar} className="lg:hidden p-2 text-slate-400 hover:text-nutri-blue transition-colors">
+            <button onClick={toggleSidebar} className="lg:hidden p-2 text-slate-500 bg-slate-100/50 rounded-full hover:bg-slate-100 transition-all">
               <ChevronLeft size={20} />
             </button>
           </div>
