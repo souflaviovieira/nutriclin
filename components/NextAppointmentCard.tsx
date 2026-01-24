@@ -4,6 +4,7 @@ import { Clock, MapPin, Video, FileText, ArrowRight, CheckCircle2 } from 'lucide
 
 interface NextAppointmentProps {
   patientName?: string;
+  patientAvatar?: string;
   time?: string;
   type?: string;
   isOnline?: boolean;
@@ -12,9 +13,10 @@ interface NextAppointmentProps {
 }
 
 const NextAppointmentCard: React.FC<NextAppointmentProps> = ({
-  patientName = "Maria Silva",
+  patientName = "Ana Sophia Oliveira",
+  patientAvatar,
   time = "14:00",
-  type = "Primeira Consulta",
+  type = "Retorno (45min)",
   isOnline = true,
   onStartConsultation,
   onViewProfile
@@ -29,7 +31,7 @@ const NextAppointmentCard: React.FC<NextAppointmentProps> = ({
         
         {/* Left: Time & Info */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-4">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-coral-500/10 border border-coral-500/20 text-coral-400 text-xs font-bold uppercase tracking-wider">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral-400 opacity-75"></span>
@@ -42,18 +44,35 @@ const NextAppointmentCard: React.FC<NextAppointmentProps> = ({
             </span>
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-2 tracking-tight">
-            {patientName}
-          </h2>
-          
-          <div className="flex flex-wrap items-center gap-4 text-slate-warm-300 text-sm">
-            <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-              <FileText size={14} className="text-coral-400" /> {type}
-            </span>
-            <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-              {isOnline ? <Video size={14} className="text-emerald-400" /> : <MapPin size={14} className="text-emerald-400" />}
-              {isOnline ? 'Consulta Online' : 'Presencial'}
-            </span>
+          <div className="flex items-center gap-5 mb-4">
+             <div className="relative flex-shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-slate-warm-700 border-4 border-white/5 overflow-hidden shadow-2xl">
+                    {patientAvatar ? (
+                        <img src={patientAvatar} alt={patientName} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white/20 font-display font-bold text-2xl">
+                            {patientName.charAt(0)}
+                        </div>
+                    )}
+                </div>
+                {/* Status dot */}
+                <div className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-warm-900 shadow-sm"></div>
+             </div>
+             
+             <div>
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-2 tracking-tight leading-none">
+                    {patientName}
+                </h2>
+                <div className="flex flex-wrap items-center gap-3 text-slate-warm-300 text-sm">
+                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-medium">
+                        <FileText size={12} className="text-coral-400" /> {type}
+                    </span>
+                    <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-medium">
+                        {isOnline ? <Video size={12} className="text-emerald-400" /> : <MapPin size={12} className="text-emerald-400" />}
+                        {isOnline ? 'Online' : 'Presencial'}
+                    </span>
+                </div>
+             </div>
           </div>
         </div>
 

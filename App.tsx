@@ -367,6 +367,7 @@ const AppContent: React.FC = () => {
                     <section>
                       <NextAppointmentCard 
                         patientName="Ana Sophia Oliveira"
+                        patientAvatar="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"
                         time="14:00"
                         type="Retorno (45min)"
                         isOnline={true}
@@ -381,10 +382,22 @@ const AppContent: React.FC = () => {
                       />
                     </section>
 
-                    {/* 2. OPERATIONAL KPIs (Focus on Day/Week) - Replaces generic revenue */}
-                    <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                      {/* Using existing metrics but should be customized for daily ops later */}
-                      {MOCK_METRICS.map((metric, idx) => <StatsCard key={idx} metric={metric} />)}
+                    {/* 2. OPERATIONAL KPIs (Focus on Day/Week) */}
+                    <section className="grid grid-cols-2 gap-3 lg:gap-6">
+                       <StatsCard metric={{
+                          label: "Consultas Hoje",
+                          value: "6",
+                          trend: 0,
+                          icon: "Calendar",
+                          color: "bg-blue-500"
+                       }} />
+                       <StatsCard metric={{
+                          label: "Consultas na Semana",
+                          value: "28",
+                          trend: 12,
+                          icon: "CalendarRange",
+                          color: "bg-purple-500"
+                       }} />
                     </section>
                     
                     {/* 3. MAIN WORKSPACE (Agenda & Alerts vs Revenue) */}
@@ -399,10 +412,7 @@ const AppContent: React.FC = () => {
                         </div>
                         <AppointmentsList />
                         
-                        {/* Secondary: Financials (Lower priority) */}
-                        <div className="pt-4 opacity-80 hover:opacity-100 transition-opacity">
-                           <RevenueChart />
-                        </div>
+
                       </div>
 
                       {/* Right Column: Support */}
