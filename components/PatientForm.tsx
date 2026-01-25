@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
-import { X, Camera, Save, User, Smartphone, Mail, MapPin, Calendar, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, Save, User, Smartphone, Mail, MapPin, Calendar, CheckCircle2, Loader2 } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
-import { storageService } from '../services/storageService';
+import { useToast } from '../contexts/ToastContext';
 import { Patient } from '../types';
-import LoadingSpinner from './ui/LoadingSpinner';
 import Input from './ui/Input';
 import Card from './ui/Card';
 import Button from './ui/Button';
+import ImageUpload from './ui/ImageUpload';
 
 interface PatientFormProps {
   onCancel: () => void;
@@ -16,6 +16,7 @@ interface PatientFormProps {
 }
 
 const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData }) => {
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -40,31 +41,19 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
     }
   });
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setLoading(true);
-      const compressed = await storageService.compressImage(file);
-      const fileName = `patient-${Date.now()}.webp`;
-      const publicUrl = await storageService.uploadFile(compressed, {
-        bucket: 'nutriclin-media',
-        path: `patients/${fileName}`,
-        oldPath: patientData.avatar || undefined
-      });
-
-      setPatientData({ ...patientData, avatar: publicUrl });
-    } catch (err: any) {
-      console.error(err);
-      alert("Erro ao subir foto: " + err.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleAvatarComplete = (publicUrl: string) => {
+    setPatientData(prev => ({ ...prev, avatar: publicUrl }));
+    showToast("Foto do paciente carregada!");
   };
 
   const handleSave = async (e?: React.FormEvent, andSchedule = false) => {
     if (e) e.preventDefault();
+
+    if (!patientData.name || !patientData.phone) {
+      showToast("Nome e Telefone são obrigatórios", "error");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -111,10 +100,11 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
       if (error) throw error;
 
       setShowSuccess(true);
+      showToast(initialData ? "Paciente atualizado!" : "Paciente cadastrado com sucesso!");
       setTimeout(() => onSave(resultData, andSchedule), 1500);
     } catch (err: any) {
       console.error("Erro ao salvar paciente:", err);
-      alert(`Erro ao salvar: ${err.message}`);
+      showToast(`Erro ao salvar: ${err.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -122,7 +112,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name in patientData.address) {
+    if (name === 'zip' || name === 'street' || name === 'number' || name === 'complement' || name === 'neighborhood' || name === 'city' || name === 'state') {
       setPatientData(prev => ({
         ...prev,
         address: { ...prev.address, [name]: value }
@@ -139,21 +129,21 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
           <CheckCircle2 size={48} />
         </div>
         <h2 className="text-2xl font-bold text-slate-800">Dados Salvos!</h2>
-        <p className="text-slate-500 mt-2">As informações do paciente foram atualizadas com sucesso.</p>
+        <p className="text-slate-500 mt-2 font-medium">As informações do paciente foram atualizadas com sucesso.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20">
-      <Card noPadding className="p-0 overflow-hidden">
+    <div className="max-w-4xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20 px-4 md:px-0">
+      <Card noPadding className="p-0 overflow-hidden border-l-4 border-l-coral-500">
         <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <button onClick={onCancel} className="flex items-center gap-2 text-slate-500 hover:text-coral-500 transition-colors text-xs font-bold uppercase tracking-widest mb-2">
               <X size={16} /> Voltar
             </button>
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">{initialData ? 'Editar Paciente' : 'Novo Cadastro'}</h1>
-            <p className="text-slate-500 text-sm mt-1">Insira as informações básicas e de contato.</p>
+            <p className="text-slate-500 text-sm mt-1 font-medium">Insira as informações básicas e de contato.</p>
           </div>
           <div className="flex gap-3">
             <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
@@ -173,39 +163,22 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-cream-100 flex items-center gap-3 bg-cream-50/30">
             <User size={20} className="text-coral-500" />
-            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wider">Identificação e Perfil</h2>
+            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-widest text-xs">Identificação e Perfil</h2>
           </div>
           <div className="p-6 space-y-8">
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="relative group">
-                <input
-                  type="file"
-                  id="patient-photo"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  disabled={loading}
-                />
-                <div className="w-28 h-28 md:w-32 md:h-32 rounded-3xl bg-cream-100 border-4 border-white shadow-soft-lg overflow-hidden flex items-center justify-center relative">
-                  {patientData.avatar ? (
-                    <img src={patientData.avatar} alt="Patient" className="w-full h-full object-cover" />
-                  ) : (
-                    <User size={48} className="text-cream-400" />
-                  )}
-                  {loading && (
-                    <div className="absolute inset-0 bg-white/40 flex items-center justify-center">
-                      <Loader2 size={24} className="animate-spin text-coral-500" />
-                    </div>
-                  )}
-                </div>
-                <label htmlFor="patient-photo" className="absolute -right-2 -bottom-2 w-10 h-10 bg-coral-500 text-white rounded-2xl flex items-center justify-center shadow-lg hover:bg-coral-600 transition-all cursor-pointer hover:scale-110 active:scale-95">
-                  <Camera size={20} />
-                </label>
-              </div>
-              <div className="flex-1 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center gap-8">
+              <ImageUpload
+                currentImageUrl={patientData.avatar}
+                onUploadComplete={handleAvatarComplete}
+                type="avatar"
+                placeholder="user"
+                size="lg"
+                folder="patients"
+              />
+              <div className="flex-1 text-center sm:text-left space-y-2">
                 <h4 className="font-bold text-slate-800">Foto do Paciente</h4>
-                <p className="text-xs text-slate-500 mt-1">
-                  Upload de imagem para acompanhamento de evolução.
+                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                  Utilize uma foto nítida para facilitar o acompanhamento da evolução estética e clínica do seu paciente.
                 </p>
               </div>
             </div>
@@ -215,15 +188,15 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
                 <Input label="Nome Completo *" name="name" value={patientData.name} onChange={handleChange} required />
               </div>
               <div>
-                <Input label="CPF *" name="cpf" value={patientData.cpf} onChange={handleChange} required />
+                <Input label="CPF" name="cpf" value={patientData.cpf} onChange={handleChange} />
               </div>
               <div>
-                <Input label="Data de Nascimento *" name="birthDate" value={patientData.birthDate} onChange={handleChange} type="date" required />
+                <Input label="Data de Nascimento" name="birthDate" value={patientData.birthDate} onChange={handleChange} type="date" />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Gênero</label>
                 <div className="relative">
-                  <select name="gender" value={patientData.gender} onChange={handleChange} className="w-full bg-cream-50 border border-cream-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:ring-4 focus:ring-coral-100 focus:border-coral-400 transition-all appearance-none">
+                  <select name="gender" value={patientData.gender} onChange={handleChange} className="w-full bg-cream-50/50 border border-cream-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:ring-4 focus:ring-coral-100/50 focus:border-coral-400 transition-all appearance-none">
                     <option value="">Selecione...</option>
                     <option value="feminino">Feminino</option>
                     <option value="masculino">Masculino</option>
@@ -241,19 +214,19 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
 
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-cream-100 flex items-center gap-3 bg-cream-50/30">
-            <Mail size={20} className="text-blue-500" />
-            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wider">Contato</h2>
+            <Mail size={20} className="text-coral-500" />
+            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-widest text-xs">Contato</h2>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input label="E-mail *" name="email" value={patientData.email} onChange={handleChange} type="email" required />
+            <Input label="E-mail" name="email" value={patientData.email} onChange={handleChange} type="email" />
             <Input label="Celular / WhatsApp *" name="phone" value={patientData.phone} onChange={handleChange} type="tel" required />
           </div>
         </Card>
 
         <Card noPadding className="overflow-hidden">
           <div className="p-6 border-b border-cream-100 flex items-center gap-3 bg-cream-50/30">
-            <MapPin size={20} className="text-amber-500" />
-            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wider">Endereço</h2>
+            <MapPin size={20} className="text-coral-500" />
+            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-widest text-xs">Endereço</h2>
           </div>
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -274,6 +247,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onCancel, onSave, initialData
             onClick={() => handleSave(undefined, true)}
             disabled={loading}
             size="lg"
+            className="w-full md:w-auto px-10 py-4"
             icon={!loading && <Calendar size={20} />}
           >
             {loading ? <Loader2 size={20} className="animate-spin" /> : 'Salvar e Agendar'}
