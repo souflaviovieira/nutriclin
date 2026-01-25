@@ -74,7 +74,7 @@ const AppContent: React.FC = () => {
 
   // Check if we're on mobile
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
@@ -94,17 +94,17 @@ const AppContent: React.FC = () => {
   // Load Real Patients
   useEffect(() => {
     const fetchPatients = async () => {
-       try {
-         const realPatients = await patientService.listPatients();
-         if(realPatients && realPatients.length > 0) {
-             // Mapeia os campos do DB para a interface local se necessário
-            setLocalPatients(realPatients as any);
-         }
-       } catch(err) {
-         console.error("Failed to load patients", err);
-       }
+      try {
+        const realPatients = await patientService.listPatients();
+        if (realPatients && realPatients.length > 0) {
+          // Mapeia os campos do DB para a interface local se necessário
+          setLocalPatients(realPatients as any);
+        }
+      } catch (err) {
+        console.error("Failed to load patients", err);
+      }
     };
-    if(session) fetchPatients();
+    if (session) fetchPatients();
   }, [session]);
 
   const getSelectedPatient = () => localPatients.find(p => p.id === selectedPatientId) || localPatients[0];
@@ -112,16 +112,16 @@ const AppContent: React.FC = () => {
   const handleFinishConsultation = async (record: ConsultationRecord) => {
     try {
       if (selectedPatientId) {
-          await consultationService.saveFullConsultation(selectedPatientId, record);
-          
-          // Update local state optimistic
-          setLocalPatients(prev => prev.map(p => p.id === selectedPatientId ? {
-            ...p, 
-            lastConsultation: new Date().toLocaleDateString('pt-BR'), 
-            history: [...(p.history || []), record]
-          } : p));
+        await consultationService.saveFullConsultation(selectedPatientId, record);
 
-          alert("Consulta salva com sucesso!");
+        // Update local state optimistic
+        setLocalPatients(prev => prev.map(p => p.id === selectedPatientId ? {
+          ...p,
+          lastConsultation: new Date().toLocaleDateString('pt-BR'),
+          history: [...(p.history || []), record]
+        } : p));
+
+        alert("Consulta salva com sucesso!");
       }
       setCurrentView('patient-detail');
     } catch (e) {
@@ -146,9 +146,8 @@ const AppContent: React.FC = () => {
     const views: Record<string, View> = {
       dashboard: 'dashboard',
       patients: 'patients',
-      alimentos: 'plans-library',
       appointments: 'appointments',
-      settings: 'settings',
+      'ai-assistant': 'ai-assistant',
     };
     setCurrentView(views[tab] || 'dashboard');
   };
@@ -328,7 +327,7 @@ const AppContent: React.FC = () => {
           isOpen={isSidebarOpen}
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           isCollapsed={false}
-          toggleCollapse={() => {}}
+          toggleCollapse={() => { }}
           setActiveTab={(tab) => {
             handleSidebarTabChange(tab);
             setIsSidebarOpen(false);
@@ -359,13 +358,13 @@ const AppContent: React.FC = () => {
             <div className="flex-1 overflow-y-auto no-scrollbar relative">
               {/* Decorative grain texture */}
               <div className="absolute inset-0 opacity-40 pointer-events-none grain-texture"></div>
-              
+
               <div className="p-4 md:p-10 max-w-[1600px] mx-auto w-full relative z-10">
                 {currentView === 'dashboard' ? (
                   <div className="animate-in fade-in duration-700 space-y-8">
                     {/* 1. HERO: Next Appointment (Focus on Now) */}
                     <section>
-                      <NextAppointmentCard 
+                      <NextAppointmentCard
                         patientName="Ana Sophia Oliveira"
                         patientAvatar="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"
                         time="14:00"
@@ -384,22 +383,22 @@ const AppContent: React.FC = () => {
 
                     {/* 2. OPERATIONAL KPIs (Focus on Day/Week) */}
                     <section className="grid grid-cols-2 gap-3 lg:gap-6">
-                       <StatsCard metric={{
-                          label: "Consultas Hoje",
-                          value: "6",
-                          trend: 0,
-                          icon: "Calendar",
-                          color: "bg-blue-500"
-                       }} />
-                       <StatsCard metric={{
-                          label: "Consultas na Semana",
-                          value: "28",
-                          trend: 12,
-                          icon: "CalendarRange",
-                          color: "bg-purple-500"
-                       }} />
+                      <StatsCard metric={{
+                        label: "Consultas Hoje",
+                        value: "6",
+                        trend: 0,
+                        icon: "Calendar",
+                        color: "bg-blue-500"
+                      }} />
+                      <StatsCard metric={{
+                        label: "Consultas na Semana",
+                        value: "28",
+                        trend: 12,
+                        icon: "CalendarRange",
+                        color: "bg-purple-500"
+                      }} />
                     </section>
-                    
+
                     {/* 3. MAIN WORKSPACE (Agenda & Alerts vs Revenue) */}
                     <section className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
                       {/* Left Column: Immediate Action */}
@@ -411,14 +410,14 @@ const AppContent: React.FC = () => {
                           </button>
                         </div>
                         <AppointmentsList />
-                        
+
 
                       </div>
 
                       {/* Right Column: Support */}
                       <div className="space-y-6 flex flex-col">
                         <AlertsPanel />
-                        
+
                         {/* Quick Actions Card */}
                         <div className="card-coral p-6 space-y-4">
                           <h3 className="font-display font-bold text-lg text-slate-warm-800">Ações Rápidas</h3>
@@ -433,19 +432,19 @@ const AppContent: React.FC = () => {
                     </section>
                   </div>
                 ) : currentView === 'patients' ? (
-                  <PatientList 
-                    onAddPatient={() => setCurrentView('new-patient')} 
-                    onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }} 
-                    onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }} 
-                    onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }} 
+                  <PatientList
+                    onAddPatient={() => setCurrentView('new-patient')}
+                    onViewPatient={(id) => { setSelectedPatientId(id); setCurrentView('patient-detail'); }}
+                    onNewAppointment={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); setActiveTab('appointments'); }}
+                    onEditPatient={(id) => { setSelectedPatientId(id); setCurrentView('edit-patient'); }}
                   />
                 ) : currentView === 'patient-detail' ? (
-                  <PatientDetail 
-                    patientId={selectedPatientId || '1'} 
-                    onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }} 
-                    onEdit={() => setCurrentView('edit-patient')} 
-                    onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }} 
-                    onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }} 
+                  <PatientDetail
+                    patientId={selectedPatientId || '1'}
+                    onBack={() => { setCurrentView('patients'); setActiveTab('patients'); }}
+                    onEdit={() => setCurrentView('edit-patient')}
+                    onSchedule={(id) => { setSelectedPatientId(id); setCurrentView('new-appointment'); }}
+                    onConsultNow={(id) => { setSelectedPatientId(id); setCurrentView('ongoing-consultation'); }}
                   />
                 ) : currentView === 'new-patient' ? (
                   <PatientForm onCancel={() => setCurrentView('patients')} onSave={handleSavePatient} />
@@ -513,14 +512,14 @@ const AppContent: React.FC = () => {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <BottomNavigation 
+      <BottomNavigation
         activeTab={activeTab}
         onTabChange={handleBottomNavChange}
       />
 
       {/* Floating Action Button - Mobile only, hidden on forms */}
       {shouldShowFab() && (
-        <FloatingActionButton 
+        <FloatingActionButton
           actions={getFabActions()}
           showSpeedDial={true}
         />

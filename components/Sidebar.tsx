@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Mobile Close Button */}
-            <button onClick={toggleSidebar} className="lg:hidden p-2 text-slate-500 bg-slate-100/50 rounded-full hover:bg-slate-100 transition-all">
+            <button onClick={toggleSidebar} className="lg:hidden p-2 text-slate-600 bg-slate-200/50 rounded-full hover:bg-slate-200 transition-all">
               <ChevronLeft size={20} />
             </button>
           </div>
@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {NAV_ITEMS.map((group, groupIdx) => (
               <div key={groupIdx} className="space-y-1.5">
                 {!isCollapsed && group.title && (
-                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] px-4 mb-2 animate-in fade-in duration-500">
+                  <p className="text-[10px] font-black text-slate-warm-500 uppercase tracking-[0.2em] px-4 mb-2 animate-in fade-in duration-500">
                     {group.title}
                   </p>
                 )}
@@ -109,8 +109,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                            w-full flex items-center gap-3.5 relative transition-all duration-200 group
                            ${isCollapsed ? 'justify-center px-0 py-3 rounded-2xl' : 'px-4 py-3 rounded-xl'}
                            ${isActive
-                            ? 'bg-nutri-blue/5 text-nutri-blue'
-                            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                            ? 'bg-coral-100/50 text-coral-600 shadow-sm'
+                            : 'text-slate-warm-700 hover:bg-white/60 hover:text-slate-warm-900'}
                          `}
                       >
                         {/* Active Indicator Line for Collapsed Mode (Optional) */}
@@ -120,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                         <div className={`
                            relative z-10 transition-colors duration-200
-                           ${isActive ? 'text-nutri-blue' : 'text-slate-400 group-hover:text-nutri-blue'}
+                           ${isActive ? 'text-coral-600' : 'text-slate-warm-500 group-hover:text-coral-500'}
                          `}>
                           {item.icon}
                         </div>
@@ -128,8 +128,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                         {/* Label - visible only when expanded */}
                         <span
                           className={`
-                             text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
+                             text-[13px] font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
                              ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
+                             ${isActive ? 'text-coral-700' : 'text-slate-warm-800'}
                            `}
                         >
                           {item.label}
@@ -137,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                         {/* Right Active Dot (Expanded only) */}
                         {!isCollapsed && isActive && (
-                          <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-nutri-blue shadow-sm"></div>
+                          <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-coral-500 shadow-sm animate-pulse"></div>
                         )}
                       </button>
 
@@ -168,9 +169,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               className={`
                  w-full flex items-center gap-3.5 relative transition-all duration-200 group
                  ${isCollapsed ? 'justify-center p-3 rounded-2xl' : 'px-4 py-3.5 rounded-xl'}
-                 ${activeTab === 'settings'
-                  ? 'bg-nutri-blue/5 text-nutri-blue'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                  ${activeTab === 'settings'
+                  ? 'bg-coral-100/50 text-coral-600 shadow-sm'
+                  : 'text-slate-warm-700 hover:bg-white/60 hover:text-slate-warm-900'}
                `}
             >
               {isCollapsed && activeTab === 'settings' && (
@@ -178,15 +179,16 @@ const Sidebar: React.FC<SidebarProps> = ({
               )}
               <div className={`
                  relative z-10 transition-colors duration-200
-                 ${activeTab === 'settings' ? 'text-nutri-blue' : 'text-slate-400 group-hover:text-nutri-blue'}
+                 ${activeTab === 'settings' ? 'text-coral-600' : 'text-slate-warm-500 group-hover:text-coral-500'}
                `}>
                 <Settings size={20} />
               </div>
               <span
                 className={`
-                   text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
-                   ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
-                 `}
+                    text-[13px] font-bold tracking-tight whitespace-nowrap transition-all duration-300 origin-left
+                    ${isCollapsed ? 'opacity-0 w-0 translate-x-4 overflow-hidden' : 'opacity-100 w-auto translate-x-0'}
+                    ${activeTab === 'settings' ? 'text-coral-700' : 'text-slate-warm-800'}
+                  `}
               >
                 Configurações
               </span>

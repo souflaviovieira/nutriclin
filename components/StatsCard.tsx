@@ -41,10 +41,10 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
         <div className={`p-3 rounded-xl border ${iconStyle} flex-shrink-0 transition-transform duration-300 group-hover:scale-105`}>
           <IconComponent size={20} strokeWidth={2.5} />
         </div>
-        
+
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-[10px] font-bold text-slate-warm-400 uppercase tracking-wider truncate">
+          <h3 className="text-[9px] xs:text-[10px] font-bold text-slate-warm-500 uppercase tracking-wider leading-tight mb-0.5">
             {metric.label}
           </h3>
           <p className="text-xl font-display font-bold text-slate-warm-800 tracking-tight">
@@ -53,11 +53,10 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
         </div>
 
         {/* Trend Badge - Compact */}
-        <div className={`flex items-center gap-0.5 text-[10px] font-bold px-2.5 py-1.5 rounded-xl ${
-          isPositive 
-            ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
+        <div className={`flex items-center gap-0.5 text-[10px] font-bold px-2.5 py-1.5 rounded-xl ${isPositive
+            ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
             : 'bg-red-50 text-red-500 border border-red-100'
-        }`}>
+          }`}>
           {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
           {Math.abs(metric.trend)}%
         </div>
@@ -69,11 +68,10 @@ const StatsCard: React.FC<{ metric: Metric }> = ({ metric }) => {
           <div className={`p-4 rounded-xl border transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${iconStyle}`}>
             <IconComponent size={24} strokeWidth={2.5} />
           </div>
-          <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border ${
-            isPositive 
-              ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+          <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full border ${isPositive
+              ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
               : 'bg-red-50 text-red-500 border-red-100'
-          }`}>
+            }`}>
             {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
             {Math.abs(metric.trend)}%
           </div>
