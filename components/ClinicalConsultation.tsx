@@ -5,7 +5,7 @@ import {
   CheckCircle2, User, AlertTriangle, Info,
   Clock, Heart, Zap, Coffee, Moon, Cigarette, Wine, Brain, Utensils,
   Calculator, ChevronRight, Target, Droplets, Gauge, Flame, FileUp,
-  Calendar, Thermometer, Microscope
+  Calendar, Thermometer, Microscope, Loader2
 } from 'lucide-react';
 import LoadingSpinner from './ui/LoadingSpinner';
 import { aiService } from '../services/aiService';
@@ -305,9 +305,9 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
     { id: 'observacoes', label: 'Análise', icon: <FileText size={18} /> },
   ];
 
-  const inputClasses = "w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-nutri-blue/10 focus:border-nutri-blue outline-none text-sm font-semibold text-slate-800 transition-all placeholder:text-slate-300";
-  const labelClasses = "text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-1.5 block leading-tight";
-  const sectionTitleClasses = "text-xs font-black text-slate-900 uppercase tracking-[0.2em] border-b border-slate-100 pb-4 mb-6 flex items-center gap-2";
+  const inputClasses = "w-full px-4 py-3 bg-white border border-cream-200 rounded-xl focus:ring-4 focus:ring-coral-100 focus:border-coral-400 outline-none text-sm font-semibold text-slate-800 transition-all placeholder:text-slate-300";
+  const labelClasses = "text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block leading-tight";
+  const sectionTitleClasses = "text-xs font-black text-slate-900 uppercase tracking-[0.2em] border-b border-cream-100 pb-4 mb-6 flex items-center gap-2";
 
   const SegmentedControl = ({ options, value, onChange, label }: { options: string[], value: string, onChange: (v: string) => void, label?: string }) => (
     <div className="space-y-1.5">
@@ -318,7 +318,7 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${value === opt ? 'bg-white text-nutri-blue shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${value === opt ? 'bg-white text-coral-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
           >
             {opt}
           </button>
@@ -334,7 +334,7 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
 
     // Sincroniza se o valor externo mudar drasticamente (ex: reset)
     useEffect(() => {
-       if (value !== localValue) setLocalValue(value);
+      if (value !== localValue) setLocalValue(value);
     }, [value]);
 
     return (
@@ -342,7 +342,7 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
         <label className={labelClasses}>{label}</label>
         <div className="relative group">
           {icon && (
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-coral-500 transition-colors">
               {icon}
             </div>
           )}
@@ -386,19 +386,28 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
       <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4 w-full md:w-auto">
           <button onClick={onClose} className="p-2.5 hover:bg-slate-50 rounded-xl text-slate-400 transition-colors border border-transparent hover:border-slate-100"><ArrowLeft size={20} /></button>
-          <div className="w-12 h-12 bg-nutri-blue rounded-2xl flex items-center justify-center text-white shadow-lg shadow-nutri-blue/10 shrink-0"><User size={24} /></div>
+          <div className="w-12 h-12 bg-coral-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-coral-500/10 shrink-0"><User size={24} /></div>
           <div className="min-w-0">
             <h2 className="text-lg font-bold text-slate-800 truncate">Consulta Clínica</h2>
-            <p className="text-[10px] text-nutri-blue font-black uppercase tracking-widest truncate">{patientName}</p>
+            <p className="text-[10px] text-coral-500 font-black uppercase tracking-widest truncate">{patientName}</p>
           </div>
         </div>
         <button
-          onClick={() => { setIsSaving(true); setTimeout(() => onFinish({ id: Date.now(), date: new Date().toISOString(), ...formData }), 1000); }}
+          onClick={async () => {
+            try {
+              setIsSaving(true);
+              await onFinish({ id: Date.now().toString(), date: new Date().toISOString(), ...formData });
+            } catch (err: any) {
+              alert("Erro ao salvar consulta: " + err.message);
+            } finally {
+              setIsSaving(false);
+            }
+          }}
           disabled={isSaving}
-          className="w-full md:w-auto px-8 py-3.5 bg-nutri-blue text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all active:scale-95 disabled:opacity-50"
+          className="w-full md:w-auto px-8 py-3.5 bg-coral-500 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-coral-500/20 hover:bg-coral-600 transition-all active:scale-95 disabled:opacity-50"
         >
-          {isSaving ? <LoadingSpinner size={20} color="white" /> : <CheckCircle2 size={20} />}
-          Finalizar Consulta
+          {isSaving ? <Loader2 size={20} className="animate-spin" /> : <CheckCircle2 size={20} />}
+          Finalizar Atendimento
         </button>
       </div>
 
@@ -840,21 +849,21 @@ const ClinicalConsultation: React.FC<ClinicalConsultationProps> = ({
 
         {activeTab === 'observacoes' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-             {/* AI Analysis Module */}
-             <AiAnalysisSection 
-                formData={formData} 
-                onApplyAnalysis={(text) => handleInputChange('observacoes', (formData.observacoes ? formData.observacoes + '\n\n' : '') + text)} 
-             />
-             
+            {/* AI Analysis Module */}
+            <AiAnalysisSection
+              formData={formData}
+              onApplyAnalysis={(text) => handleInputChange('observacoes', (formData.observacoes ? formData.observacoes + '\n\n' : '') + text)}
+            />
+
             <section>
-                <h3 className={sectionTitleClasses}><FileText size={16} className="text-nutri-blue" /> Parecer Técnico Final</h3>
-                <textarea 
-                    rows={12} 
-                    value={formData.observacoes} 
-                    onChange={(e) => handleInputChange('observacoes', e.target.value)} 
-                    className={inputClasses + " resize-none p-6 font-medium leading-relaxed"} 
-                    placeholder="Digite suas observações finais ou use a IA acima para gerar um rascunho..." 
-                />
+              <h3 className={sectionTitleClasses}><FileText size={16} className="text-nutri-blue" /> Parecer Técnico Final</h3>
+              <textarea
+                rows={12}
+                value={formData.observacoes}
+                onChange={(e) => handleInputChange('observacoes', e.target.value)}
+                className={inputClasses + " resize-none p-6 font-medium leading-relaxed"}
+                placeholder="Digite suas observações finais ou use a IA acima para gerar um rascunho..."
+              />
             </section>
           </div>
         )}

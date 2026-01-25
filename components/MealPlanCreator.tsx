@@ -189,12 +189,12 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName, 
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
         <div className="flex items-center gap-4">
-          <button onClick={onBack} className="p-2 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-nutri-blue transition-colors">
+          <button onClick={onBack} className="p-2 hover:bg-cream-50 rounded-xl text-slate-400 hover:text-coral-500 transition-colors">
             <ArrowLeft size={20} />
           </button>
           <div>
             <h1 className="text-xl font-bold text-slate-800">Plano Alimentar</h1>
-            <p className="text-sm text-slate-500">Paciente: <span className="font-semibold text-nutri-blue">{patientName}</span></p>
+            <p className="text-sm text-slate-500">Paciente: <span className="font-semibold text-coral-500">{patientName}</span></p>
           </div>
         </div>
         <div className="flex gap-3">
@@ -225,10 +225,10 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName, 
               }
             }}
             disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-nutri-blue text-white rounded-xl text-sm font-bold shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 bg-coral-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-coral-500/20 hover:bg-coral-600 transition-all disabled:opacity-50"
           >
             {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-            Salvar
+            Salvar Plano
           </button>
         </div>
       </div>
@@ -238,9 +238,9 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName, 
         {meals.map((meal) => (
           <div key={meal.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden transition-all duration-300">
             {/* Meal Header */}
-            <div className={`p-5 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors ${meal.isOpen ? 'border-b border-slate-50' : ''}`} onClick={() => toggleMeal(meal.id)}>
+            <div className={`p-5 flex items-center justify-between cursor-pointer hover:bg-cream-50/50 transition-colors ${meal.isOpen ? 'border-b border-cream-100' : ''}`} onClick={() => toggleMeal(meal.id)}>
               <div className="flex items-center gap-4">
-                <div className="bg-nutri-blue/10 p-2 rounded-lg text-nutri-blue">
+                <div className="bg-coral-50 p-2 rounded-lg text-coral-500">
                   <Clock size={20} />
                 </div>
                 <div>

@@ -132,11 +132,11 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
       const compressedFile = await storageService.compressImage(file);
 
       // 2. Upload
-      const fileName = `recipes/${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
+      const fileName = `recipe-${Date.now()}.webp`;
       const publicUrl = await storageService.uploadFile(compressedFile, {
-        bucket: 'recipe-assets',
-        path: fileName,
-        oldPath: featuredImage || undefined // Try to delete old if exists
+        bucket: 'nutriclin-media',
+        path: `recipes/${fileName}`,
+        oldPath: featuredImage || undefined
       });
 
       setFeaturedImage(publicUrl);
@@ -180,7 +180,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
   };
 
   const labelClasses = "text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1";
-  const inputClasses = "w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-nutri-blue/10 focus:border-nutri-blue outline-none text-sm font-semibold text-slate-800 transition-all placeholder:text-slate-300";
+  const inputClasses = "w-full px-4 py-2.5 bg-white border border-cream-200 rounded-xl focus:ring-4 focus:ring-coral-100 focus:border-coral-400 outline-none text-sm font-semibold text-slate-800 transition-all placeholder:text-slate-300";
 
   const filteredSearch = registeredFoods.filter(f => f.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -240,10 +240,10 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
               setIsSaving(false);
             }
           }}
-          className="px-6 sm:px-10 py-3 bg-nutri-blue text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all transform active:scale-95 flex items-center gap-2"
+          className="px-6 sm:px-10 py-3 bg-coral-500 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-coral-500/20 hover:bg-coral-600 transition-all transform active:scale-95 flex items-center gap-2"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : null}
-          Publicar
+          Publicar Receita
         </button>
         <button
           onClick={onCancel}
@@ -267,7 +267,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
 
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="relative rounded-[32px] overflow-hidden bg-slate-50 border-2 border-dashed border-slate-200 aspect-[21/9] sm:aspect-[21/7] flex flex-col items-center justify-center group cursor-pointer hover:bg-slate-100 hover:border-nutri-blue/40 transition-all p-4"
+            className="relative rounded-[32px] overflow-hidden bg-cream-50 border-2 border-dashed border-cream-200 aspect-[21/9] sm:aspect-[21/7] flex flex-col items-center justify-center group cursor-pointer hover:bg-cream-100 hover:border-coral-300 transition-all p-4"
           >
             {featuredImage ? (
               <img src={featuredImage} className="w-full h-full object-cover" alt="Destaque" />
@@ -527,7 +527,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

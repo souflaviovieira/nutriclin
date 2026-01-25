@@ -150,10 +150,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             objective: 'A definir',
             last_consultation: new Date().toLocaleDateString('pt-BR')
           }])
-          .select();
+          .select()
+          .single();
 
-        if (!pError && pData) patientId = pData[0].id;
+        if (pError) throw pError;
+        if (pData) patientId = pData.id;
       }
+
+      if (!patientId) throw new Error("Paciente não selecionado");
 
       const { error: aError } = await supabase
         .from('appointments')
@@ -163,21 +167,22 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           date: appointmentData.date,
           time: appointmentData.time,
           type: appointmentData.type,
-          price: parseFloat(appointmentData.price),
+          price: parseFloat(appointmentData.price.toString()),
           status: appointmentData.status,
           payment_method: appointmentData.paymentMethod,
           notes: appointmentData.notes
         }]);
+
+      if (aError) throw aError;
 
       setShowSuccess(true);
       setTimeout(() => {
         onSave({ ...appointmentData, patientId });
       }, 2000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setShowSuccess(true);
-      setTimeout(() => onSave(appointmentData), 2000);
+      alert("Erro ao agendar: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -206,7 +211,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
         <div className="flex items-center gap-4">
-          <button onClick={onCancel} className="p-2 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-emerald-600 transition-colors">
+          <button onClick={onCancel} className="p-2 hover:bg-cream-50 rounded-xl text-slate-400 hover:text-coral-500 transition-colors">
             <ArrowLeft size={20} />
           </button>
           <div>
@@ -281,12 +286,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             ) : (
               <div className="flex items-center justify-between p-4 bg-coral-50 border border-emerald-100 rounded-xl">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-coral-600 text-white flex items-center justify-center font-bold">
+                  <div className="w-12 h-12 rounded-xl bg-coral-500 text-white flex items-center justify-center font-bold">
                     {(selectedPatient?.name || newPatientData.name || 'P').charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-bold text-emerald-900">{isNewPatient ? newPatientData.name || 'Novo Paciente' : selectedPatient?.name}</h3>
-                    <p className="text-xs text-emerald-600 font-medium">{isNewPatient ? 'Cadastro Rápido' : 'Paciente Existente'}</p>
+                    <h3 className="font-bold text-coral-900">{isNewPatient ? newPatientData.name || 'Novo Paciente' : selectedPatient?.name}</h3>
+                    <p className="text-xs text-coral-600 font-medium">{isNewPatient ? 'Cadastro Rápido' : 'Paciente Existente'}</p>
                   </div>
                 </div>
                 <button

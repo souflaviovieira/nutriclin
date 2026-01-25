@@ -108,20 +108,49 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // Load Real Patients
+  // Load Real Patients and Setup Realtime
   useEffect(() => {
     const fetchPatients = async () => {
       try {
         const realPatients = await patientService.listPatients();
-        if (realPatients && realPatients.length > 0) {
-          // Mapeia os campos do DB para a interface local se necessário
-          setLocalPatients(realPatients as any);
+        if (realPatients) {
+          const mapped = realPatients.map((p: any) => ({
+            ...p,
+            lastConsultation: p.last_consultation || 'Nunca'
+          }));
+          setLocalPatients(mapped);
         }
       } catch (err) {
-        console.error("Failed to load patients", err);
+        console.error("Error fetching patients:", err);
       }
     };
-    if (session) fetchPatients();
+
+    if (session) {
+      fetchPatients();
+
+      // Realtime Listeners
+      const patientsChannel = supabase
+        .channel('patients-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'patients' }, (payload) => {
+          console.log('Realtime Patient change:', payload);
+          fetchPatients();
+        })
+        .subscribe();
+
+      const appointmentsChannel = supabase
+        .channel('appointments-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, (payload) => {
+          console.log('Realtime Appointment change:', payload);
+          // When appointments change, patients might need their lastConsultation updated
+          fetchPatients();
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(patientsChannel);
+        supabase.removeChannel(appointmentsChannel);
+      };
+    }
   }, [session]);
 
   const getSelectedPatient = () => localPatients.find(p => p.id === selectedPatientId) || localPatients[0];

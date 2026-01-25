@@ -246,14 +246,14 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
         fiber: initialFood.fiber?.toString() || '',
         sodium: initialFood.sodium?.toString() || '',
       };
-      
+
       // Populate micronutrients and aminogram
       [...MICRONUTRIENTS_LIST, ...AMINOGRAM_LIST].forEach(item => {
         if ((initialFood as any)[item.key] !== undefined) {
           newFormData[item.key] = (initialFood as any)[item.key].toString();
         }
       });
-      
+
       setFormData(newFormData);
       setMeasures(initialFood.measures || []);
     } else if (isOpen) {
@@ -296,8 +296,8 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
     setMeasures(measures.filter(m => m.id !== id));
   };
 
-  const inputClasses = "w-full px-4 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-nutri-blue/20 focus:border-nutri-blue outline-none text-sm font-medium text-slate-700 transition-all";
-  const labelClasses = "block text-[11px] font-bold text-slate-500 mb-1.5 ml-0.5";
+  const inputClasses = "w-full px-4 py-2 bg-white border border-cream-200 rounded-lg focus:ring-2 focus:ring-coral-500/20 focus:border-coral-500 outline-none text-sm font-medium text-slate-700 transition-all";
+  const labelClasses = "block text-[11px] font-bold text-slate-400 mb-1.5 ml-0.5 uppercase tracking-wider";
 
   const handleFieldChange = (key: string, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -311,7 +311,7 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
           <h2 className="text-lg font-bold text-slate-800">
             {initialFood ? 'Editar' : 'Adicionar novo'} {isSupplement ? 'suplemento' : 'alimento'}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors"><X size={20}/></button>
+          <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors"><X size={20} /></button>
         </div>
 
         {/* Content */}
@@ -320,14 +320,14 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
             <div>
               <label className={labelClasses}>Nome</label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Activity size={16}/></div>
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Activity size={16} /></div>
                 <input value={formData.name} onChange={e => handleFieldChange('name', e.target.value)} placeholder={`Nome do ${isSupplement ? 'suplemento' : 'alimento'}`} className={inputClasses + " pl-10"} />
               </div>
             </div>
             <div>
               <label className={labelClasses}>Fonte</label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Database size={16}/></div>
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Database size={16} /></div>
                 <input value={formData.source} readOnly className={inputClasses + " pl-10 bg-slate-50"} />
               </div>
             </div>
@@ -352,17 +352,17 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
           </div>
 
           <div className="flex bg-slate-100 p-1 rounded-xl">
-            <button 
+            <button
               onClick={() => setActiveTab('nutrition')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'nutrition' ? 'bg-white text-nutri-blue shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'nutrition' ? 'bg-white text-coral-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
             >
-               Valor nutricional por 100 g
+              Valor nutricional por 100 g
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('measures')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'measures' ? 'bg-white text-nutri-blue shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'measures' ? 'bg-white text-coral-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
             >
-               Medidas caseiras
+              Medidas caseiras
             </button>
           </div>
 
@@ -413,11 +413,11 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
                     <div key={mic.key}>
                       <label className={labelClasses}>{mic.label}</label>
                       <div className="relative">
-                        <input 
-                          value={formData[mic.key] || ''} 
+                        <input
+                          value={formData[mic.key] || ''}
                           onChange={e => handleFieldChange(mic.key, e.target.value)}
-                          placeholder="0" 
-                          className={inputClasses + " pr-12 text-right"} 
+                          placeholder="0"
+                          className={inputClasses + " pr-12 text-right"}
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">{mic.unit}</span>
                       </div>
@@ -435,11 +435,11 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
                     <div key={amin.key}>
                       <label className={labelClasses}>{amin.label}</label>
                       <div className="relative">
-                        <input 
-                          value={formData[amin.key] || ''} 
+                        <input
+                          value={formData[amin.key] || ''}
                           onChange={e => handleFieldChange(amin.key, e.target.value)}
-                          placeholder="0" 
-                          className={inputClasses + " pr-12 text-right"} 
+                          placeholder="0"
+                          className={inputClasses + " pr-12 text-right"}
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">{amin.unit}</span>
                       </div>
@@ -450,7 +450,7 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <button 
+              <button
                 onClick={addMeasure}
                 className="w-full py-3.5 bg-blue-400 hover:bg-blue-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-100 transition-all flex items-center justify-center gap-2"
               >
@@ -470,48 +470,48 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
                     <div className="space-y-4">
                       <div>
                         <label className={labelClasses}>Nome no singular</label>
-                        <input 
-                          value={measure.singular} 
+                        <input
+                          value={measure.singular}
                           onChange={e => updateMeasure(measure.id, 'singular', e.target.value)}
-                          placeholder="Ex: colher" 
-                          className={inputClasses} 
+                          placeholder="Ex: colher"
+                          className={inputClasses}
                         />
                       </div>
                       <div>
                         <label className={labelClasses}>Nome no plural</label>
-                        <input 
-                          value={measure.plural} 
+                        <input
+                          value={measure.plural}
                           onChange={e => updateMeasure(measure.id, 'plural', e.target.value)}
-                          placeholder="Ex: colheres" 
-                          className={inputClasses} 
+                          placeholder="Ex: colheres"
+                          className={inputClasses}
                         />
                       </div>
                       <div>
                         <label className={labelClasses}>Quantidade</label>
-                        <input 
-                          value={measure.quantity} 
+                        <input
+                          value={measure.quantity}
                           onChange={e => updateMeasure(measure.id, 'quantity', e.target.value)}
-                          placeholder="1" 
-                          className={inputClasses} 
+                          placeholder="1"
+                          className={inputClasses}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className={labelClasses}>Gramas totais</label>
-                          <input 
-                            value={measure.totalGrams} 
+                          <input
+                            value={measure.totalGrams}
                             onChange={e => updateMeasure(measure.id, 'totalGrams', e.target.value)}
-                            placeholder="50" 
-                            className={inputClasses} 
+                            placeholder="50"
+                            className={inputClasses}
                           />
                         </div>
                         <div>
                           <label className={labelClasses}>Parte comestível (%)</label>
-                          <input 
-                            value={measure.ediblePart} 
+                          <input
+                            value={measure.ediblePart}
                             onChange={e => updateMeasure(measure.id, 'ediblePart', e.target.value)}
-                            placeholder="100" 
-                            className={inputClasses} 
+                            placeholder="100"
+                            className={inputClasses}
                           />
                         </div>
                       </div>
@@ -526,7 +526,7 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
         {/* Footer */}
         <div className="p-6 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
           <button onClick={onClose} className="px-6 py-2.5 text-slate-600 font-bold text-sm hover:bg-slate-100 rounded-xl transition-all">Cancelar</button>
-          <button 
+          <button
             onClick={() => {
               const nutritionData: any = {
                 id: initialFood?.id || Date.now().toString(),
@@ -541,7 +541,7 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
                 measures: measures.length > 0 ? measures : undefined,
                 isSupplement: isSupplement
               };
-              
+
               // Map all other numeric micronutrients
               [...MICRONUTRIENTS_LIST, ...AMINOGRAM_LIST].forEach(item => {
                 if (formData[item.key] !== undefined && formData[item.key] !== '') {
@@ -552,9 +552,9 @@ const FoodFormModal: React.FC<FoodFormModalProps> = ({ isOpen, onClose, onSave, 
               onSave(nutritionData);
             }}
             disabled={!formData.name}
-            className="px-8 py-2.5 bg-nutri-blue hover:bg-nutri-blue-hover disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-nutri-blue/20"
+            className="px-8 py-2.5 bg-coral-500 hover:bg-coral-600 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-coral-500/20"
           >
-            {initialFood ? 'Atualizar e fechar' : 'Salvar e fechar'}
+            {initialFood ? 'Atualizar Alimento' : 'Salvar Alimento'}
           </button>
         </div>
       </div>

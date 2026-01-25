@@ -35,33 +35,34 @@ export const storageService = {
      * If oldPath is provided, it deletes the old file first.
      */
     async uploadFile(file: File, options: StorageOptions): Promise<string> {
-        const { bucket, path, oldPath } = options;
+        const { bucket = 'nutriclin-media', path, oldPath } = options;
 
         try {
             // 1. If it's an update, delete the old file
             if (oldPath) {
-                // Extract the filename from the URL if needed, or assume it's a relative path
-                const relativeOldPath = oldPath.includes('public/')
-                    ? oldPath.split('public/').pop()
-                    : oldPath.split('/').slice(-2).join('/'); // basic heuristic for path
-
-                // If oldPath is a full URL, we need to be careful. 
-                // For simplicity, let's assume oldPath is the relative path in the bucket.
-                // If it's a URL, we'll try to extract the relative path.
                 let actualOldPath = oldPath;
                 if (oldPath.startsWith('http')) {
+                    // Extract path after bucket name
                     const urlParts = oldPath.split(`${bucket}/`);
                     if (urlParts.length > 1) {
-                        actualOldPath = urlParts[1];
+                        actualOldPath = urlParts[1].split('?')[0];
+                    } else {
+                        // Fallback: try to get everything after 'object/public/'
+                        const publicParts = oldPath.split('public/');
+                        if (publicParts.length > 1) {
+                            actualOldPath = publicParts[1].split('?')[0];
+                        }
                     }
                 }
 
-                const { error: deleteError } = await supabase.storage
-                    .from(bucket)
-                    .remove([actualOldPath]);
+                if (actualOldPath) {
+                    const { error: deleteError } = await supabase.storage
+                        .from(bucket)
+                        .remove([actualOldPath]);
 
-                if (deleteError) {
-                    console.warn('Could not delete old file:', deleteError.message);
+                    if (deleteError) {
+                        console.warn('Could not delete old file:', deleteError.message);
+                    }
                 }
             }
 
@@ -70,7 +71,7 @@ export const storageService = {
                 .from(bucket)
                 .upload(path, file, {
                     upsert: true,
-                    contentType: file.type // Ensure correct content type (e.g., image/webp)
+                    contentType: file.type || 'image/webp'
                 });
 
             if (uploadError) throw uploadError;
