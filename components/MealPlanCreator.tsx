@@ -1,21 +1,23 @@
 
 import React, { useState } from 'react';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Trash2, 
-  Clock, 
-  ChevronDown, 
-  ChevronUp, 
-  Save, 
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Save,
   Copy,
   Search,
   Zap,
   RotateCcw,
   X,
   Layout,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
+import { mealPlanService } from '../services/mealPlanService';
 
 interface FoodItem {
   id: string;
@@ -43,6 +45,7 @@ interface MealPlanModel {
 interface MealPlanCreatorProps {
   onBack: () => void;
   patientName: string;
+  patientId?: string;
 }
 
 const MOCK_MODELS: MealPlanModel[] = [
@@ -51,11 +54,11 @@ const MOCK_MODELS: MealPlanModel[] = [
     name: 'Plano alimentar cetogênico 1500 kcal',
     description: 'Foco em alta gordura e baixo carboidrato para indução de cetose.',
     meals: [
-      { 
+      {
         id: 'm1', name: 'Café da Manhã', time: '08:00', isOpen: true,
         items: [{ id: 'i1', name: 'Ovos mexidos na manteiga', quantity: '3', unit: 'unidades', substitutions: ['Omelete com queijo'] }]
       },
-      { 
+      {
         id: 'm2', name: 'Almoço', time: '12:30', isOpen: true,
         items: [{ id: 'i2', name: 'Sobrecoxa de frango assada', quantity: '150', unit: 'g', substitutions: ['Salmão grelhado'] }]
       }
@@ -66,14 +69,14 @@ const MOCK_MODELS: MealPlanModel[] = [
     name: 'Plano alimentar de 2000 kcal (Hipertrofia)',
     description: 'Equilibrado em macros para ganho de massa magra.',
     meals: [
-      { 
+      {
         id: 'm1', name: 'Café da Manhã', time: '07:30', isOpen: true,
         items: [
           { id: 'i1', name: 'Pão Integral', quantity: '2', unit: 'fatias', substitutions: [] },
           { id: 'i2', name: 'Pasta de Amendoim', quantity: '1', unit: 'colher', substitutions: [] }
         ]
       },
-      { 
+      {
         id: 'm2', name: 'Almoço', time: '12:00', isOpen: true,
         items: [
           { id: 'i3', name: 'Arroz Integral', quantity: '150', unit: 'g', substitutions: [] },
@@ -84,24 +87,25 @@ const MOCK_MODELS: MealPlanModel[] = [
   }
 ];
 
-const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }) => {
+const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName, patientId }) => {
+  const [isSaving, setIsSaving] = useState(false);
   const [meals, setMeals] = useState<Meal[]>([
-    { 
-      id: '1', 
-      name: 'Café da Manhã', 
-      time: '07:30', 
+    {
+      id: '1',
+      name: 'Café da Manhã',
+      time: '07:30',
       isOpen: true,
       items: [
         { id: 'i1', name: 'Pão Integral', quantity: '2', unit: 'fatias', substitutions: ['Torrada integral', 'Tapioca (40g)'] },
         { id: 'i2', name: 'Ovo Mexido', quantity: '2', unit: 'unidades', substitutions: ['Queijo Branco (2 fatias)'] }
       ]
     },
-    { 
-      id: '2', 
-      name: 'Almoço', 
-      time: '12:30', 
+    {
+      id: '2',
+      name: 'Almoço',
+      time: '12:30',
       isOpen: false,
-      items: [] 
+      items: []
     }
   ]);
 
@@ -176,7 +180,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
     setIsImportModalOpen(false);
   };
 
-  const filteredModels = MOCK_MODELS.filter(m => 
+  const filteredModels = MOCK_MODELS.filter(m =>
     m.name.toLowerCase().includes(modelSearchTerm.toLowerCase())
   );
 
@@ -194,14 +198,37 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
           </div>
         </div>
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={() => setIsImportModalOpen(true)}
             className="flex items-center gap-2 px-6 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all shadow-sm"
           >
             <Copy size={18} /> Importar Modelo
           </button>
-          <button className="flex items-center gap-2 px-6 py-2.5 bg-nutri-blue text-white rounded-xl text-sm font-bold shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all">
-            <Save size={18} /> Salvar
+          <button
+            onClick={async () => {
+              try {
+                setIsSaving(true);
+                const payload = {
+                  patient_id: patientId,
+                  name: `Plano de ${patientName} - ${new Date().toLocaleDateString('pt-BR')}`,
+                  meals: meals,
+                  is_model: false
+                };
+                await mealPlanService.saveMealPlan(payload);
+                alert("Plano alimentar salvo com sucesso!");
+                onBack();
+              } catch (err: any) {
+                console.error(err);
+                alert("Erro ao salvar plano: " + err.message);
+              } finally {
+                setIsSaving(false);
+              }
+            }}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-6 py-2.5 bg-nutri-blue text-white rounded-xl text-sm font-bold shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            Salvar
           </button>
         </div>
       </div>
@@ -217,8 +244,8 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                   <Clock size={20} />
                 </div>
                 <div>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={meal.name}
                     onChange={(e) => {
                       e.stopPropagation();
@@ -227,8 +254,8 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                     onClick={(e) => e.stopPropagation()}
                     className="font-bold text-slate-800 bg-transparent border-none focus:ring-0 p-0 text-lg w-48"
                   />
-                  <input 
-                    type="time" 
+                  <input
+                    type="time"
                     value={meal.time}
                     onChange={(e) => {
                       e.stopPropagation();
@@ -240,7 +267,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); removeMeal(meal.id); }}
                   className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
                 >
@@ -262,8 +289,8 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                         <div className="flex-1">
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Alimento</label>
                           <div className="relative group">
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               value={item.name}
                               placeholder="Ex: Arroz Integral"
                               onChange={(e) => updateItem(meal.id, item.id, 'name', e.target.value)}
@@ -276,8 +303,8 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                         </div>
                         <div className="w-full md:w-32">
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Quant.</label>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             value={item.quantity}
                             placeholder="100"
                             onChange={(e) => updateItem(meal.id, item.id, 'quantity', e.target.value)}
@@ -286,7 +313,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                         </div>
                         <div className="w-full md:w-32">
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Unidade</label>
-                          <select 
+                          <select
                             value={item.unit}
                             onChange={(e) => updateItem(meal.id, item.id, 'unit', e.target.value)}
                             className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-nutri-blue/20 focus:border-nutri-blue outline-none"
@@ -299,15 +326,15 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                           </select>
                         </div>
                         <div className="flex items-end">
-                           <button 
+                          <button
                             onClick={() => removeItem(meal.id, item.id)}
                             className="p-2.5 text-slate-300 hover:text-rose-500 transition-colors mb-0.5"
-                           >
+                          >
                             <Trash2 size={18} />
-                           </button>
+                          </button>
                         </div>
                       </div>
-                      
+
                       {/* Substitutions */}
                       <div>
                         <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Substituições</label>
@@ -323,7 +350,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                               </button>
                             </span>
                           ))}
-                          <button 
+                          <button
                             onClick={() => {
                               const promptVal = prompt("Digite a substituição:");
                               if (promptVal) {
@@ -341,7 +368,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <button 
+                  <button
                     onClick={() => addItem(meal.id)}
                     className="flex-1 py-3 border-2 border-dashed border-slate-100 rounded-xl text-slate-400 hover:text-nutri-blue hover:border-nutri-blue/30 hover:bg-nutri-blue/5 transition-all text-sm font-bold flex items-center justify-center gap-2"
                   >
@@ -359,7 +386,7 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
 
       {/* Quick Actions Footer */}
       <div className="flex items-center justify-between pt-4">
-        <button 
+        <button
           onClick={addMeal}
           className="px-6 py-3 bg-nutri-blue text-white rounded-2xl text-sm font-bold shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all flex items-center gap-2"
         >
@@ -377,64 +404,64 @@ const MealPlanCreator: React.FC<MealPlanCreatorProps> = ({ onBack, patientName }
         <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-300">
             <div className="p-6 md:p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-               <div className="flex items-center gap-4">
-                  <div className="p-2 bg-nutri-blue/10 text-nutri-blue rounded-xl">
-                    <Layout size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-black text-slate-800 tracking-tight">Importar Modelo de Plano</h2>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Selecione um guia para começar</p>
-                  </div>
-               </div>
-               <button onClick={() => setIsImportModalOpen(false)} className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all">
-                  <X size={24} />
-               </button>
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-nutri-blue/10 text-nutri-blue rounded-xl">
+                  <Layout size={24} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-800 tracking-tight">Importar Modelo de Plano</h2>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Selecione um guia para começar</p>
+                </div>
+              </div>
+              <button onClick={() => setIsImportModalOpen(false)} className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+                <X size={24} />
+              </button>
             </div>
 
             <div className="p-6 md:p-8 space-y-6 flex-1 overflow-y-auto no-scrollbar">
-               <div className="relative group">
-                  <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors" />
-                  <input 
-                    type="text"
-                    placeholder="Buscar modelos..."
-                    value={modelSearchTerm}
-                    onChange={(e) => setModelSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-nutri-blue/5 focus:border-nutri-blue focus:bg-white outline-none text-sm font-semibold text-slate-700 transition-all shadow-inner"
-                  />
-               </div>
+              <div className="relative group">
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-nutri-blue transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Buscar modelos..."
+                  value={modelSearchTerm}
+                  onChange={(e) => setModelSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-nutri-blue/5 focus:border-nutri-blue focus:bg-white outline-none text-sm font-semibold text-slate-700 transition-all shadow-inner"
+                />
+              </div>
 
-               <div className="grid grid-cols-1 gap-4">
-                  {filteredModels.map((model) => (
-                    <button
-                      key={model.id}
-                      onClick={() => handleImportModel(model)}
-                      className="text-left p-6 bg-white border border-slate-100 rounded-[24px] shadow-sm hover:border-nutri-blue/30 hover:shadow-md transition-all group relative overflow-hidden"
-                    >
-                       <div className="relative z-10 space-y-2">
-                          <h4 className="text-base font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{model.name}</h4>
-                          <p className="text-xs text-slate-500 font-medium leading-relaxed">{model.description}</p>
-                          <div className="flex items-center gap-3 pt-2">
-                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-lg">{model.meals.length} Refeições</span>
-                          </div>
-                       </div>
-                       <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-100 group-hover:text-nutri-blue/10 transition-colors">
-                          <CheckCircle2 size={48} />
-                       </div>
-                    </button>
-                  ))}
-                  {filteredModels.length === 0 && (
-                    <div className="py-20 text-center space-y-4 opacity-50">
-                       <Layout size={48} className="mx-auto text-slate-200" />
-                       <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Nenhum modelo encontrado</p>
+              <div className="grid grid-cols-1 gap-4">
+                {filteredModels.map((model) => (
+                  <button
+                    key={model.id}
+                    onClick={() => handleImportModel(model)}
+                    className="text-left p-6 bg-white border border-slate-100 rounded-[24px] shadow-sm hover:border-nutri-blue/30 hover:shadow-md transition-all group relative overflow-hidden"
+                  >
+                    <div className="relative z-10 space-y-2">
+                      <h4 className="text-base font-black text-slate-800 group-hover:text-nutri-blue transition-colors">{model.name}</h4>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">{model.description}</p>
+                      <div className="flex items-center gap-3 pt-2">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-lg">{model.meals.length} Refeições</span>
+                      </div>
                     </div>
-                  )}
-               </div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-100 group-hover:text-nutri-blue/10 transition-colors">
+                      <CheckCircle2 size={48} />
+                    </div>
+                  </button>
+                ))}
+                {filteredModels.length === 0 && (
+                  <div className="py-20 text-center space-y-4 opacity-50">
+                    <Layout size={48} className="mx-auto text-slate-200" />
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Nenhum modelo encontrado</p>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="p-6 md:p-8 border-t border-slate-50 bg-slate-50/20 flex justify-end">
-               <button onClick={() => setIsImportModalOpen(false)} className="px-8 py-3 text-sm font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors">
-                  Cancelar
-               </button>
+              <button onClick={() => setIsImportModalOpen(false)} className="px-8 py-3 text-sm font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors">
+                Cancelar
+              </button>
             </div>
           </div>
         </div>

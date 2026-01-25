@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { NAV_ITEMS } from '../constants';
 import { LogOut, Apple, ChevronLeft, ChevronRight, User as UserIcon, Settings } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
+import { supabase } from '../services/supabaseClient';
 
 interface SidebarProps {
   activeTab: string;
@@ -204,7 +205,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {/* Logout Button */}
             {!isCollapsed && (
-              <button className="w-full mt-2 flex items-center justify-center gap-2 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest">
+              <button
+                onClick={() => supabase.auth.signOut()}
+                className="w-full mt-2 flex items-center justify-center gap-2 p-2 text-slate-400 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest"
+              >
                 <LogOut size={14} /> Sair
               </button>
             )}

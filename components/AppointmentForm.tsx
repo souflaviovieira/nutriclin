@@ -183,18 +183,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     }
   };
 
-  const inputClasses = "w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400 font-medium text-sm";
+  const inputClasses = "w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-xl focus:ring-2 focus:ring-coral-500/20 focus:border-coral-500 outline-none transition-all placeholder:text-slate-400 font-medium text-sm";
   const labelClasses = "block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1";
 
   if (showSuccess) {
     return (
       <div className="flex flex-col items-center justify-center py-20 animate-in zoom-in duration-300 text-center">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
+        <div className="w-20 h-20 bg-coral-100 text-coral-600 rounded-full flex items-center justify-center mb-6">
           <CheckCircle2 size={48} />
         </div>
         <h2 className="text-2xl font-bold text-slate-800">Consulta Agendada!</h2>
         <p className="text-slate-500 mt-2 max-w-sm">A agenda foi atualizada e o valor de <b>R$ {appointmentData.price}</b> já foi provisionado no seu Financeiro.</p>
-        <div className="mt-8 flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full text-xs font-bold animate-pulse">
+        <div className="mt-8 flex items-center gap-2 text-emerald-600 bg-coral-50 px-4 py-2 rounded-full text-xs font-bold animate-pulse">
           <TrendingUp size={14} /> Sincronização financeira ativa
         </div>
       </div>
@@ -223,7 +223,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         {/* Step 1: Patient Selection */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex items-center gap-2">
-            <User size={18} className="text-emerald-500" />
+            <User size={18} className="text-coral-500" />
             <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Passo 1: Identificar Paciente</h2>
           </div>
 
@@ -231,7 +231,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             {!selectedPatient && !isNewPatient ? (
               <div className="space-y-4">
                 <div className="relative group">
-                  <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                  <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-coral-500 transition-colors" />
                   <input
                     type="text"
                     placeholder="Buscar por nome ou telefone..."
@@ -247,7 +247,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                       key={p.id}
                       type="button"
                       onClick={() => setSelectedPatient(p)}
-                      className="w-full flex items-center justify-between p-3 hover:bg-emerald-50 transition-colors text-left group"
+                      className="w-full flex items-center justify-between p-3 hover:bg-coral-50 transition-colors text-left group"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-600">
@@ -272,16 +272,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsNewPatient(true)}
-                    className="w-full py-3 border-2 border-dashed border-slate-100 rounded-xl text-slate-400 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all text-sm font-bold flex items-center justify-center gap-2"
+                    className="w-full py-3 border-2 border-dashed border-slate-100 rounded-xl text-slate-400 hover:text-emerald-600 hover:border-emerald-200 hover:bg-coral-50/50 transition-all text-sm font-bold flex items-center justify-center gap-2"
                   >
                     <UserPlus size={18} /> Cadastrar Novo Paciente
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-coral-50 border border-emerald-100 rounded-xl">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold">
+                  <div className="w-12 h-12 rounded-xl bg-coral-600 text-white flex items-center justify-center font-bold">
                     {(selectedPatient?.name || newPatientData.name || 'P').charAt(0)}
                   </div>
                   <div>
@@ -292,7 +292,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 <button
                   type="button"
                   onClick={() => { setSelectedPatient(null); setIsNewPatient(false); }}
-                  className="text-xs font-bold text-emerald-700 hover:underline"
+                  className="text-xs font-bold text-coral-700 hover:underline"
                 >
                   Alterar
                 </button>
@@ -391,8 +391,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                         type="button"
                         onClick={() => setAppointmentData({ ...appointmentData, time: slot })}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${appointmentData.time === slot
-                            ? 'bg-emerald-600 text-white border-emerald-600'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-500 hover:text-emerald-600'
+                          ? 'bg-coral-600 text-white border-emerald-600'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-500 hover:text-emerald-600'
                           }`}
                       >
                         {slot}
@@ -417,13 +417,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               <div>
                 <label className={labelClasses}>Valor Provisionado (R$)</label>
                 <div className="relative">
-                  <DollarSign size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+                  <DollarSign size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-coral-500" />
                   <input
                     type="number"
                     required
                     value={appointmentData.price}
                     onChange={(e) => setAppointmentData({ ...appointmentData, price: e.target.value })}
-                    className={inputClasses + " pl-11 text-right font-bold text-emerald-700 bg-emerald-50/30 border-emerald-100"}
+                    className={inputClasses + " pl-11 text-right font-bold text-coral-700 bg-coral-50/30 border-emerald-100"}
                   />
                 </div>
                 <p className="text-[10px] text-slate-400 mt-1.5 ml-1 italic">* Valor será adicionado às previsões financeiras.</p>
@@ -490,7 +490,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           <button
             type="submit"
             disabled={loading || (!selectedPatient && !newPatientData.name) || hasConflict}
-            className="flex-[2] px-6 py-4 bg-emerald-600 text-white font-bold rounded-2xl shadow-xl shadow-emerald-100 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:bg-slate-300 disabled:shadow-none"
+            className="flex-[2] px-6 py-4 bg-coral-600 text-white font-bold rounded-2xl shadow-xl shadow-emerald-100 hover:bg-coral-700 transition-all flex items-center justify-center gap-3 disabled:bg-slate-300 disabled:shadow-none"
           >
             {loading ? <LoadingSpinner size={20} color="white" /> : <CheckCircle2 size={20} />}
             Confirmar e Provisionar

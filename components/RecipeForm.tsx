@@ -24,9 +24,18 @@ import {
   Activity,
   ChevronRight,
   Edit2,
-  Loader2
+  Loader2,
+  LogOut,
+  Apple,
+  ChevronLeft,
+  User as UserIcon,
+  Settings,
+  Save
 } from 'lucide-react';
+import { useUser } from '../contexts/UserContext';
+import { supabase } from '../services/supabaseClient';
 import { storageService } from '../services/storageService';
+import { recipeService } from '../services/recipeService';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import FoodFormModal, { Food } from './FoodFormModal';
 
@@ -53,6 +62,7 @@ interface RecipeFormProps {
 }
 
 const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
+  const [isSaving, setIsSaving] = useState(false);
   const [recipeData, setRecipeData] = useState({
     name: 'Nova Receita',
     totalTime: '00:10',
@@ -195,9 +205,44 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onCancel, onSave }) => {
 
       <header className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 sticky top-0 z-50 mb-6 shadow-sm">
         <button
-          onClick={() => onSave?.(recipeData)}
-          className="px-6 sm:px-10 py-3 bg-nutri-blue text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all transform active:scale-95"
+          onClick={async () => {
+            try {
+              setIsSaving(true);
+
+              const totalMins = (timeStr: string) => {
+                const [h, m] = timeStr.split(':').map(Number);
+                return (h * 60) + m;
+              };
+
+              const payload = {
+                title: recipeData.name,
+                description: recipeData.description,
+                prep_time_minutes: totalMins(recipeData.prepTime),
+                cook_time_minutes: Math.max(0, totalMins(recipeData.totalTime) - totalMins(recipeData.prepTime)),
+                servings: parseInt(recipeData.portions),
+                ingredients: ingredients,
+                instructions: method.filter(s => s.trim()).join('\n'),
+                total_calories: totals.energy,
+                total_protein: totals.protein,
+                total_fat: totals.fat,
+                total_carbs: totals.carbs,
+                image_url: featuredImage || undefined
+              };
+
+              const saved = await recipeService.saveRecipe(payload);
+
+              if (onSave) onSave(saved);
+              else onCancel();
+            } catch (err: any) {
+              console.error(err);
+              alert('Erro ao salvar receita: ' + err.message);
+            } finally {
+              setIsSaving(false);
+            }
+          }}
+          className="px-6 sm:px-10 py-3 bg-nutri-blue text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-nutri-blue/20 hover:bg-nutri-blue-hover transition-all transform active:scale-95 flex items-center gap-2"
         >
+          {isSaving ? <Loader2 size={16} className="animate-spin" /> : null}
           Publicar
         </button>
         <button

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Apple, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { Apple, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
 import LoadingSpinner from './ui/LoadingSpinner';
 
@@ -62,93 +62,104 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col lg:flex-row overflow-hidden">
+    <div className="min-h-screen bg-cream-100 flex flex-col lg:flex-row overflow-hidden font-display selection:bg-coral-100 selection:text-coral-600">
       {/* Visual Side (Desktop) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0D8E74] to-[#156152] p-16 flex-col justify-between relative overflow-hidden">
-        <div className="relative z-10">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-coral-500 to-coral-700 p-16 flex-col justify-between relative overflow-hidden group">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white/5 rounded-full -mr-32 -mt-32 blur-[120px] animate-float"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-coral-400/20 rounded-full -ml-20 -mb-20 blur-[100px] animate-pulse-glow"></div>
+        <div className="absolute inset-0 opacity-10 pointer-events-none grain-texture"></div>
+
+        <div className="relative z-10 animate-fade-in">
           <div className="flex items-center gap-3 mb-16">
-            <div className="bg-white/10 backdrop-blur-md p-2.5 rounded-2xl text-white border border-white/20">
-              <Apple size={36} />
+            <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl text-white border border-white/20 shadow-soft">
+              <Apple size={32} className="text-white" />
             </div>
-            <span className="text-3xl font-black text-white tracking-tighter">NutriClin</span>
+            <span className="text-3xl font-bold text-white tracking-tighter">NutriClin</span>
           </div>
 
-          <div className="max-w-md">
-            <h1 className="text-[54px] font-black text-white leading-[1.1] mb-8 tracking-tight">
-              Gestão clínica inteligente
+          <div className="max-w-md stagger-1 animate-slide-up">
+            <h1 className="text-[64px] font-bold text-white leading-[1] mb-8 tracking-tighter text-balance">
+              Inteligência que <span className="opacity-60 italic font-medium">nutre</span> sua clínica.
             </h1>
-            <p className="text-emerald-50/80 text-lg leading-relaxed font-medium">
-              Simplifique sua rotina, analise dados clínicos e acompanhe evoluções com apoio da Inteligência Artificial.
+            <p className="text-coral-50/80 text-lg leading-relaxed font-medium max-w-sm">
+              Simplifique sua rotina, analise dados clínicos e acompanhe evoluções com apoio de IA editorial.
             </p>
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-6 text-emerald-100/40 text-[11px] font-black uppercase tracking-widest">
-          <span>Privacidade Protegida</span>
-          <div className="w-1.5 h-1.5 bg-emerald-400/30 rounded-full"></div>
-          <span>Criptografia de Dados</span>
-          <div className="w-1.5 h-1.5 bg-emerald-400/30 rounded-full"></div>
-          <span>Conformidade com a LGPD</span>
+        <div className="relative z-10 flex items-center gap-8 text-coral-100/40 text-[10px] font-bold uppercase tracking-[0.2em] stagger-3 animate-fade-in">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={14} className="text-coral-300/40" />
+            <span>Privacidade LGPD</span>
+          </div>
+          <div className="w-1 h-1 bg-coral-400/30 rounded-full"></div>
+          <div className="flex items-center gap-2">
+            <Lock size={14} className="text-coral-300/40" />
+            <span>Dados Criptografados</span>
+          </div>
         </div>
-
-        {/* Dynamic Abstract Elements */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full -mr-32 -mt-32 blur-[100px]"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-400/10 rounded-full -ml-20 -mb-20 blur-[100px]"></div>
       </div>
 
       {/* Form Side */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-24 bg-white">
-        <div className="w-full max-w-[420px]">
+      <div className="flex-1 flex flex-col justify-center items-center p-6 lg:p-24 relative">
+        <div className="absolute inset-0 opacity-30 pointer-events-none grain-texture"></div>
+
+        <div className="w-full max-w-[400px] relative z-20">
           {/* Mobile Logo */}
-          <div className="flex lg:hidden items-center gap-3 mb-12 justify-center">
-            <div className="bg-[#0D8E74] p-2.5 rounded-2xl text-white shadow-xl shadow-emerald-600/20">
+          <div className="flex lg:hidden items-center gap-3 mb-12 justify-center animate-fade-in">
+            <div className="bg-coral-500 p-2.5 rounded-2xl text-white shadow-xl shadow-coral-600/20">
               <Apple size={28} />
             </div>
-            <span className="text-3xl font-black text-slate-800 tracking-tighter">NutriClin</span>
+            <span className="text-3xl font-bold text-slate-warm-800 tracking-tighter">NutriClin</span>
           </div>
 
-          <div className="text-center lg:text-left mb-12">
-            <h2 className="text-[34px] font-black text-slate-800 mb-2 tracking-tight">
-              {isSignUp ? 'Criar Conta Profissional' : 'Bem-vindo(a) ao NutriClin'}
+          <div className="text-center lg:text-left mb-10 animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-coral-50 text-coral-600 text-[10px] font-bold uppercase tracking-widest mb-4">
+              <Sparkles size={12} />
+              <span>Plataforma Profissional</span>
+            </div>
+            <h2 className="text-[38px] font-bold text-slate-warm-900 mb-3 tracking-tight leading-tight">
+              {isSignUp ? 'Criar sua conta' : 'Acesse o painel'}
             </h2>
-            <p className="text-slate-500 font-medium">
-              {isSignUp ? 'Cadastre-se para começar a utilizar a Inteligência Artificial na sua clínica.' : 'Acesse sua conta e utilize a Inteligência Artificial para apoiar suas decisões clínicas.'}
+            <p className="text-slate-warm-500 font-medium leading-relaxed">
+              {isSignUp ? 'Junte-se a nutricionistas que buscam excelência clínica.' : 'Entre com suas credenciais para gerenciar seus atendimentos.'}
             </p>
           </div>
 
-          <form onSubmit={handleAuth} className="space-y-6">
+          <form onSubmit={handleAuth} className="space-y-5 animate-scale-in stagger-2">
             {error && (
-              <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-2xl text-sm font-semibold animate-in fade-in zoom-in duration-300">
+              <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-2xl text-sm font-semibold animate-bounce-in">
                 <AlertCircle size={18} className="shrink-0" />
                 <p>{error}</p>
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">E-mail Profissional</label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0D8E74] transition-colors">
-                  <Mail size={20} />
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-warm-400 uppercase tracking-[0.15em] ml-1">E-mail Profissional</label>
+              <div className="relative group/input">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-warm-300 group-focus-within/input:text-coral-500 transition-colors duration-300">
+                  <Mail size={18} />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seuemail@nutriclin.com"
+                  placeholder="seu@email.com"
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 focus:border-[#0D8E74] focus:bg-white rounded-2xl outline-none transition-all text-slate-700 text-sm font-bold shadow-inner"
+                  className="input-coral pl-12 focus:ring-4 focus:ring-coral-500/5"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5 text-balance">
               <div className="flex items-center justify-between ml-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Senha</label>
-                {!isSignUp && <button type="button" className="text-[10px] font-black text-[#0D8E74] uppercase tracking-widest hover:underline">Esqueci minha senha</button>}
+                <label className="text-[10px] font-bold text-slate-warm-400 uppercase tracking-[0.15em]">Senha Segura</label>
+                {!isSignUp && <button type="button" className="text-[10px] font-bold text-coral-500 uppercase tracking-widest hover:text-coral-600 hover:underline transition-all">Esqueci a senha</button>}
               </div>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0D8E74] transition-colors">
-                  <Lock size={20} />
+              <div className="relative group/input">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-warm-300 group-focus-within/input:text-coral-500 transition-colors duration-300">
+                  <Lock size={18} />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -156,14 +167,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-100 focus:border-[#0D8E74] focus:bg-white rounded-2xl outline-none transition-all text-slate-700 text-sm font-bold shadow-inner"
+                  className="input-coral pl-12 pr-12 focus:ring-4 focus:ring-coral-500/5"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-warm-300 hover:text-coral-500 transition-colors p-1"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -171,28 +182,33 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-16 bg-[#0D8E74] hover:bg-[#0A745E] disabled:bg-slate-300 text-white font-black rounded-2xl shadow-[0_15px_40px_-10px_rgba(13,142,116,0.5)] transition-all flex items-center justify-center gap-3 group mt-4 transform active:scale-95"
+              className="w-full btn-primary h-14 flex items-center justify-center gap-3 group mt-4 transform active:scale-95 disabled:grayscale disabled:opacity-50"
             >
               {isLoading ? (
-                <LoadingSpinner size={22} color="white" />
+                <LoadingSpinner size={20} color="white" />
               ) : (
                 <>
-                  <span className="text-sm uppercase tracking-widest">{isSignUp ? 'Criar Conta' : 'Acessar o painel clínico'}</span>
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <span className="uppercase tracking-widest text-xs font-bold">{isSignUp ? 'Criar Conta' : 'Acessar Plataforma'}</span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </>
               )}
             </button>
           </form>
 
-          <p className="mt-16 text-center text-slate-400 text-xs font-bold">
-            {isSignUp ? 'Já tem uma conta?' : 'Ainda não tem uma conta?'}
+          <p className="mt-12 text-center text-slate-warm-400 text-xs font-bold animate-fade-in stagger-4">
+            {isSignUp ? 'Já possui acesso?' : 'Ainda não é cadastrado?'}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-[#0D8E74] font-black uppercase tracking-widest hover:underline ml-2"
+              className="text-coral-500 font-bold uppercase tracking-widest hover:text-coral-600 hover:underline ml-2 transition-all p-2"
             >
-              {isSignUp ? 'Faça login' : 'Solicite acesso profissional'}
+              {isSignUp ? 'Fazer login' : 'Solicitar conta'}
             </button>
           </p>
+        </div>
+
+        {/* Support footer */}
+        <div className="absolute bottom-6 text-[9px] text-slate-warm-300 font-bold uppercase tracking-widest animate-fade-in stagger-5">
+          © 2026 NutriClin Pro • Systems Intelligence
         </div>
       </div>
     </div>

@@ -107,12 +107,12 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
     <div className="max-w-6xl mx-auto space-y-4 lg:space-y-6 animate-in fade-in duration-500 pb-24 lg:pb-8">
       {/* Mobile Back Header */}
       <div className="lg:hidden -mx-4 -mt-4">
-        <BackHeader 
+        <BackHeader
           title={patient.name}
           subtitle={`${patient.age > 0 ? patient.age + ' anos • ' : ''}${patient.objective}`}
           onBack={onBack}
           actions={
-            <button 
+            <button
               onClick={onEdit}
               className="p-2 text-nutri-blue"
             >
@@ -127,16 +127,16 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
         <div className="bg-white p-6 rounded-xl border border-slate-100/60">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <button 
+              <button
                 onClick={onBack}
                 className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
               >
                 <ArrowLeft size={20} />
               </button>
-              <img 
-                src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} 
-                className="w-16 h-16 rounded-xl object-cover ring-4 ring-nutri-blue/5" 
-                alt="Paciente" 
+              <img
+                src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`}
+                className="w-16 h-16 rounded-xl object-cover ring-4 ring-nutri-blue/5"
+                alt="Paciente"
               />
               <div>
                 <h2 className="text-xl font-bold text-slate-800">{patient.name}</h2>
@@ -148,14 +148,14 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
               </div>
             </div>
             <div className="flex gap-3">
-              <button 
-                onClick={() => onSchedule(patientId)} 
+              <button
+                onClick={() => onSchedule(patientId)}
                 className="flex items-center gap-2 px-6 py-3 bg-slate-50 text-slate-700 rounded-lg text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-200"
               >
                 <Calendar size={18} /> Agendar
               </button>
-              <button 
-                onClick={() => onConsultNow(patientId)} 
+              <button
+                onClick={() => onConsultNow(patientId)}
                 className="flex items-center gap-2 px-6 py-3 bg-nutri-blue text-white rounded-lg text-[11px] font-black uppercase tracking-widest hover:bg-nutri-blue-hover transition-all active:scale-95"
               >
                 <Zap size={18} className="text-white fill-white" /> Consultar
@@ -167,14 +167,14 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
 
       {/* Mobile Quick Actions */}
       <div className="lg:hidden grid grid-cols-2 gap-3">
-        <button 
-          onClick={() => onSchedule(patientId)} 
+        <button
+          onClick={() => onSchedule(patientId)}
           className="flex items-center justify-center gap-2 py-3 bg-white text-slate-700 rounded-xl text-xs font-bold border border-slate-100 active:bg-slate-50"
         >
           <Calendar size={16} className="text-nutri-blue" /> Agendar
         </button>
-        <button 
-          onClick={() => onConsultNow(patientId)} 
+        <button
+          onClick={() => onConsultNow(patientId)}
           className="flex items-center justify-center gap-2 py-3 bg-nutri-blue text-white rounded-xl text-xs font-bold active:bg-nutri-blue-hover"
         >
           <Zap size={16} /> Consultar
@@ -184,10 +184,10 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
       {/* Mobile Contact Info */}
       <div className="lg:hidden bg-white p-4 rounded-xl border border-slate-100">
         <div className="flex items-center gap-4">
-          <img 
-            src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`} 
-            className="w-14 h-14 rounded-full object-cover ring-2 ring-nutri-blue/10" 
-            alt="Paciente" 
+          <img
+            src={patient.avatar || `https://i.pravatar.cc/150?u=${patientId}`}
+            className="w-14 h-14 rounded-full object-cover ring-2 ring-nutri-blue/10"
+            alt="Paciente"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
@@ -289,8 +289,8 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
                   <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
                     <Utensils size={16} className="text-nutri-blue" /> Prescrição
                   </h3>
-                  <button 
-                    onClick={() => setActiveTab('planos')} 
+                  <button
+                    onClick={() => setActiveTab('planos')}
                     className="text-[10px] font-black text-nutri-blue uppercase tracking-widest flex items-center gap-1"
                   >
                     Ver tudo <ChevronRight size={14} />
@@ -298,8 +298,8 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
                 </div>
                 <div className="grid grid-cols-2 gap-2 lg:gap-4">
                   {['Café da Manhã', 'Almoço', 'Lanche', 'Jantar'].map((meal, i) => (
-                    <div 
-                      key={i} 
+                    <div
+                      key={i}
                       className="flex items-center justify-between p-3 lg:p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white transition-colors cursor-pointer group"
                     >
                       <span className="text-sm font-bold text-slate-700 group-hover:text-nutri-blue">{meal}</span>
@@ -331,7 +331,7 @@ const PatientDetail: React.FC<PatientDetailProps> = ({
 
         {activeTab === 'prontuario' && <PatientRecord patient={patient} onBack={() => setActiveTab('resumo')} />}
         {activeTab === 'evolucao' && <PatientEvolution patient={patient} onBack={() => setActiveTab('resumo')} />}
-        {activeTab === 'planos' && <MealPlanCreator patientName={patient.name} onBack={() => setActiveTab('resumo')} />}
+        {activeTab === 'planos' && <MealPlanCreator patientId={patient.id} patientName={patient.name} onBack={() => setActiveTab('resumo')} />}
         {activeTab === 'relatorios' && <ReportGenerator patient={patient} onBack={() => setActiveTab('resumo')} />}
       </div>
     </div>
