@@ -529,7 +529,7 @@ const AppContent: React.FC = () => {
                 ) : currentView === 'ai-assistant' ? (
                   <AiAssistant />
                 ) : (
-                  <SettingsPage initialSection="profissional" />
+                  <SettingsPage initialSection="profissional" onLogout={handleLogout} />
                 )}
               </div>
             </div>
