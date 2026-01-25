@@ -1,6 +1,7 @@
 import React from 'react';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, LogOut } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { supabase } from '../../services/supabaseClient';
 
 interface HeaderProps {
     session: any;
@@ -8,9 +9,10 @@ interface HeaderProps {
     description?: string;
     onToggleSidebar: () => void;
     onProfileClick?: () => void;
+    onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSidebar, onProfileClick }) => {
+const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSidebar, onProfileClick, onLogout }) => {
     const { profile } = useUser();
 
     return (
@@ -25,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                 >
                     <Menu size={22} />
                 </button>
-                
+
                 {/* Title Block */}
                 <div className="min-w-0 flex-1">
                     <h2 className="text-xl md:text-2xl font-display font-bold text-slate-warm-800 tracking-tight leading-tight truncate">
@@ -42,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
             {/* Right: Actions */}
             <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                 {/* Notifications */}
-                <button 
+                <button
                     className="p-2.5 md:p-3 text-slate-warm-500 hover:bg-cream-200 rounded-xl relative transition-all active:scale-95"
                     aria-label="Notificações"
                 >
@@ -65,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                             Ver Perfil
                         </span>
                     </div>
-                    
+
                     {/* Avatar */}
                     <div className="w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-gradient-to-br from-coral-400 to-coral-500 flex items-center justify-center text-white text-sm font-bold overflow-hidden group-hover:ring-4 ring-coral-100 transition-all shadow-soft-sm">
                         {profile?.avatar_url ? (
@@ -74,6 +76,15 @@ const Header: React.FC<HeaderProps> = ({ session, title, description, onToggleSi
                             <span>{profile?.display_name?.charAt(0).toUpperCase() || 'U'}</span>
                         )}
                     </div>
+                </button>
+
+                {/* Direct Logout (Header) - Extra convenience */}
+                <button
+                    onClick={onLogout}
+                    className="hidden md:flex p-2.5 text-slate-warm-400 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all"
+                    title="Sair do sistema"
+                >
+                    <LogOut size={20} />
                 </button>
             </div>
         </header>

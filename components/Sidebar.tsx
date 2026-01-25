@@ -12,6 +12,7 @@ interface SidebarProps {
   toggleSidebar: () => void;
   isCollapsed: boolean; // Desktop collapse
   toggleCollapse: () => void;
+  onLogout: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -20,7 +21,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   toggleSidebar,
   isCollapsed,
-  toggleCollapse
+  toggleCollapse,
+  onLogout
 }) => {
   const { profile } = useUser();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -206,7 +208,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Logout Button */}
             {!isCollapsed && (
               <button
-                onClick={() => supabase.auth.signOut()}
+                onClick={onLogout}
                 className="w-full mt-2 flex items-center justify-center gap-2 p-2 text-slate-400 hover:text-coral-500 hover:bg-coral-50 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest"
               >
                 <LogOut size={14} /> Sair

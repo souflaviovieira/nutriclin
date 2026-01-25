@@ -87,9 +87,26 @@ const AppContent: React.FC = () => {
       setSession(session);
       setLoading(false);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth event:", _event);
+      setSession(session);
+    });
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await supabase.auth.signOut();
+      setSession(null);
+      setCurrentView('dashboard');
+      console.log("Logged out successfully");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Load Real Patients
   useEffect(() => {
@@ -328,6 +345,7 @@ const AppContent: React.FC = () => {
             window.localStorage.setItem('sidebarCollapsed', String(newState));
           }}
           setActiveTab={handleSidebarTabChange}
+          onLogout={handleLogout}
         />
       </div>
 
@@ -343,6 +361,7 @@ const AppContent: React.FC = () => {
             handleSidebarTabChange(tab);
             setIsSidebarOpen(false);
           }}
+          onLogout={handleLogout}
         />
       </div>
 
@@ -361,6 +380,7 @@ const AppContent: React.FC = () => {
             setActiveTab('settings');
             setCurrentView('settings');
           }}
+          onLogout={handleLogout}
         />
 
         {/* Floating Main Container */}
