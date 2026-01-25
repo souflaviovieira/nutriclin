@@ -210,8 +210,19 @@ const AppContent: React.FC = () => {
     </div>
   );
 
-  // TODO: TEMPORÁRIO - Login desativado para desenvolvimento
-  // if (!session) return <LoginPage onLogin={() => { }} />;
+  if (!session) {
+    return (
+      <LoginPage
+        onLogin={async () => {
+          const { data } = await supabase.auth.getSession();
+          if (data.session) {
+            setSession(data.session);
+            setCurrentView('dashboard');
+          }
+        }}
+      />
+    );
+  }
 
   const getPageInfo = (): { title: string, description?: string } => {
     const firstName = profile?.display_name?.split(' ')[0] || 'Doutor(a)';

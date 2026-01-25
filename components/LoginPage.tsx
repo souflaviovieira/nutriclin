@@ -28,6 +28,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           password,
         });
         if (error) throw error;
+
+        // Criação automática do perfil após o cadastro
+        if (data?.user) {
+          await supabase.from('profiles').insert([
+            {
+              id: data.user.id,
+              display_name: email.split('@')[0],
+              specialty: 'Nutricionista'
+            }
+          ]);
+        }
+
         // Se o cadastro foi bem sucedido, avisamos o usuário
         setError("Cadastro realizado! Verifique seu e-mail para confirmar.");
       } else {
